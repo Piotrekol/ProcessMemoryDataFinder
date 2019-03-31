@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuMemoryDataProviderTester", "Tester\OsuMemoryDataProviderTester.csproj", "{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessMemoryDataFinder", "ProcessMemoryDataFinder\ProcessMemoryDataFinder.csproj", "{9960D641-300A-432C-AA04-C351A99B9ADB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuMemoryDataProvider", "OsuMemoryDataProvider\OsuMemoryDataProvider.csproj", "{D117800F-072D-4AE4-9679-3E2A129A1A3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuMemoryDataProviderTester", "OsuMemoryDataProviderTester\OsuMemoryDataProviderTester.csproj", "{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "osu!", "osu!", "{FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9960D641-300A-432C-AA04-C351A99B9ADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9960D641-300A-432C-AA04-C351A99B9ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9960D641-300A-432C-AA04-C351A99B9ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,9 +25,17 @@ Global
 		{D117800F-072D-4AE4-9679-3E2A129A1A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D117800F-072D-4AE4-9679-3E2A129A1A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D117800F-072D-4AE4-9679-3E2A129A1A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D117800F-072D-4AE4-9679-3E2A129A1A3C} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
+		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FBAFFCF-2E42-43DD-B5D2-EFB906701CBF}
