@@ -11,4 +11,4 @@ It should be noted that ProcessMemoryDataFinder targets x86 platform. Make sure 
 
 
 ## License
-This software is licensed under GNU GPLv3. You can find the full text of the license [here](https://github.com/Piotrekol/ProcessMemoryDataFinder/LICENSE).
+This software is licensed under GNU GPLv3. You can find the full text of the license [here](https://github.com/Piotrekol/ProcessMemoryDataFinder/blob/master/LICENSE).
