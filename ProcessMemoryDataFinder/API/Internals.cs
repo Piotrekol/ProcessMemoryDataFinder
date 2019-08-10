@@ -4,21 +4,20 @@ using System.Runtime.InteropServices;
 
 namespace ProcessMemoryDataFinder.API
 {
-    [StructLayout(LayoutKind.Sequential)]
-    // ReSharper disable once InconsistentNaming
-    public struct MEMORY_BASIC_INFORMATION
-    {
-        public IntPtr BaseAddress;
-        public IntPtr AllocationBase;
-        public uint AllocationProtect;
-        public uint RegionSize;
-        public uint State;
-        public uint Protect;
-        public uint Type;
-    }
     internal class MemoryProcessAddressFinder
     {
-        
+        [StructLayout(LayoutKind.Sequential)]
+        // ReSharper disable once InconsistentNaming
+        public struct MEMORY_BASIC_INFORMATION
+        {
+            public IntPtr BaseAddress;
+            public IntPtr AllocationBase;
+            public uint AllocationProtect;
+            public uint RegionSize;
+            public uint State;
+            public uint Protect;
+            public uint Type;
+        }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern int VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, int dwLength);
