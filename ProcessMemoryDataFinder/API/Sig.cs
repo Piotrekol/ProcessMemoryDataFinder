@@ -206,14 +206,15 @@ namespace ProcessMemoryDataFinder.API
         {
             var headerResult = GetArrayHeader();
             if (headerResult == null) return null;
-            if (headerResult.Item1 == 0) return new List<int>();
+            if (headerResult.Item1 <= 0) return new List<int>();
 
             var ret = new List<int>();
 
+            var memoryFragment = _readDataFunc(headerResult.Item2 + 8, 4 * (uint)headerResult.Item1);
+
             for (int i = 0; i < headerResult.Item1; i++)
             {
-                var rawElement = _readDataFunc(headerResult.Item2 + 4 + (i + 1) * 4, 4);
-                ret.Add(BitConverter.ToInt32(rawElement, 0));
+                ret.Add(BitConverter.ToInt32(memoryFragment, i * 4));
             }
 
             return ret;
