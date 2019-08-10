@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
@@ -64,11 +65,15 @@ namespace OsuMemoryDataProviderTester
 
                         var status = _reader.GetCurrentStatus(out var num);
                         double hp = 0;
+                        var playerName=string.Empty;
+                        var hitErrorCount = -1;
                         if (status == OsuMemoryStatus.Playing)
                         {
                             playReseted = false;
                             _reader.GetPlayData(playContainer);
                             hp = _reader.ReadPlayerHp();
+                            playerName = _reader.PlayerName();
+                            hitErrorCount = _reader.HitErrors()?.Count ?? -2;
                         }
                         else if (!playReseted)
                         {
@@ -89,8 +94,8 @@ namespace OsuMemoryDataProviderTester
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
                                 $"displayedHp: {_reader.ReadDisplayedPlayerHp():00.##} {Environment.NewLine}" +
                                 $"mods:{_reader.GetMods()} " +
-                                $"PlayerName: {_reader.PlayerName()}{Environment.NewLine}"+
-                                $"HitErrorCount: {_reader.HitErrors().Count} ";
+                                $"PlayerName: {playerName}{Environment.NewLine}"+
+                                $"HitErrorCount: {hitErrorCount} ";
                         }));
                         Thread.Sleep(_readDelay);
                     }

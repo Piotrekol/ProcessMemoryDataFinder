@@ -202,12 +202,6 @@ namespace ProcessMemoryDataFinder.API
             return new Tuple<int, IntPtr>(numberOfElements, arrayAddress);
         }
 
-        private int getNum(IntPtr adr)
-        {
-            var rawNumberOfElements = _readDataFunc(adr, 4);
-            
-            return BitConverter.ToInt32(rawNumberOfElements, 0);
-        }
         public List<int> GetIntList()
         {
             var headerResult = GetArrayHeader();
