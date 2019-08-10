@@ -104,6 +104,13 @@ namespace ProcessMemoryDataFinder.API
             return sig.GetString();
         }
 
+
+        protected virtual List<int> GetIntList(int signatureId)
+        {
+            var sig = InitSignature(signatureId);
+            return sig.GetIntList();
+        }
+
         #endregion
     }
 }

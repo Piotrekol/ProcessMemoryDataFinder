@@ -83,10 +83,14 @@ namespace OsuMemoryDataProviderTester
                             textBox_time.Text = _reader.ReadPlayTime().ToString();
                             textBox_mapData.Text = mapData;
                             textBox_Status.Text = status + " " + num + " " + _reader.ReadSongSelectGameMode();
+
                             textBox_CurrentPlayData.Text =
                                 playContainer + $" time:{_reader.ReadPlayTime()}" + Environment.NewLine +
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
-                                $"displayedHp: {_reader.ReadDisplayedPlayerHp():00.##} {Environment.NewLine}";
+                                $"displayedHp: {_reader.ReadDisplayedPlayerHp():00.##} {Environment.NewLine}" +
+                                $"mods:{_reader.GetMods()} " +
+                                $"PlayerName: {_reader.PlayerName()}{Environment.NewLine}"+
+                                $"HitErrorCount: {_reader.HitErrors().Count} ";
                         }));
                         Thread.Sleep(_readDelay);
                     }

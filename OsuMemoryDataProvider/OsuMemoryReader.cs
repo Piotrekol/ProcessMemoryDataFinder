@@ -1,6 +1,7 @@
 //#define MemoryTimes
 
 using System;
+using System.Collections.Generic;
 using ProcessMemoryDataFinder.API;
 
 namespace OsuMemoryDataProvider
@@ -149,6 +150,18 @@ namespace OsuMemoryDataProvider
                 ParentSig = Signatures[(int) SignatureNames.PlayContainer],
                 PointerOffsets = {56, 28}
             });
+            Signatures.Add((int)SignatureNames.PlayerName, new SigEx
+            {
+                //char[]
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 40 }
+            });
+            Signatures.Add((int)SignatureNames.HitErrors, new SigEx
+            {
+                //int[]
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 56 }
+            });
             Signatures.Add((int) SignatureNames.Combo, new SigEx
             {
                 //ushort
@@ -262,6 +275,17 @@ namespace OsuMemoryDataProvider
 
                 return -1;
             }
+        }
+
+        public List<int> HitErrors()
+        {
+            ResetPointer((int)SignatureNames.HitErrors);
+            return GetIntList((int)SignatureNames.HitErrors);
+        }
+
+        public string PlayerName()
+        {
+            return GetString((int)SignatureNames.PlayerName);
         }
 
         public int GetMapId()

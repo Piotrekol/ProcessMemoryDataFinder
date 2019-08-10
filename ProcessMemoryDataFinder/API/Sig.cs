@@ -170,26 +170,63 @@ namespace ProcessMemoryDataFinder.API
             return -1;
         }
 
+        private Tuple<int, IntPtr> GetArrayHeader(bool skip = false)
+        {
+            var pointer = ResolveAddress();
+            if (pointer == IntPtr.Zero) return null;
+
+            var address = ReadPointer(pointer);
+            if (address == IntPtr.Zero) return null;
+
+            IntPtr arrayAddress;
+            if (skip)
+            {
+                arrayAddress = address;
+            }
+            else
+            {
+                arrayAddress = ReadPointer(address + 4);
+                if (arrayAddress == IntPtr.Zero) return null;
+            }
+
+            var rawNumberOfElements = _readDataFunc(arrayAddress + 4, 4);
+            if (rawNumberOfElements == null) return null;
+            var numberOfElements = BitConverter.ToInt32(rawNumberOfElements, 0);
+
+            return new Tuple<int, IntPtr>(numberOfElements, arrayAddress);
+        }
+
+        public List<int> GetIntList()
+        {
+            var headerResult = GetArrayHeader();
+            if (headerResult == null) return null;
+            if (headerResult.Item1 == 0) return new List<int>();
+
+            var ret = new List<int>();
+
+            for (int i = 0; i < headerResult.Item1; i++)
+            {
+                var rawElement = _readDataFunc(headerResult.Item2 + 4 + (i + 1) * 4, 4);
+                ret.Add(BitConverter.ToInt32(rawElement, 0));
+            }
+
+            return ret;
+        }
         public string GetString()
         {
-            var stringPointer = ResolveAddress();
-            if (stringPointer == IntPtr.Zero) return string.Empty;
 
-            var stringAddress = ReadPointer(stringPointer);
-            if (stringAddress == IntPtr.Zero) return string.Empty;
+            var headerResult = GetArrayHeader(true);
+            if (headerResult == null) return string.Empty;
+            if (headerResult.Item1 == 0) return string.Empty;
 
-            var rawData = _readDataFunc(stringAddress + 4, 4);
-            if (rawData == null) return string.Empty;
-
-            var stringLengthInCharacters = BitConverter.ToInt32(rawData, 0);
-            var stringLength = stringLengthInCharacters * 2;
+            var stringLength = headerResult.Item1 * 2;
             /*
              * If there's a case where string can be longer than 2^18, this should get adjusted to bigger value.
              * In my testing in StreamCompanion(across whole userbase) this value can be [incorrectly] set to ridiculous value, sometimes even causing OutOfMemoryException
              */
             if (stringLength > 262144) return string.Empty;
 
-            var stringData = _readDataFunc(stringAddress + 8, (uint) stringLength);
+            var stringData = _readDataFunc(headerResult.Item2 + 8, (uint)stringLength);
             if (stringData == null) return string.Empty;
 
             var result = Encoding.Unicode.GetString(stringData);

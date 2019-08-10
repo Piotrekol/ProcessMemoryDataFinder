@@ -108,7 +108,7 @@
             this.textBox_CurrentPlayData.Location = new System.Drawing.Point(14, 174);
             this.textBox_CurrentPlayData.Multiline = true;
             this.textBox_CurrentPlayData.Name = "textBox_CurrentPlayData";
-            this.textBox_CurrentPlayData.Size = new System.Drawing.Size(364, 87);
+            this.textBox_CurrentPlayData.Size = new System.Drawing.Size(364, 143);
             this.textBox_CurrentPlayData.TabIndex = 6;
             // 
             // label5
@@ -175,7 +175,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(791, 273);
+            this.ClientSize = new System.Drawing.Size(791, 329);
             this.Controls.Add(this.textBox_time);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_mapData);

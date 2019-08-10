@@ -1,4 +1,6 @@
-﻿namespace OsuMemoryDataProvider
+﻿using System.Collections.Generic;
+
+namespace OsuMemoryDataProvider
 {
     public interface IOsuMemoryReader
     {
@@ -8,6 +10,9 @@
         /// <param name="playContainer">Initalized object to fill with data</param>
         void GetPlayData(PlayContainer playContainer);
 
+        List<int> HitErrors();
+
+        string PlayerName();
         int GetMods();
         int GetMapId();
         float GetMapAr();

@@ -35,6 +35,8 @@
         PlayTime,
         Retrys,
 
+        PlayerName,
+        HitErrors,
     }
 
 }
