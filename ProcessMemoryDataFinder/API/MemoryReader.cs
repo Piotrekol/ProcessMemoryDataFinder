@@ -9,7 +9,7 @@ namespace ProcessMemoryDataFinder.API
 {
     public abstract class MemoryReader
     {
-        public delegate IntPtr FindPatternF(byte[] btPattern, string strMask, int nOffset, bool useMask);
+        public delegate IntPtr FindPatternF(byte[] btPattern, string strMask, int nOffset, bool useMask, MEMORY_BASIC_INFORMATION? lastAdress, out MEMORY_BASIC_INFORMATION? foundAt);
 
         public delegate byte[] ReadDataF(IntPtr adress, uint size);
 
@@ -39,20 +39,46 @@ namespace ProcessMemoryDataFinder.API
 
         protected abstract void ProcessChanged();
 
-        protected IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask)
-        {
+        protected IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask, MEMORY_BASIC_INFORMATION? lastAdress, out MEMORY_BASIC_INFORMATION? foundAt){
             var pageExecuteRead = (uint) MemoryProtectionOptions.PAGE_EXECUTE_READ;
             IntPtr result;
-            foreach (var memoryAdress in GetMemoryAddresses())
+            GetMemoryAddresses();
+            if (lastAdress.HasValue)
             {
+                if (_internals.MemReg.Contains(lastAdress.Value))
+                {
+                    result = ScanMemoryRange(lastAdress.Value, out foundAt);
+                    if (result != IntPtr.Zero)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            foreach (var memoryAdress in _internals.MemReg)
+            {
+                result = ScanMemoryRange(memoryAdress, out foundAt);
+                if (result != IntPtr.Zero)
+                {
+                    return result;
+                }
+            }
+
+            _internals.MemReg = new List<MEMORY_BASIC_INFORMATION>();
+            foundAt = null;
+            return IntPtr.Zero;
+
+            IntPtr ScanMemoryRange(MEMORY_BASIC_INFORMATION memoryAdress, out MEMORY_BASIC_INFORMATION? _foundAt)
+            {
+                _foundAt = null;
                 if ((memoryAdress.Protect & pageExecuteRead) != 0)
                 {
-                    continue;
+                    return IntPtr.Zero;
                 }
 
                 _sigScan.ResetRegion();
                 _sigScan.Address = memoryAdress.BaseAddress;
-                _sigScan.Size = (int) memoryAdress.RegionSize;
+                _sigScan.Size = (int)memoryAdress.RegionSize;
                 if (useMask)
                 {
                     result = _sigScan.FindPattern(btPattern, strMask, nOffset);
@@ -64,13 +90,13 @@ namespace ProcessMemoryDataFinder.API
 
                 if (result != IntPtr.Zero)
                 {
-                    _internals.MemReg = new List<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION>();
+                    _internals.MemReg = new List<MEMORY_BASIC_INFORMATION>();
+                    _foundAt = memoryAdress;
                     return result;
                 }
-            }
 
-            _internals.MemReg = new List<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION>();
-            return IntPtr.Zero;
+                return IntPtr.Zero;
+            }
         }
 
         protected byte[] ReadData(IntPtr address, uint size)
@@ -129,27 +155,24 @@ namespace ProcessMemoryDataFinder.API
             }
         }
 
-        private IEnumerable<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION> GetMemoryAddresses()
+        private List<MEMORY_BASIC_INFORMATION> GetMemoryAddresses()
         {
             OpenProcess();
             if (CurrentProcess == null)
             {
-                yield break;
+                return new List<MEMORY_BASIC_INFORMATION>();
             }
 
             try
             {
                 _internals.MemInfo(CurrentProcess.Handle);
+                return _internals.MemReg;
             }
             catch
             {
-                yield break;
+                return new List<MEMORY_BASIC_INFORMATION>();
             }
 
-            for (var i = 0; i < _internals.MemReg.Count; i++)
-            {
-                yield return _internals.MemReg[i];
-            }
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]

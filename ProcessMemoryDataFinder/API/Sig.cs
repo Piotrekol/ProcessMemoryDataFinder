@@ -42,6 +42,7 @@ namespace ProcessMemoryDataFinder.API
         /// </summary>
         public List<int> PointerOffsets { get; set; } = new List<int>();
 
+        private MEMORY_BASIC_INFORMATION? LastFoundAt = null;
         public void SetFindPatternF(MemoryReader.FindPatternF f)
         {
             _findPatternFunc = f;
@@ -92,8 +93,8 @@ namespace ProcessMemoryDataFinder.API
                 }
                 else
                 {
-                    Address = _findPatternFunc(Pattern, Mask, Offset, UseMask);
-
+                    Address = _findPatternFunc(Pattern, Mask, Offset, UseMask, LastFoundAt, out var foundAt);
+                    LastFoundAt = foundAt;
                     addr = Address;
                 }
             }
