@@ -209,8 +209,12 @@ namespace ProcessMemoryDataFinder.API
             if (headerResult.Item1 <= 0) return new List<int>();
 
             var ret = new List<int>();
+            var expectedSize = 4 * (uint) headerResult.Item1;
 
-            var memoryFragment = _readDataFunc(headerResult.Item2 + 8, 4 * (uint)headerResult.Item1);
+            var memoryFragment = _readDataFunc(headerResult.Item2 + 8, expectedSize);
+
+            if (memoryFragment == null || memoryFragment.Length != expectedSize)
+                return null;
 
             for (int i = 0; i < headerResult.Item1; i++)
             {
