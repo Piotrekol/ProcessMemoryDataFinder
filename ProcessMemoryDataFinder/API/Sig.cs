@@ -21,6 +21,7 @@ namespace ProcessMemoryDataFinder.API
         private MemoryReader.FindPatternF _findPatternFunc;
         private MemoryReader.ReadDataF _readDataFunc;
 
+        public string Name { get; set; }
         /// <summary>
         ///     Final address - after traversing pointers.
         /// </summary>

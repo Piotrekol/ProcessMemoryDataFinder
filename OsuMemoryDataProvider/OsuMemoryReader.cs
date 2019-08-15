@@ -21,43 +21,70 @@ namespace OsuMemoryDataProvider
             CreateSignatures();
         }
 
+        //Hopefully this is only needed until CE/beta code gets in stable
+        private int _beatmapOffset = 0;
+
+        protected override void ProcessChanged()
+        {
+            if (CurrentProcess != null)
+            {
+                var windowTitle = CurrentProcess.MainWindowTitle;
+
+                if (!string.IsNullOrEmpty(windowTitle))
+                {
+                    var isBetaOrExperimental =
+                        windowTitle.Contains("osu!cuttingedge") || windowTitle.Contains("osu!beta");
+                    lock (_lockingObject)
+                    {
+                        _beatmapOffset = isBetaOrExperimental ? 4 : 0;
+                        Signatures.Clear();
+                        CreateSignatures();
+                    }
+                }
+            }
+            base.ProcessChanged();
+        }
+
         internal void CreateSignatures()
         {
-            Signatures.Add((int) SignatureNames.OsuBase, new SigEx
+            Signatures.Add((int)SignatureNames.OsuBase, new SigEx
             {
+                Name = "OsuBase",
                 Pattern = UnpackStr("F801740483"),
                 UseMask = false
             });
-            Signatures.Add((int) SignatureNames.GameMode, new SigEx
+            Signatures.Add((int)SignatureNames.GameMode, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.OsuBase],
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -51,
-                PointerOffsets = {0}
+                PointerOffsets = { 0 }
             });
 
             // TODO: Retry signature is incorrect - it only increases when using quick-retry key in-game
-            Signatures.Add((int) SignatureNames.Retrys, new SigEx
+            Signatures.Add((int)SignatureNames.Retrys, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.OsuBase],
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -51,
-                PointerOffsets = {4}
+                PointerOffsets = { 4 }
             });
 
             CreateBeatmapDataSignatures();
 
-            Signatures.Add((int) SignatureNames.OsuStatus, new SigEx
+            Signatures.Add((int)SignatureNames.OsuStatus, new SigEx
             {
+                Name = "OsuStatus",
                 Pattern = UnpackStr("4883F804731E"),
                 Offset = -4,
-                PointerOffsets = {0},
+                PointerOffsets = { 0 },
                 UseMask = false
             });
-            Signatures.Add((int) SignatureNames.PlayTime, new SigEx
+            Signatures.Add((int)SignatureNames.PlayTime, new SigEx
             {
+                Name = "PlayTime",
                 Pattern = UnpackStr("5E5F5DC3A100000000890004"),
                 Mask = "xxxxx????x?x",
                 Offset = 5,
-                PointerOffsets = {0}
+                PointerOffsets = { 0 }
             });
 
             CreatePlaySignatures();
@@ -65,90 +92,92 @@ namespace OsuMemoryDataProvider
 
         private void CreateBeatmapDataSignatures()
         {
-            Signatures.Add((int) SignatureNames.CurrentBeatmapData, new SigEx
+            Signatures.Add((int)SignatureNames.CurrentBeatmapData, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.OsuBase],
+                Name = "CurrentBeatmapData",
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -12,
-                PointerOffsets = {0},
+                PointerOffsets = { 0 },
                 UseMask = false
             });
-            Signatures.Add((int) SignatureNames.MapId, new SigEx
+            Signatures.Add((int)SignatureNames.MapId, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {192}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 192 + _beatmapOffset }
             });
-            Signatures.Add((int) SignatureNames.MapSetId, new SigEx
+            Signatures.Add((int)SignatureNames.MapSetId, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {196}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 196 + _beatmapOffset }
             });
-            Signatures.Add((int) SignatureNames.MapString, new SigEx
+            Signatures.Add((int)SignatureNames.MapString, new SigEx
             {
                 //string
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {124}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 124 }
             });
-            Signatures.Add((int) SignatureNames.MapFolderName, new SigEx
+            Signatures.Add((int)SignatureNames.MapFolderName, new SigEx
             {
                 //string
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {112}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 112 + _beatmapOffset }
             });
-            Signatures.Add((int) SignatureNames.MapOsuFileName, new SigEx
+            Signatures.Add((int)SignatureNames.MapOsuFileName, new SigEx
             {
                 //string
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {136}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 136 + _beatmapOffset }
             });
-            Signatures.Add((int) SignatureNames.MapMd5, new SigEx
+            Signatures.Add((int)SignatureNames.MapMd5, new SigEx
             {
                 //string
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {108}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 108 }
             });
-            Signatures.Add((int) SignatureNames.MapAr, new SigEx
+            Signatures.Add((int)SignatureNames.MapAr, new SigEx
             {
                 //float
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {44}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 44 }
             });
-            Signatures.Add((int) SignatureNames.MapCs, new SigEx
+            Signatures.Add((int)SignatureNames.MapCs, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {48}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 48 }
             });
-            Signatures.Add((int) SignatureNames.MapHp, new SigEx
+            Signatures.Add((int)SignatureNames.MapHp, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {52}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 52 }
             });
-            Signatures.Add((int) SignatureNames.MapOd, new SigEx
+            Signatures.Add((int)SignatureNames.MapOd, new SigEx
             {
-                ParentSig = Signatures[(int) SignatureNames.CurrentBeatmapData],
-                PointerOffsets = {56}
+                ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
+                PointerOffsets = { 56 }
             });
         }
 
         private void CreatePlaySignatures()
         {
-            Signatures.Add((int) SignatureNames.PlayContainer, new SigEx
+            Signatures.Add((int)SignatureNames.PlayContainer, new SigEx
             {
                 //avaliable only when playing;
                 //need to reset on each play
+                Name = "PlayContainer",
                 Pattern = UnpackStr("85C9741F8D55F08B01"),
                 Offset = -4,
-                PointerOffsets = {0},
+                PointerOffsets = { 0 },
                 UseMask = false
             });
 
             //56 = #=zPsiUimreqe_CwsA7Ane_nRWG9yGmNg1kbx3ILStBOZ7t3isJWw== (looks like score class?)
-            Signatures.Add((int) SignatureNames.Mods, new SigEx
+            Signatures.Add((int)SignatureNames.Mods, new SigEx
             {
                 //Complex - 2 xored ints
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 28}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 28 }
             });
             Signatures.Add((int)SignatureNames.PlayerName, new SigEx
             {
@@ -162,71 +191,71 @@ namespace OsuMemoryDataProvider
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
                 PointerOffsets = { 56, 56 }
             });
-            Signatures.Add((int) SignatureNames.Combo, new SigEx
+            Signatures.Add((int)SignatureNames.Combo, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 144}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 144 }
             });
-            Signatures.Add((int) SignatureNames.ComboMax, new SigEx
+            Signatures.Add((int)SignatureNames.ComboMax, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 104}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 104 }
             });
-            Signatures.Add((int) SignatureNames.Hit300c, new SigEx
+            Signatures.Add((int)SignatureNames.Hit300c, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 134}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 134 }
             });
-            Signatures.Add((int) SignatureNames.Hit100c, new SigEx
+            Signatures.Add((int)SignatureNames.Hit100c, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 132}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 132 }
             });
-            Signatures.Add((int) SignatureNames.Hit50c, new SigEx
+            Signatures.Add((int)SignatureNames.Hit50c, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 136}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 136 }
             });
-            Signatures.Add((int) SignatureNames.HitMissc, new SigEx
+            Signatures.Add((int)SignatureNames.HitMissc, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 142}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 142 }
             });
-            Signatures.Add((int) SignatureNames.Score, new SigEx
+            Signatures.Add((int)SignatureNames.Score, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 116}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 116 }
             });
-            Signatures.Add((int) SignatureNames.PlayingGameMode, new SigEx
+            Signatures.Add((int)SignatureNames.PlayingGameMode, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {56, 100}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 100 }
             });
-            Signatures.Add((int) SignatureNames.Acc, new SigEx
+            Signatures.Add((int)SignatureNames.Acc, new SigEx
             {
                 //double
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {72, 20}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 72, 20 }
             });
-            Signatures.Add((int) SignatureNames.PlayerHp, new SigEx
+            Signatures.Add((int)SignatureNames.PlayerHp, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {64, 28}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 64, 28 }
             });
-            Signatures.Add((int) SignatureNames.PlayerHpSmoothed, new SigEx
+            Signatures.Add((int)SignatureNames.PlayerHpSmoothed, new SigEx
             {
                 //ushort
-                ParentSig = Signatures[(int) SignatureNames.PlayContainer],
-                PointerOffsets = {64, 20}
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 64, 20 }
             });
         }
 
@@ -251,7 +280,7 @@ namespace OsuMemoryDataProvider
                 playContainer.Score = ReadScore();
             }
         }
-        
+
         public int GetMods()
         {
             lock (_lockingObject)
@@ -259,8 +288,8 @@ namespace OsuMemoryDataProvider
 #if DEBUG && MemoryTimes
                 LogCaller("Start");
 #endif
-                Reset((int) SignatureNames.Mods);
-                var pointer = GetPointer((int) SignatureNames.Mods);
+                Reset((int)SignatureNames.Mods);
+                var pointer = GetPointer((int)SignatureNames.Mods);
                 var data1 = ReadData(pointer + 8, 4);
                 var data2 = ReadData(pointer + 12, 4);
 #if DEBUG && MemoryTimes
@@ -290,122 +319,122 @@ namespace OsuMemoryDataProvider
 
         public int GetMapId()
         {
-            return GetInt((int) SignatureNames.MapId);
+            return GetInt((int)SignatureNames.MapId);
         }
 
         public float GetMapAr()
         {
-            return GetFloat((int) SignatureNames.MapAr);
+            return GetFloat((int)SignatureNames.MapAr);
         }
 
         public float GetMapCs()
         {
-            return GetFloat((int) SignatureNames.MapCs);
+            return GetFloat((int)SignatureNames.MapCs);
         }
 
         public float GetMapHp()
         {
-            return GetFloat((int) SignatureNames.MapHp);
+            return GetFloat((int)SignatureNames.MapHp);
         }
 
         public float GetMapOd()
         {
-            return GetFloat((int) SignatureNames.MapOd);
+            return GetFloat((int)SignatureNames.MapOd);
         }
 
         public float GetMapSetId()
         {
-            return GetInt((int) SignatureNames.MapSetId);
+            return GetInt((int)SignatureNames.MapSetId);
         }
 
         public string GetSongString()
         {
-            return GetString((int) SignatureNames.MapString);
+            return GetString((int)SignatureNames.MapString);
         }
 
         public string GetMapMd5()
         {
-            return GetString((int) SignatureNames.MapMd5);
+            return GetString((int)SignatureNames.MapMd5);
         }
 
         public string GetOsuFileName()
         {
-            return GetString((int) SignatureNames.MapOsuFileName);
+            return GetString((int)SignatureNames.MapOsuFileName);
         }
 
         public string GetMapFolderName()
         {
-            return GetString((int) SignatureNames.MapFolderName);
+            return GetString((int)SignatureNames.MapFolderName);
         }
 
         public int ReadPlayTime()
         {
-            return GetInt((int) SignatureNames.PlayTime);
+            return GetInt((int)SignatureNames.PlayTime);
         }
 
         public ushort Readhit300()
         {
-            return GetUShort((int) SignatureNames.Hit300c);
+            return GetUShort((int)SignatureNames.Hit300c);
         }
 
         public ushort Readhit100()
         {
-            return GetUShort((int) SignatureNames.Hit100c);
+            return GetUShort((int)SignatureNames.Hit100c);
         }
 
         public ushort Readhit50()
         {
-            return GetUShort((int) SignatureNames.Hit50c);
+            return GetUShort((int)SignatureNames.Hit50c);
         }
 
         public ushort ReadhitMiss()
         {
-            return GetUShort((int) SignatureNames.HitMissc);
+            return GetUShort((int)SignatureNames.HitMissc);
         }
 
         public double ReadAcc()
         {
-            return GetDouble((int) SignatureNames.Acc);
+            return GetDouble((int)SignatureNames.Acc);
         }
 
         public ushort ReadCombo()
         {
-            return GetUShort((int) SignatureNames.Combo);
+            return GetUShort((int)SignatureNames.Combo);
         }
 
         public int ReadPlayedGameMode()
         {
-            return GetInt((int) SignatureNames.PlayingGameMode);
+            return GetInt((int)SignatureNames.PlayingGameMode);
         }
 
         public int ReadSongSelectGameMode()
         {
-            return GetInt((int) SignatureNames.GameMode);
+            return GetInt((int)SignatureNames.GameMode);
         }
 
         public int GetRetrys()
         {
-            return GetInt((int) SignatureNames.Retrys);
+            return GetInt((int)SignatureNames.Retrys);
         }
 
         public int ReadScore()
         {
-            return GetInt((int) SignatureNames.Score);
+            return GetInt((int)SignatureNames.Score);
         }
 
         public ushort ReadComboMax()
         {
-            return GetUShort((int) SignatureNames.ComboMax);
+            return GetUShort((int)SignatureNames.ComboMax);
         }
 
         public double ReadPlayerHp()
         {
-            return GetDouble((int) SignatureNames.PlayerHp);
+            return GetDouble((int)SignatureNames.PlayerHp);
         }
 
         public double ReadDisplayedPlayerHp()
         {
-            return GetDouble((int) SignatureNames.PlayerHpSmoothed);
+            return GetDouble((int)SignatureNames.PlayerHpSmoothed);
         }
 
         /// <summary>
@@ -421,7 +450,7 @@ namespace OsuMemoryDataProvider
             int num;
             lock (_lockingObject)
             {
-                num = GetInt((int) SignatureNames.OsuStatus);
+                num = GetInt((int)SignatureNames.OsuStatus);
             }
 #if DEBUG && MemoryTimes
             LogCaller("End");
@@ -430,7 +459,7 @@ namespace OsuMemoryDataProvider
             statusNumber = num;
             if (Enum.IsDefined(typeof(OsuMemoryStatus), num))
             {
-                return (OsuMemoryStatus) num;
+                return (OsuMemoryStatus)num;
             }
 
             return OsuMemoryStatus.Unknown;
