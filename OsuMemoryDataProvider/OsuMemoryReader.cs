@@ -21,30 +21,6 @@ namespace OsuMemoryDataProvider
             CreateSignatures();
         }
 
-        //Hopefully this is only needed until CE/beta code gets in stable
-        private int _beatmapOffset = 0;
-
-        protected override void ProcessChanged()
-        {
-            if (CurrentProcess != null)
-            {
-                var windowTitle = CurrentProcess.MainWindowTitle;
-
-                if (!string.IsNullOrEmpty(windowTitle))
-                {
-                    var isBetaOrExperimental =
-                        windowTitle.Contains("osu!cuttingedge") || windowTitle.Contains("osu!beta");
-                    lock (_lockingObject)
-                    {
-                        _beatmapOffset = isBetaOrExperimental ? 4 : 0;
-                        Signatures.Clear();
-                        CreateSignatures();
-                    }
-                }
-            }
-            base.ProcessChanged();
-        }
-
         internal void CreateSignatures()
         {
             Signatures.Add((int)SignatureNames.OsuBase, new SigEx
@@ -104,13 +80,13 @@ namespace OsuMemoryDataProvider
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 192 + _beatmapOffset }
+                PointerOffsets = { 196 }
             });
             Signatures.Add((int)SignatureNames.MapSetId, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 196 + _beatmapOffset }
+                PointerOffsets = { 200 }
             });
             Signatures.Add((int)SignatureNames.MapString, new SigEx
             {
@@ -122,13 +98,13 @@ namespace OsuMemoryDataProvider
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 112 + _beatmapOffset }
+                PointerOffsets = { 116 }
             });
             Signatures.Add((int)SignatureNames.MapOsuFileName, new SigEx
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 136 + _beatmapOffset }
+                PointerOffsets = { 140 }
             });
             Signatures.Add((int)SignatureNames.MapMd5, new SigEx
             {
