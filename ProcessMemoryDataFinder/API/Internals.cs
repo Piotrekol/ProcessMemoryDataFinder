@@ -13,7 +13,7 @@ namespace ProcessMemoryDataFinder.API
             public IntPtr BaseAddress;
             public IntPtr AllocationBase;
             public uint AllocationProtect;
-            public uint RegionSize;
+            public IntPtr RegionSize;
             public uint State;
             public uint Protect;
             public uint Type;
@@ -38,7 +38,7 @@ namespace ProcessMemoryDataFinder.API
                 if (memDump == 0) break;
                 if ((memInfo.State & 0x1000) != 0 && (memInfo.Protect & 0x100) == 0)
                     MemReg.Add(memInfo);
-                addy = new IntPtr(memInfo.BaseAddress.ToInt32() + memInfo.RegionSize);
+                addy = new IntPtr(memInfo.BaseAddress.ToInt64() + memInfo.RegionSize.ToInt64());
             }
         }
     }

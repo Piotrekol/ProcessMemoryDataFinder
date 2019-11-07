@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using ProcessMemoryDataFinder.Misc;
+using Exception = System.Exception;
 
 namespace ProcessMemoryDataFinder.API
 {
@@ -137,14 +138,7 @@ namespace ProcessMemoryDataFinder.API
                 yield break;
             }
 
-            try
-            {
                 _internals.MemInfo(CurrentProcess.Handle);
-            }
-            catch
-            {
-                yield break;
-            }
 
             for (var i = 0; i < _internals.MemReg.Count; i++)
             {
