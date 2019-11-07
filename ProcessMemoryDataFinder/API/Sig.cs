@@ -93,7 +93,14 @@ namespace ProcessMemoryDataFinder.API
                 }
                 else
                 {
-                    Address = _findPatternFunc(Pattern, Mask, Offset, UseMask);
+                    try
+                    {
+                        Address = _findPatternFunc(Pattern, Mask, Offset, UseMask);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        return IntPtr.Zero;
+                    }
 
                     addr = Address;
                 }
