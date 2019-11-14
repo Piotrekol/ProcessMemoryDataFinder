@@ -83,19 +83,24 @@ namespace OsuMemoryDataProviderTester
                             playContainer.Reset();
                         }
 
-                        BeginInvoke((MethodInvoker) (() =>
+                        int playTime = _reader.ReadPlayTime();
+                        int gameMode = _reader.ReadSongSelectGameMode();
+                        double displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
+                        int mods = _reader.GetMods();
+
+                        Invoke((MethodInvoker) (() =>
                         {
                             textBox_mapId.Text = mapId.ToString();
                             textBox_strings.Text = mapStrings;
-                            textBox_time.Text = _reader.ReadPlayTime().ToString();
+                            textBox_time.Text = playTime.ToString();
                             textBox_mapData.Text = mapData;
-                            textBox_Status.Text = status + " " + num + " " + _reader.ReadSongSelectGameMode();
+                            textBox_Status.Text = status + " " + num + " " + gameMode;
 
                             textBox_CurrentPlayData.Text =
-                                playContainer + $" time:{_reader.ReadPlayTime()}" + Environment.NewLine +
+                                playContainer + $" time:{playTime}" + Environment.NewLine +
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
-                                $"displayedHp: {_reader.ReadDisplayedPlayerHp():00.##} {Environment.NewLine}" +
-                                $"mods:{_reader.GetMods()} " +
+                                $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
+                                $"mods:{mods} " +
                                 $"PlayerName: {playerName}{Environment.NewLine}"+
                                 $"HitErrorCount: {hitErrorCount} ";
                         }));
