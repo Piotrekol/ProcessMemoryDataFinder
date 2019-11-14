@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
@@ -10,14 +9,16 @@ namespace OsuMemoryDataProviderTester
 {
     public partial class Form1 : Form
     {
+        private readonly string _osuWindowTitleHint;
         private int _readDelay = 33;
         private Thread _thread;
         private readonly IOsuMemoryReader _reader;
 
-        public Form1()
+        public Form1(string osuWindowTitleHint)
         {
+            _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
-            _reader = OsuMemoryReader.Instance;
+            _reader = OsuMemoryReader.GetInstanceForWindowTitleHint(osuWindowTitleHint);
             Shown += OnShown;
             Closing += OnClosing;
             numericUpDown_readDelay.ValueChanged += NumericUpDownReadDelayOnValueChanged;
@@ -42,6 +43,7 @@ namespace OsuMemoryDataProviderTester
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
+            if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
             _thread = new Thread(() =>
             {
                 try

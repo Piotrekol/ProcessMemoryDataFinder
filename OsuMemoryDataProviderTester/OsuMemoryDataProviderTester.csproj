@@ -94,11 +94,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="tourney-client.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OsuMemoryDataProvider\OsuMemoryDataProvider.csproj">
       <Project>{d117800f-072d-4ae4-9679-3e2a129a1a3c}</Project>
       <Name>OsuMemoryDataProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProcessMemoryDataFinder\ProcessMemoryDataFinder.csproj">
+      <Project>{9960D641-300A-432C-AA04-C351A99B9ADB}</Project>
+      <Name>ProcessMemoryDataFinder</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

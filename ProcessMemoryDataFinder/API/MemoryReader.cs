@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using ProcessMemoryDataFinder.Misc;
 using Exception = System.Exception;
 
@@ -17,13 +18,15 @@ namespace ProcessMemoryDataFinder.API
         private readonly MemoryProcessAddressFinder _internals = new MemoryProcessAddressFinder();
 
         private readonly string _processName;
+        private readonly string _mainWindowTitleHint;
         private readonly ProcessMemoryReader _reader = new ProcessMemoryReader();
         private readonly SigScan _sigScan = new SigScan();
         private Process _currentProcess;
 
-        public MemoryReader(string processName)
+        protected MemoryReader(string processName, string mainWindowTitleHint)
         {
             _processName = processName;
+            _mainWindowTitleHint = mainWindowTitleHint;
         }
 
         protected virtual Process CurrentProcess
@@ -117,8 +120,12 @@ namespace ProcessMemoryDataFinder.API
                     return;
                 }
 
-                var p = Process.GetProcessesByName(_processName);
-                var resolvedProcess = p.Length == 0 ? null : p[0];
+                IEnumerable<Process> p = Process.GetProcessesByName(_processName);
+                if(!string.IsNullOrEmpty(_mainWindowTitleHint))
+                {
+                    p = p.Where(x => x.MainWindowTitle.IndexOf(_mainWindowTitleHint) >= 0);
+                }
+                var resolvedProcess = p.FirstOrDefault();
                 if (resolvedProcess != null || CurrentProcess != null)
                 {
                     CurrentProcess = resolvedProcess;

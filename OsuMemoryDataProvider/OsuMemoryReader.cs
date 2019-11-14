@@ -1,6 +1,7 @@
 //#define MemoryTimes
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using ProcessMemoryDataFinder.API;
 
@@ -16,7 +17,15 @@ namespace OsuMemoryDataProvider
         /// </summary>
         public static IOsuMemoryReader Instance { get; } = new OsuMemoryReader();
 
-        public OsuMemoryReader() : base("osu!")
+        private static readonly ConcurrentDictionary<string, IOsuMemoryReader> Instances =
+            new ConcurrentDictionary<string, IOsuMemoryReader>();
+        public static IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
+        {
+            if (string.IsNullOrEmpty(windowTitleHint)) return Instance;
+            return Instances.GetOrAdd(windowTitleHint, s => new OsuMemoryReader(s));
+        }
+
+        public OsuMemoryReader(string mainWindowTitleHint = null) : base("osu!", mainWindowTitleHint)
         {
             CreateSignatures();
         }
