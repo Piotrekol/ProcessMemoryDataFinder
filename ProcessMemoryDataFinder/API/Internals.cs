@@ -38,7 +38,11 @@ namespace ProcessMemoryDataFinder.API
                 if (memDump == 0) break;
                 if ((memInfo.State & 0x1000) != 0 && (memInfo.Protect & 0x100) == 0)
                     MemReg.Add(memInfo);
+#if x64
                 addy = new IntPtr(memInfo.BaseAddress.ToInt64() + memInfo.RegionSize.ToInt64());
+#else
+                addy = new IntPtr(memInfo.BaseAddress.ToInt32() + memInfo.RegionSize.ToInt32());
+#endif
             }
         }
     }
