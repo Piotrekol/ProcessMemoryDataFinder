@@ -19,7 +19,8 @@ namespace OsuMemoryDataProvider
 
         private static readonly ConcurrentDictionary<string, IOsuMemoryReader> Instances =
             new ConcurrentDictionary<string, IOsuMemoryReader>();
-        public static IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
+
+        public IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
         {
             if (string.IsNullOrEmpty(windowTitleHint)) return Instance;
             return Instances.GetOrAdd(windowTitleHint, s => new OsuMemoryReader(s));

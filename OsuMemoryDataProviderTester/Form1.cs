@@ -18,7 +18,7 @@ namespace OsuMemoryDataProviderTester
         {
             _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
-            _reader = OsuMemoryReader.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+            _reader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
             Shown += OnShown;
             Closing += OnClosing;
             numericUpDown_readDelay.ValueChanged += NumericUpDownReadDelayOnValueChanged;
