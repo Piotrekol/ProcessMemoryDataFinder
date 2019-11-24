@@ -4,6 +4,8 @@ namespace OsuMemoryDataProvider
 {
     public interface IOsuMemoryReader
     {
+        IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint);
+
         /// <summary>
         /// Fills all fields of PlayContainer with data read from osu! memory.
         /// </summary>
