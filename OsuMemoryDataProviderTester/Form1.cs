@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
@@ -10,14 +9,16 @@ namespace OsuMemoryDataProviderTester
 {
     public partial class Form1 : Form
     {
+        private readonly string _osuWindowTitleHint;
         private int _readDelay = 33;
         private Thread _thread;
         private readonly IOsuMemoryReader _reader;
 
-        public Form1()
+        public Form1(string osuWindowTitleHint)
         {
+            _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
-            _reader = OsuMemoryReader.Instance;
+            _reader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
             Shown += OnShown;
             Closing += OnClosing;
             numericUpDown_readDelay.ValueChanged += NumericUpDownReadDelayOnValueChanged;
@@ -42,6 +43,7 @@ namespace OsuMemoryDataProviderTester
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
+            if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
             _thread = new Thread(() =>
             {
                 try
@@ -81,19 +83,24 @@ namespace OsuMemoryDataProviderTester
                             playContainer.Reset();
                         }
 
-                        BeginInvoke((MethodInvoker) (() =>
+                        int playTime = _reader.ReadPlayTime();
+                        int gameMode = _reader.ReadSongSelectGameMode();
+                        double displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
+                        int mods = _reader.GetMods();
+
+                        Invoke((MethodInvoker) (() =>
                         {
                             textBox_mapId.Text = mapId.ToString();
                             textBox_strings.Text = mapStrings;
-                            textBox_time.Text = _reader.ReadPlayTime().ToString();
+                            textBox_time.Text = playTime.ToString();
                             textBox_mapData.Text = mapData;
-                            textBox_Status.Text = status + " " + num + " " + _reader.ReadSongSelectGameMode();
+                            textBox_Status.Text = status + " " + num + " " + gameMode;
 
                             textBox_CurrentPlayData.Text =
-                                playContainer + $" time:{_reader.ReadPlayTime()}" + Environment.NewLine +
+                                playContainer + $" time:{playTime}" + Environment.NewLine +
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
-                                $"displayedHp: {_reader.ReadDisplayedPlayerHp():00.##} {Environment.NewLine}" +
-                                $"mods:{_reader.GetMods()} " +
+                                $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
+                                $"mods:{mods} " +
                                 $"PlayerName: {playerName}{Environment.NewLine}"+
                                 $"HitErrorCount: {hitErrorCount} ";
                         }));
