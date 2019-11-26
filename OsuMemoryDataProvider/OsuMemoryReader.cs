@@ -189,23 +189,35 @@ namespace OsuMemoryDataProvider
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
                 PointerOffsets = { 56, 104 }
             });
-            Signatures.Add((int)SignatureNames.Hit300c, new SigEx
-            {
-                //ushort
-                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 134 }
-            });
             Signatures.Add((int)SignatureNames.Hit100c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
                 PointerOffsets = { 56, 132 }
             });
+            Signatures.Add((int)SignatureNames.Hit300c, new SigEx
+            {
+                //ushort
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 134 }
+            });
             Signatures.Add((int)SignatureNames.Hit50c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
                 PointerOffsets = { 56, 136 }
+            });
+            Signatures.Add((int)SignatureNames.HitGeki, new SigEx
+            {
+                //ushort
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 138 }
+            });
+            Signatures.Add((int)SignatureNames.HitKatsu, new SigEx
+            {
+                //ushort
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 56, 140 }
             });
             Signatures.Add((int)SignatureNames.HitMissc, new SigEx
             {
@@ -257,10 +269,12 @@ namespace OsuMemoryDataProvider
             {
                 playContainer.Acc = ReadAcc();
                 playContainer.Hp = ReadPlayerHp();
-                playContainer.C300 = Readhit300();
-                playContainer.C100 = Readhit100();
-                playContainer.C50 = Readhit50();
-                playContainer.CMiss = ReadhitMiss();
+                playContainer.C300 = ReadHit300();
+                playContainer.C100 = ReadHit100();
+                playContainer.C50 = ReadHit50();
+                playContainer.CGeki = ReadHitGeki();
+                playContainer.CKatsu = ReadHitKatsu();
+                playContainer.CMiss = ReadHitMiss();
                 playContainer.Combo = ReadCombo();
                 playContainer.MaxCombo = ReadComboMax();
                 playContainer.Score = ReadScore();
@@ -358,22 +372,32 @@ namespace OsuMemoryDataProvider
             return GetInt((int)SignatureNames.PlayTime);
         }
 
-        public ushort Readhit300()
+        public ushort ReadHit300()
         {
             return GetUShort((int)SignatureNames.Hit300c);
         }
 
-        public ushort Readhit100()
+        public ushort ReadHit100()
         {
             return GetUShort((int)SignatureNames.Hit100c);
         }
 
-        public ushort Readhit50()
+        public ushort ReadHit50()
         {
             return GetUShort((int)SignatureNames.Hit50c);
         }
 
-        public ushort ReadhitMiss()
+        public ushort ReadHitGeki()
+        {
+            return GetUShort((int)SignatureNames.HitGeki);
+        }
+
+        public ushort ReadHitKatsu()
+        {
+            return GetUShort((int)SignatureNames.HitKatsu);
+        }
+
+        public ushort ReadHitMiss()
         {
             return GetUShort((int)SignatureNames.HitMissc);
         }

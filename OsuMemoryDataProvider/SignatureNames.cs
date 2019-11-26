@@ -26,6 +26,8 @@
         Hit300c,
         Hit100c,
         Hit50c,
+        HitGeki,
+        HitKatsu,
         HitMissc,
         Acc,
         Score,

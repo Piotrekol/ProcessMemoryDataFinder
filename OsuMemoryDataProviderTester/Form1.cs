@@ -83,10 +83,10 @@ namespace OsuMemoryDataProviderTester
                             playContainer.Reset();
                         }
 
-                        int playTime = _reader.ReadPlayTime();
-                        int gameMode = _reader.ReadSongSelectGameMode();
-                        double displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
-                        int mods = _reader.GetMods();
+                        var playTime = _reader.ReadPlayTime();
+                        var gameMode = _reader.ReadSongSelectGameMode();
+                        var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
+                        var mods = _reader.GetMods();
 
                         Invoke((MethodInvoker) (() =>
                         {
@@ -120,7 +120,7 @@ namespace OsuMemoryDataProviderTester
             public override string ToString()
             {
                 var nl = Environment.NewLine;
-                return $"{C300}/{C100}/{C50}/{CMiss}" + nl +
+                return $"{C300}/{C100}/{C50}/{CMiss} : {CGeki},{CKatsu}" + nl +
                        $"acc:{Acc}, combo: {Combo}, maxCombo {MaxCombo}" + nl +
                        $"score: {Score}";
             }

@@ -32,6 +32,17 @@ namespace OsuMemoryDataProvider
         double ReadDisplayedPlayerHp();
         int ReadPlayedGameMode();
         int ReadSongSelectGameMode();
+
+        ushort ReadHit300();
+        ushort ReadHit100();
+        ushort ReadHit50();
+        ushort ReadHitGeki();
+        ushort ReadHitKatsu();
+        ushort ReadHitMiss();
+        double ReadAcc();
+        ushort ReadCombo();
+        ushort ReadComboMax();
+
         int GetRetrys();
 
         int ReadScore();
