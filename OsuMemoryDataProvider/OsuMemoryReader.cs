@@ -148,41 +148,41 @@ namespace OsuMemoryDataProvider
 
         private void CreateTourneySignatures()
         {
-            Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
+            Signatures.Add((int)SignatureNames.TourneyBase, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -12,
-                PointerOffsets = { -2960, 84 }
+                PointerOffsets = { -2960 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 84 }
             });
             Signatures.Add((int)SignatureNames.TourneyLeftStars, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960, 72, 492 }
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 72, 492 }
             });
             Signatures.Add((int)SignatureNames.TourneyRightStars, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960, 32, 44 }
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 32, 44 }
             });
             Signatures.Add((int)SignatureNames.TourneyBO, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960, 72, 496 }
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 72, 496 }
             });
             Signatures.Add((int)SignatureNames.TourneyWarmupState, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960, 72, 504 }
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 72, 504 }
             });
             Signatures.Add((int)SignatureNames.TourneyChatIsHidden, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960, 72, 505 }
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 72, 505 }
             });
         }
 

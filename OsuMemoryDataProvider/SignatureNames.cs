@@ -41,6 +41,7 @@
         HitErrors,
 
         // tourney shit
+        TourneyBase,
         TourneyIpcState,
         TourneyLeftStars,
         TourneyRightStars,
