@@ -162,6 +162,14 @@ namespace ProcessMemoryDataFinder.API
             return 0;
         }
 
+        public byte GetByte()
+        {
+            var data = GetValue(1);
+            if (data != null)
+                return data[0];
+            return 0;
+        }
+
         public double GetDouble()
         {
             var data = GetValue(8);

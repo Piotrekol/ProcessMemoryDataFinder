@@ -42,6 +42,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.textBox_mapData = new System.Windows.Forms.TextBox();
             this.textBox_time = new System.Windows.Forms.TextBox();
+            this.textBox_TourneyStuff = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_readDelay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -171,11 +172,20 @@
             this.textBox_time.Size = new System.Drawing.Size(100, 20);
             this.textBox_time.TabIndex = 13;
             // 
+            // textBox_TourneyStuff
+            // 
+            this.textBox_TourneyStuff.Location = new System.Drawing.Point(14, 323);
+            this.textBox_TourneyStuff.Multiline = true;
+            this.textBox_TourneyStuff.Name = "textBox_TourneyStuff";
+            this.textBox_TourneyStuff.Size = new System.Drawing.Size(364, 143);
+            this.textBox_TourneyStuff.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(791, 329);
+            this.ClientSize = new System.Drawing.Size(791, 477);
+            this.Controls.Add(this.textBox_TourneyStuff);
             this.Controls.Add(this.textBox_time);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_mapData);
@@ -214,6 +224,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBox_mapData;
         private System.Windows.Forms.TextBox textBox_time;
+        private System.Windows.Forms.TextBox textBox_TourneyStuff;
     }
 }
 

@@ -88,6 +88,13 @@ namespace OsuMemoryDataProviderTester
                         var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
                         var mods = _reader.GetMods();
 
+                        var tourneyIpcState = _reader.ReadTourneyIpcState();
+                        var tourneyLeftStars = _reader.ReadTourneyLeftStars();
+                        var tourneyRightStars = _reader.ReadTourneyRightStars();
+                        var tourneyBO = _reader.ReadTourneyBO();
+                        var tourneyWarmupState = _reader.ReadTourneyWarmupState();
+                        var tourneyChatIsHidden = _reader.ReadTourneyChatIsHidden();
+
                         Invoke((MethodInvoker) (() =>
                         {
                             textBox_mapId.Text = mapId.ToString();
@@ -101,8 +108,14 @@ namespace OsuMemoryDataProviderTester
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
                                 $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
                                 $"mods:{mods} " +
-                                $"PlayerName: {playerName}{Environment.NewLine}"+
-                                $"HitErrorCount: {hitErrorCount} ";
+                                $"PlayerName: {playerName}{Environment.NewLine}" +
+                                $"HitErrorCount: {hitErrorCount}";
+
+                            textBox_TourneyStuff.Text =
+                                $"IPC-State: {tourneyIpcState} | BO {tourneyBO}{Environment.NewLine}" +
+                                $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
+                                $"Warmup-State: {(tourneyWarmupState ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
+                                $"Chat is hidden: {tourneyChatIsHidden}";
                         }));
                         Thread.Sleep(_readDelay);
                     }

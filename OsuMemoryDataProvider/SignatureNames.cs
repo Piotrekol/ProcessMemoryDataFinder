@@ -39,6 +39,14 @@
 
         PlayerName,
         HitErrors,
+
+        // tourney shit
+        TourneyIpcState,
+        TourneyLeftStars,
+        TourneyRightStars,
+        TourneyBO,
+        TourneyWarmupState,
+        TourneyChatIsHidden,
     }
 
 }

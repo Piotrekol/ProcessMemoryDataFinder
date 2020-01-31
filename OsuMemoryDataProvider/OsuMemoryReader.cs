@@ -74,6 +74,7 @@ namespace OsuMemoryDataProvider
             });
 
             CreatePlaySignatures();
+            CreateTourneySignatures();
         }
 
         private void CreateBeatmapDataSignatures()
@@ -142,6 +143,46 @@ namespace OsuMemoryDataProvider
             {
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
                 PointerOffsets = { 56 }
+            });
+        }
+
+        private void CreateTourneySignatures()
+        {
+            Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 84 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyLeftStars, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 72, 492 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyRightStars, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 32, 44 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyBO, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 72, 496 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyWarmupState, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 72, 504 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyChatIsHidden, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -12,
+                PointerOffsets = { -2960, 72, 505 }
             });
         }
 
@@ -447,6 +488,37 @@ namespace OsuMemoryDataProvider
             return GetDouble((int)SignatureNames.PlayerHpSmoothed);
         }
 
+        // TODO: IPC but as enum
+        public int ReadTourneyIpcState()
+        {
+            return GetInt((int)SignatureNames.TourneyIpcState);
+        }
+
+        public int ReadTourneyLeftStars()
+        {
+            return GetInt((int)SignatureNames.TourneyLeftStars);
+        }
+
+        public int ReadTourneyRightStars()
+        {
+            return GetInt((int)SignatureNames.TourneyRightStars);
+        }
+
+        public int ReadTourneyBO()
+        {
+            return GetInt((int)SignatureNames.TourneyBO);
+        }
+
+        public bool ReadTourneyWarmupState()
+        {
+            return GetByte((int)SignatureNames.TourneyWarmupState) != 0;
+        }
+
+        public bool ReadTourneyChatIsHidden()
+        {
+            return GetByte((int)SignatureNames.TourneyChatIsHidden) != 0;
+        }
+
         /// <summary>
         /// Gets the current osu! status.
         /// </summary>
@@ -532,6 +604,21 @@ namespace OsuMemoryDataProvider
 #endif
                 ResetPointer(signatureId);
                 return base.GetUShort(signatureId);
+#if DEBUG && MemoryTimes
+                LogCaller("End");
+#endif
+            }
+        }
+
+        protected override byte GetByte(int signatureId)
+        {
+            lock (_lockingObject)
+            {
+#if DEBUG && MemoryTimes
+                LogCaller("Start");
+#endif
+                ResetPointer(signatureId);
+                return base.GetByte(signatureId);
 #if DEBUG && MemoryTimes
                 LogCaller("End");
 #endif
