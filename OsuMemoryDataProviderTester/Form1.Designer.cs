@@ -43,6 +43,7 @@
             this.textBox_mapData = new System.Windows.Forms.TextBox();
             this.textBox_time = new System.Windows.Forms.TextBox();
             this.textBox_TourneyStuff = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_readDelay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -174,17 +175,28 @@
             // 
             // textBox_TourneyStuff
             // 
-            this.textBox_TourneyStuff.Location = new System.Drawing.Point(14, 323);
+            this.textBox_TourneyStuff.Location = new System.Drawing.Point(14, 346);
             this.textBox_TourneyStuff.Multiline = true;
             this.textBox_TourneyStuff.Name = "textBox_TourneyStuff";
-            this.textBox_TourneyStuff.Size = new System.Drawing.Size(364, 143);
+            this.textBox_TourneyStuff.Size = new System.Drawing.Size(364, 109);
             this.textBox_TourneyStuff.TabIndex = 14;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(15, 330);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(421, 13);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "Tourney Specific stuff (will contain garbage unless used on Tournament Client Man" +
+    "ager)";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 477);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.textBox_TourneyStuff);
             this.Controls.Add(this.textBox_time);
             this.Controls.Add(this.label7);
@@ -225,6 +237,7 @@
         private System.Windows.Forms.TextBox textBox_mapData;
         private System.Windows.Forms.TextBox textBox_time;
         private System.Windows.Forms.TextBox textBox_TourneyStuff;
+        private System.Windows.Forms.Label label8;
     }
 }
 

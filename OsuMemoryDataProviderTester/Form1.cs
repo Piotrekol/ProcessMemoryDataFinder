@@ -88,7 +88,7 @@ namespace OsuMemoryDataProviderTester
                         var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
                         var mods = _reader.GetMods();
 
-                        var tourneyIpcState = _reader.ReadTourneyIpcState();
+                        var tourneyIpcState = _reader.GetTourneyIpcState(out var tourneyIpcStateNumber);
                         var tourneyLeftStars = _reader.ReadTourneyLeftStars();
                         var tourneyRightStars = _reader.ReadTourneyRightStars();
                         var tourneyBO = _reader.ReadTourneyBO();
@@ -112,7 +112,7 @@ namespace OsuMemoryDataProviderTester
                                 $"HitErrorCount: {hitErrorCount}";
 
                             textBox_TourneyStuff.Text =
-                                $"IPC-State: {tourneyIpcState} | BO {tourneyBO}{Environment.NewLine}" +
+                                $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
                                 $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
                                 $"Warmup-State: {(tourneyWarmupState ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
                                 $"Chat is hidden: {tourneyChatIsHidden}";

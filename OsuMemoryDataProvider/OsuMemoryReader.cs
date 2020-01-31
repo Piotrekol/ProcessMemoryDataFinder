@@ -488,10 +488,27 @@ namespace OsuMemoryDataProvider
             return GetDouble((int)SignatureNames.PlayerHpSmoothed);
         }
 
-        // TODO: IPC but as enum
-        public int ReadTourneyIpcState()
+        public TourneyIpcState GetTourneyIpcState(out int ipcStateNumber)
         {
-            return GetInt((int)SignatureNames.TourneyIpcState);
+#if DEBUG && MemoryTimes
+            LogCaller("Start");
+#endif
+            int num;
+            lock (_lockingObject)
+            {
+                num = GetInt((int)SignatureNames.TourneyIpcState);
+            }
+#if DEBUG && MemoryTimes
+            LogCaller("End");
+#endif
+
+            ipcStateNumber = num;
+            if (Enum.IsDefined(typeof(TourneyIpcState), num))
+            {
+                return (TourneyIpcState)num;
+            }
+
+            return TourneyIpcState.Unknown;
         }
 
         public int ReadTourneyLeftStars()

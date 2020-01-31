@@ -47,7 +47,7 @@ namespace OsuMemoryDataProvider
 
         int ReadScore();
 
-        int ReadTourneyIpcState();
+        TourneyIpcState GetTourneyIpcState(out int ipcNumber);
         int ReadTourneyLeftStars();
         int ReadTourneyRightStars();
         int ReadTourneyBO();
@@ -55,6 +55,5 @@ namespace OsuMemoryDataProvider
         bool ReadTourneyChatIsHidden();
 
         OsuMemoryStatus GetCurrentStatus(out int statusNumber);
-        // TODO: same as above but for IPC state
     }
 }
