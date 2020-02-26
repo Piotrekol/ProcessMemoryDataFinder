@@ -33,7 +33,7 @@ namespace ProcessMemoryDataFinder.API
         public SigEx ParentSig;
 
         /// <summary>
-        ///     If true, <see cref="Sig.Mask" /> won't be used to find specified <see cref="Sig.Pattern" /> address and much
+        ///     If false, <see cref="Sig.Mask" /> won't be used to find specified <see cref="Sig.Pattern" /> address and much
         ///     quicker way of scanning memory will be used.
         /// </summary>
         public bool UseMask { get; set; } = true;

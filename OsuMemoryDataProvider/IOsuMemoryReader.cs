@@ -16,6 +16,7 @@ namespace OsuMemoryDataProvider
 
         string PlayerName();
         int GetMods();
+        int GetPlayingMods();
         int GetMapId();
         float GetMapAr();
         float GetMapCs();

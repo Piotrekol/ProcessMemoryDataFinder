@@ -56,11 +56,13 @@ namespace OsuMemoryDataProviderTester
 
                         var songString = _reader.GetSongString();
                         var mapMd5 = _reader.GetMapMd5();
+                        var mods = _reader.GetMods();
                         var mapStrings = $"songString: \"{songString}\" {Environment.NewLine}" +
                                          $"md5: \"{mapMd5}\" {Environment.NewLine}" +
                                          $"mapFolder: \"{_reader.GetMapFolderName()}\" {Environment.NewLine}" +
                                          $"fileName: \"{_reader.GetOsuFileName()}\" {Environment.NewLine}" +
-                                         $"Retrys:{_reader.GetRetrys()}";
+                                         $"Retrys:{_reader.GetRetrys()} {Environment.NewLine}" +
+                                         $"mods:{(Mods)mods}({mods})";
 
                         var mapData =
                             $"HP:{_reader.GetMapHp()} OD:{_reader.GetMapOd()}, CS:{_reader.GetMapCs()}, AR:{_reader.GetMapAr()}, setId:{_reader.GetMapSetId()}";
@@ -69,6 +71,7 @@ namespace OsuMemoryDataProviderTester
                         double hp = 0;
                         var playerName=string.Empty;
                         var hitErrorCount = -1;
+                        int playingMods = -1;
                         if (status == OsuMemoryStatus.Playing)
                         {
                             playReseted = false;
@@ -76,6 +79,8 @@ namespace OsuMemoryDataProviderTester
                             hp = _reader.ReadPlayerHp();
                             playerName = _reader.PlayerName();
                             hitErrorCount = _reader.HitErrors()?.Count ?? -2;
+                            playingMods = _reader.GetPlayingMods();
+
                         }
                         else if (!playReseted)
                         {
@@ -86,7 +91,6 @@ namespace OsuMemoryDataProviderTester
                         var playTime = _reader.ReadPlayTime();
                         var gameMode = _reader.ReadSongSelectGameMode();
                         var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
-                        var mods = _reader.GetMods();
 
                         Invoke((MethodInvoker) (() =>
                         {
@@ -100,7 +104,7 @@ namespace OsuMemoryDataProviderTester
                                 playContainer + $" time:{playTime}" + Environment.NewLine +
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
                                 $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
-                                $"mods:{mods} " +
+                                $"playingMods:{(Mods)playingMods} ({playingMods}) " +
                                 $"PlayerName: {playerName}{Environment.NewLine}"+
                                 $"HitErrorCount: {hitErrorCount} ";
                         }));

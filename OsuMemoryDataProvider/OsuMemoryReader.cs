@@ -9,7 +9,7 @@ namespace OsuMemoryDataProvider
 {
     public class OsuMemoryReader : MemoryReaderEx, IOsuMemoryReader
     {
-        private readonly object _lockingObject = new object();
+        protected readonly object _lockingObject = new object();
 
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="OsuMemoryReader" /> instance in order to not have to duplicate
@@ -72,6 +72,15 @@ namespace OsuMemoryDataProvider
                 Offset = 5,
                 PointerOffsets = { 0 }
             });
+            Signatures[(int)SignatureNames.Mods] = new SigEx
+            {
+                Name = "mods",
+                Pattern = UnpackStr("810D0000000000080000"),
+                Mask = "xx????xxxx",
+                Offset = 2,
+                PointerOffsets = { 0 },
+                UseMask = true,
+            };
 
             CreatePlaySignatures();
         }
@@ -158,8 +167,7 @@ namespace OsuMemoryDataProvider
                 UseMask = false
             });
 
-            //56 = #=zPsiUimreqe_CwsA7Ane_nRWG9yGmNg1kbx3ILStBOZ7t3isJWw== (looks like score class?)
-            Signatures.Add((int)SignatureNames.Mods, new SigEx
+            Signatures.Add((int)SignatureNames.PlayingMods, new SigEx
             {
                 //Complex - 2 xored ints
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
@@ -283,13 +291,18 @@ namespace OsuMemoryDataProvider
 
         public int GetMods()
         {
+            return GetInt((int) SignatureNames.Mods);
+        }
+
+        public int GetPlayingMods()
+        {
             lock (_lockingObject)
             {
 #if DEBUG && MemoryTimes
                 LogCaller("Start");
 #endif
-                Reset((int)SignatureNames.Mods);
-                var pointer = GetPointer((int)SignatureNames.Mods);
+                Reset((int)SignatureNames.PlayingMods);
+                var pointer = GetPointer((int)SignatureNames.PlayingMods);
                 var data1 = ReadData(pointer + 8, 4);
                 var data2 = ReadData(pointer + 12, 4);
 #if DEBUG && MemoryTimes
