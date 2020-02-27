@@ -81,14 +81,6 @@ namespace OsuMemoryDataProvider
                 PointerOffsets = { 0 },
                 UseMask = true,
             };
-            Signatures[(int)SignatureNames.CurrentSkinData] = new SigEx
-            {
-                Name = "currentSkinData",
-                Pattern = UnpackStr("75218b1d"),
-                UseMask = false,
-                Offset = 4,
-                PointerOffsets = { 0, 0 }
-            };
 
             CreateSkinSignatures();
             CreatePlaySignatures();
