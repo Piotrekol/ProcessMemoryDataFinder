@@ -17,7 +17,8 @@
         MapString,
         MapFolderName,
         MapOsuFileName,
-
+        CurrentSkinData,
+        CurrentSkinFolder,
         OsuStatus,
         PlayContainer,
         Mods,

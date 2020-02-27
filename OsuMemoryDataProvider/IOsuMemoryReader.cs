@@ -23,7 +23,7 @@ namespace OsuMemoryDataProvider
         float GetMapHp();
         float GetMapOd();
         float GetMapSetId();
-
+        string GetSkinFolderName();
         string GetOsuFileName();
         string GetMapFolderName();
         string GetSongString();

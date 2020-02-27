@@ -62,7 +62,8 @@ namespace OsuMemoryDataProviderTester
                                          $"mapFolder: \"{_reader.GetMapFolderName()}\" {Environment.NewLine}" +
                                          $"fileName: \"{_reader.GetOsuFileName()}\" {Environment.NewLine}" +
                                          $"Retrys:{_reader.GetRetrys()} {Environment.NewLine}" +
-                                         $"mods:{(Mods)mods}({mods})";
+                                         $"mods:{(Mods)mods}({mods}) {Environment.NewLine}" +
+                                         $"SkinName: \"{_reader.GetSkinFolderName()}\"";
 
                         var mapData =
                             $"HP:{_reader.GetMapHp()} OD:{_reader.GetMapOd()}, CS:{_reader.GetMapCs()}, AR:{_reader.GetMapAr()}, setId:{_reader.GetMapSetId()}";

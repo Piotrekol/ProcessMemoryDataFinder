@@ -81,8 +81,35 @@ namespace OsuMemoryDataProvider
                 PointerOffsets = { 0 },
                 UseMask = true,
             };
+            Signatures[(int)SignatureNames.CurrentSkinData] = new SigEx
+            {
+                Name = "currentSkinData",
+                Pattern = UnpackStr("75218b1d"),
+                UseMask = false,
+                Offset = 4,
+                PointerOffsets = { 0, 0 }
+            };
 
+            CreateSkinSignatures();
             CreatePlaySignatures();
+        }
+
+        private void CreateSkinSignatures()
+        {
+            Signatures[(int)SignatureNames.CurrentSkinData] = new SigEx
+            {
+                Name = "currentSkinData",
+                Pattern = UnpackStr("75218b1d"),
+                UseMask = false,
+                Offset = 4,
+                PointerOffsets = { 0, 0 }
+            };
+            Signatures[(int)SignatureNames.CurrentSkinFolder] = new SigEx
+            {
+                Name = "currentSkinFolder",
+                ParentSig = Signatures[(int)SignatureNames.CurrentSkinData],
+                Offset = 68
+            };
         }
 
         private void CreateBeatmapDataSignatures()
@@ -291,7 +318,7 @@ namespace OsuMemoryDataProvider
 
         public int GetMods()
         {
-            return GetInt((int) SignatureNames.Mods);
+            return GetInt((int)SignatureNames.Mods);
         }
 
         public int GetPlayingMods()
@@ -319,6 +346,10 @@ namespace OsuMemoryDataProvider
             }
         }
 
+        public string GetSkinFolderName()
+        {
+            return GetString((int)SignatureNames.CurrentSkinFolder);
+        }
         public List<int> HitErrors()
         {
             ResetPointer((int)SignatureNames.HitErrors);
