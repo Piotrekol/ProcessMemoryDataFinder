@@ -46,12 +46,11 @@ namespace OsuMemoryDataProvider
                 PointerOffsets = { 0 }
             });
 
-            // TODO: Retry signature is incorrect - it only increases when using quick-retry key in-game
             Signatures.Add((int)SignatureNames.Retrys, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -51,
-                PointerOffsets = { 4 }
+                PointerOffsets = { 8 }
             });
 
             CreateBeatmapDataSignatures();
