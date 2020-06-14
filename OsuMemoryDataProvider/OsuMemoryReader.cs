@@ -343,8 +343,11 @@ namespace OsuMemoryDataProvider
         }
         public List<int> HitErrors()
         {
-            ResetPointer((int)SignatureNames.HitErrors);
-            return GetIntList((int)SignatureNames.HitErrors);
+            lock (_lockingObject)
+            {
+                ResetPointer((int) SignatureNames.HitErrors);
+                return GetIntList((int) SignatureNames.HitErrors);
+            }
         }
 
         public string PlayerName()
