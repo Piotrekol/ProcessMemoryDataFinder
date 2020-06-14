@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ProcessMemoryDataFinder.API
@@ -249,6 +250,13 @@ namespace ProcessMemoryDataFinder.API
 
             var result = Encoding.Unicode.GetString(stringData);
             return result;
+        }
+
+        public override string ToString()
+        {
+            return
+                $"Name:\"{Name}\", Pattern:\"{string.Join("", Pattern.Select(x => x.ToString("x2")))}\", " +
+                $"Mask:\"{Mask}\", Offsets: \"{string.Join(",", PointerOffsets.Select(x=>x.ToString()))}\", Parent: \"{ParentSig}\"";
         }
     }
 }
