@@ -319,7 +319,7 @@ namespace OsuMemoryDataProvider
 #if DEBUG && MemoryTimes
                 LogCaller("Start");
 #endif
-                Reset((int)SignatureNames.PlayingMods);
+                ResetPointer((int)SignatureNames.PlayingMods);
                 var pointer = GetPointer((int)SignatureNames.PlayingMods);
                 var data1 = ReadData(pointer + 8, 4);
                 var data2 = ReadData(pointer + 12, 4);
