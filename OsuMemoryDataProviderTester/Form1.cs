@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OsuMemoryDataProvider;
 
@@ -11,9 +12,8 @@ namespace OsuMemoryDataProviderTester
     {
         private readonly string _osuWindowTitleHint;
         private int _readDelay = 33;
-        private Thread _thread;
         private readonly IOsuMemoryReader _reader;
-
+        private CancellationTokenSource cts = new CancellationTokenSource();
         public Form1(string osuWindowTitleHint)
         {
             _osuWindowTitleHint = osuWindowTitleHint;
@@ -38,13 +38,13 @@ namespace OsuMemoryDataProviderTester
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            _thread?.Abort();
+            cts.Cancel();
         }
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
-            _thread = new Thread(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -52,6 +52,9 @@ namespace OsuMemoryDataProviderTester
                     var playReseted = false;
                     while (true)
                     {
+                        if (cts.IsCancellationRequested)
+                            return;
+
                         var mapId = _reader.GetMapId();
 
                         var songString = _reader.GetSongString();
@@ -116,8 +119,6 @@ namespace OsuMemoryDataProviderTester
                 {
                 }
             });
-
-            _thread.Start();
         }
 
         public class PlayContainerEx : PlayContainer
