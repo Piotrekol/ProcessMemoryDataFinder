@@ -44,8 +44,8 @@ namespace OsuMemoryDataProviderTester
         private void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
-            Task.Run(() =>
-            {
+            _ = Task.Run(async () =>
+            { 
                 try
                 {
                     var playContainer = new PlayContainerEx();
@@ -112,7 +112,7 @@ namespace OsuMemoryDataProviderTester
                                 $"PlayerName: {playerName}{Environment.NewLine}"+
                                 $"HitErrorCount: {hitErrorCount} ";
                         }));
-                        Thread.Sleep(_readDelay);
+                        await Task.Delay(_readDelay);
                     }
                 }
                 catch (ThreadAbortException)
