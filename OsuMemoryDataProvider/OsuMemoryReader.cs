@@ -207,7 +207,7 @@ namespace OsuMemoryDataProvider
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 144 }
+                PointerOffsets = { 56, 148 }
             });
             Signatures.Add((int)SignatureNames.ComboMax, new SigEx
             {
@@ -219,49 +219,49 @@ namespace OsuMemoryDataProvider
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 132 }
+                PointerOffsets = { 56, 136 }
             });
             Signatures.Add((int)SignatureNames.Hit300c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 134 }
+                PointerOffsets = { 56, 138 }
             });
             Signatures.Add((int)SignatureNames.Hit50c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 136 }
+                PointerOffsets = { 56, 140 }
             });
             Signatures.Add((int)SignatureNames.HitGeki, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 138 }
+                PointerOffsets = { 56, 142 }
             });
             Signatures.Add((int)SignatureNames.HitKatsu, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 140 }
+                PointerOffsets = { 56, 144 }
             });
             Signatures.Add((int)SignatureNames.HitMissc, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 142 }
+                PointerOffsets = { 56, 146 }
             });
             Signatures.Add((int)SignatureNames.Score, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 116 }
+                PointerOffsets = { 56, 120 }
             });
             Signatures.Add((int)SignatureNames.PlayingGameMode, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 100 }
+                PointerOffsets = { 56, 104 }
             });
             Signatures.Add((int)SignatureNames.Acc, new SigEx
             {
