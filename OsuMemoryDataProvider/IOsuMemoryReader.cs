@@ -51,8 +51,8 @@ namespace OsuMemoryDataProvider
         int ReadTourneyLeftStars();
         int ReadTourneyRightStars();
         int ReadTourneyBO();
-        bool ReadTourneyWarmupState();
-        bool ReadTourneyChatIsHidden();
+        bool ReadTourneyStarsVisible();
+        bool ReadTourneyScoreVisible();
 
         OsuMemoryStatus GetCurrentStatus(out int statusNumber);
     }

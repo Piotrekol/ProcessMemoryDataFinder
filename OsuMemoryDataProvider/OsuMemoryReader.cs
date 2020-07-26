@@ -150,39 +150,40 @@ namespace OsuMemoryDataProvider
         {
             Signatures.Add((int)SignatureNames.TourneyBase, new SigEx
             {
-                ParentSig = Signatures[(int)SignatureNames.OsuBase],
-                Offset = -12,
-                PointerOffsets = { -2960 }
+                Name = "TourneyBase",
+                Pattern = UnpackStr("704B000085C0"),
+                Mask = "xx??xx",
+                Offset = -0xE
             });
             Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 84 }
+                PointerOffsets = { 4, 0x54 }
             });
             Signatures.Add((int)SignatureNames.TourneyLeftStars, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 72, 492 }
+                PointerOffsets = { 4, 0x1C, 0x2C }
             });
             Signatures.Add((int)SignatureNames.TourneyRightStars, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 32, 44 }
+                PointerOffsets = { 4, 0x20, 0x2C }
             });
             Signatures.Add((int)SignatureNames.TourneyBO, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 72, 496 }
+                PointerOffsets = { 4, 0x20, 0x30 }
             });
-            Signatures.Add((int)SignatureNames.TourneyWarmupState, new SigEx
+            Signatures.Add((int)SignatureNames.TourneyStarsVisible, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 72, 504 }
+                PointerOffsets = { 4, 0x20, 0x38 }
             });
-            Signatures.Add((int)SignatureNames.TourneyChatIsHidden, new SigEx
+            Signatures.Add((int)SignatureNames.TourneyScoreVisible, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.TourneyBase],
-                PointerOffsets = { 72, 505 }
+                PointerOffsets = { 4, 0x20, 0x39 }
             });
         }
 
@@ -526,14 +527,14 @@ namespace OsuMemoryDataProvider
             return GetInt((int)SignatureNames.TourneyBO);
         }
 
-        public bool ReadTourneyWarmupState()
+        public bool ReadTourneyStarsVisible()
         {
-            return GetByte((int)SignatureNames.TourneyWarmupState) != 0;
+            return GetByte((int)SignatureNames.TourneyStarsVisible) != 0;
         }
 
-        public bool ReadTourneyChatIsHidden()
+        public bool ReadTourneyScoreVisible()
         {
-            return GetByte((int)SignatureNames.TourneyChatIsHidden) != 0;
+            return GetByte((int)SignatureNames.TourneyScoreVisible) != 0;
         }
 
         /// <summary>

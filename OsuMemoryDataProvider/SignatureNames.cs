@@ -46,8 +46,8 @@
         TourneyLeftStars,
         TourneyRightStars,
         TourneyBO,
-        TourneyWarmupState,
-        TourneyChatIsHidden,
+        TourneyStarsVisible,
+        TourneyScoreVisible,
     }
 
 }

@@ -92,8 +92,8 @@ namespace OsuMemoryDataProviderTester
                         var tourneyLeftStars = _reader.ReadTourneyLeftStars();
                         var tourneyRightStars = _reader.ReadTourneyRightStars();
                         var tourneyBO = _reader.ReadTourneyBO();
-                        var tourneyWarmupState = _reader.ReadTourneyWarmupState();
-                        var tourneyChatIsHidden = _reader.ReadTourneyChatIsHidden();
+                        var tourneyStarsVisible = _reader.ReadTourneyStarsVisible();
+                        var tourneyScoreVisible = _reader.ReadTourneyScoreVisible();
 
                         Invoke((MethodInvoker) (() =>
                         {
@@ -114,8 +114,8 @@ namespace OsuMemoryDataProviderTester
                             textBox_TourneyStuff.Text =
                                 $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
                                 $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
-                                $"Warmup-State: {(tourneyWarmupState ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
-                                $"Chat is hidden: {tourneyChatIsHidden}";
+                                $"Warmup-State: {(tourneyStarsVisible ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
+                                $"Chat is hidden: {tourneyScoreVisible}{Environment.NewLine}";
                         }));
                         Thread.Sleep(_readDelay);
                     }
