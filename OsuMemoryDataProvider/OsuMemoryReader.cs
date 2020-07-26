@@ -9,7 +9,7 @@ namespace OsuMemoryDataProvider
 {
     public class OsuMemoryReader : MemoryReaderEx, IOsuMemoryReader
     {
-        private readonly object _lockingObject = new object();
+        protected readonly object _lockingObject = new object();
 
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="OsuMemoryReader" /> instance in order to not have to duplicate
@@ -46,12 +46,11 @@ namespace OsuMemoryDataProvider
                 PointerOffsets = { 0 }
             });
 
-            // TODO: Retry signature is incorrect - it only increases when using quick-retry key in-game
             Signatures.Add((int)SignatureNames.Retrys, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.OsuBase],
                 Offset = -51,
-                PointerOffsets = { 4 }
+                PointerOffsets = { 8 }
             });
 
             CreateBeatmapDataSignatures();
@@ -72,9 +71,37 @@ namespace OsuMemoryDataProvider
                 Offset = 5,
                 PointerOffsets = { 0 }
             });
+            Signatures[(int)SignatureNames.Mods] = new SigEx
+            {
+                Name = "mods",
+                Pattern = UnpackStr("810D0000000000080000"),
+                Mask = "xx????xxxx",
+                Offset = 2,
+                PointerOffsets = { 0 },
+                UseMask = true,
+            };
 
+            CreateSkinSignatures();
             CreatePlaySignatures();
             CreateTourneySignatures();
+        }
+
+        private void CreateSkinSignatures()
+        {
+            Signatures[(int)SignatureNames.CurrentSkinData] = new SigEx
+            {
+                Name = "currentSkinData",
+                Pattern = UnpackStr("75218b1d"),
+                UseMask = false,
+                Offset = 4,
+                PointerOffsets = { 0, 0 }
+            };
+            Signatures[(int)SignatureNames.CurrentSkinFolder] = new SigEx
+            {
+                Name = "currentSkinFolder",
+                ParentSig = Signatures[(int)SignatureNames.CurrentSkinData],
+                Offset = 68
+            };
         }
 
         private void CreateBeatmapDataSignatures()
@@ -200,8 +227,7 @@ namespace OsuMemoryDataProvider
                 UseMask = false
             });
 
-            //56 = #=zPsiUimreqe_CwsA7Ane_nRWG9yGmNg1kbx3ILStBOZ7t3isJWw== (looks like score class?)
-            Signatures.Add((int)SignatureNames.Mods, new SigEx
+            Signatures.Add((int)SignatureNames.PlayingMods, new SigEx
             {
                 //Complex - 2 xored ints
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
@@ -223,7 +249,7 @@ namespace OsuMemoryDataProvider
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 144 }
+                PointerOffsets = { 56, 148 }
             });
             Signatures.Add((int)SignatureNames.ComboMax, new SigEx
             {
@@ -235,49 +261,49 @@ namespace OsuMemoryDataProvider
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 132 }
+                PointerOffsets = { 56, 136 }
             });
             Signatures.Add((int)SignatureNames.Hit300c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 134 }
+                PointerOffsets = { 56, 138 }
             });
             Signatures.Add((int)SignatureNames.Hit50c, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 136 }
+                PointerOffsets = { 56, 140 }
             });
             Signatures.Add((int)SignatureNames.HitGeki, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 138 }
+                PointerOffsets = { 56, 142 }
             });
             Signatures.Add((int)SignatureNames.HitKatsu, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 140 }
+                PointerOffsets = { 56, 144 }
             });
             Signatures.Add((int)SignatureNames.HitMissc, new SigEx
             {
                 //ushort
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 142 }
+                PointerOffsets = { 56, 146 }
             });
             Signatures.Add((int)SignatureNames.Score, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 116 }
+                PointerOffsets = { 56, 120 }
             });
             Signatures.Add((int)SignatureNames.PlayingGameMode, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 100 }
+                PointerOffsets = { 56, 104 }
             });
             Signatures.Add((int)SignatureNames.Acc, new SigEx
             {
@@ -325,13 +351,18 @@ namespace OsuMemoryDataProvider
 
         public int GetMods()
         {
+            return GetInt((int)SignatureNames.Mods);
+        }
+
+        public int GetPlayingMods()
+        {
             lock (_lockingObject)
             {
 #if DEBUG && MemoryTimes
                 LogCaller("Start");
 #endif
-                Reset((int)SignatureNames.Mods);
-                var pointer = GetPointer((int)SignatureNames.Mods);
+                ResetPointer((int)SignatureNames.PlayingMods);
+                var pointer = GetPointer((int)SignatureNames.PlayingMods);
                 var data1 = ReadData(pointer + 8, 4);
                 var data2 = ReadData(pointer + 12, 4);
 #if DEBUG && MemoryTimes
@@ -348,10 +379,17 @@ namespace OsuMemoryDataProvider
             }
         }
 
+        public string GetSkinFolderName()
+        {
+            return GetString((int)SignatureNames.CurrentSkinFolder);
+        }
         public List<int> HitErrors()
         {
-            ResetPointer((int)SignatureNames.HitErrors);
-            return GetIntList((int)SignatureNames.HitErrors);
+            lock (_lockingObject)
+            {
+                ResetPointer((int) SignatureNames.HitErrors);
+                return GetIntList((int) SignatureNames.HitErrors);
+            }
         }
 
         public string PlayerName()

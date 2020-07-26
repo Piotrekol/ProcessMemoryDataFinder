@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OsuMemoryDataProvider;
 
@@ -11,9 +12,8 @@ namespace OsuMemoryDataProviderTester
     {
         private readonly string _osuWindowTitleHint;
         private int _readDelay = 33;
-        private Thread _thread;
         private readonly IOsuMemoryReader _reader;
-
+        private CancellationTokenSource cts = new CancellationTokenSource();
         public Form1(string osuWindowTitleHint)
         {
             _osuWindowTitleHint = osuWindowTitleHint;
@@ -38,29 +38,35 @@ namespace OsuMemoryDataProviderTester
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            _thread?.Abort();
+            cts.Cancel();
         }
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
-            _thread = new Thread(() =>
-            {
+            _ = Task.Run(async () =>
+            { 
                 try
                 {
                     var playContainer = new PlayContainerEx();
                     var playReseted = false;
                     while (true)
                     {
+                        if (cts.IsCancellationRequested)
+                            return;
+
                         var mapId = _reader.GetMapId();
 
                         var songString = _reader.GetSongString();
                         var mapMd5 = _reader.GetMapMd5();
+                        var mods = _reader.GetMods();
                         var mapStrings = $"songString: \"{songString}\" {Environment.NewLine}" +
                                          $"md5: \"{mapMd5}\" {Environment.NewLine}" +
                                          $"mapFolder: \"{_reader.GetMapFolderName()}\" {Environment.NewLine}" +
                                          $"fileName: \"{_reader.GetOsuFileName()}\" {Environment.NewLine}" +
-                                         $"Retrys:{_reader.GetRetrys()}";
+                                         $"Retrys:{_reader.GetRetrys()} {Environment.NewLine}" +
+                                         $"mods:{(Mods)mods}({mods}) {Environment.NewLine}" +
+                                         $"SkinName: \"{_reader.GetSkinFolderName()}\"";
 
                         var mapData =
                             $"HP:{_reader.GetMapHp()} OD:{_reader.GetMapOd()}, CS:{_reader.GetMapCs()}, AR:{_reader.GetMapAr()}, setId:{_reader.GetMapSetId()}";
@@ -69,6 +75,7 @@ namespace OsuMemoryDataProviderTester
                         double hp = 0;
                         var playerName=string.Empty;
                         var hitErrorCount = -1;
+                        int playingMods = -1;
                         if (status == OsuMemoryStatus.Playing)
                         {
                             playReseted = false;
@@ -76,6 +83,8 @@ namespace OsuMemoryDataProviderTester
                             hp = _reader.ReadPlayerHp();
                             playerName = _reader.PlayerName();
                             hitErrorCount = _reader.HitErrors()?.Count ?? -2;
+                            playingMods = _reader.GetPlayingMods();
+
                         }
                         else if (!playReseted)
                         {
@@ -86,7 +95,6 @@ namespace OsuMemoryDataProviderTester
                         var playTime = _reader.ReadPlayTime();
                         var gameMode = _reader.ReadSongSelectGameMode();
                         var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
-                        var mods = _reader.GetMods();
 
                         var tourneyIpcState = _reader.GetTourneyIpcState(out var tourneyIpcStateNumber);
                         var tourneyLeftStars = _reader.ReadTourneyLeftStars();
@@ -107,9 +115,9 @@ namespace OsuMemoryDataProviderTester
                                 playContainer + $" time:{playTime}" + Environment.NewLine +
                                 $"hp________: {hp:00.##} {Environment.NewLine}" +
                                 $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
-                                $"mods:{mods} " +
-                                $"PlayerName: {playerName}{Environment.NewLine}" +
-                                $"HitErrorCount: {hitErrorCount}";
+                                $"playingMods:{(Mods)playingMods} ({playingMods}) " +
+                                $"PlayerName: {playerName}{Environment.NewLine}"+
+                                $"HitErrorCount: {hitErrorCount} ";
 
                             textBox_TourneyStuff.Text =
                                 $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
@@ -117,15 +125,13 @@ namespace OsuMemoryDataProviderTester
                                 $"Warmup-State: {(tourneyStarsVisible ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
                                 $"Chat is hidden: {tourneyScoreVisible}{Environment.NewLine}";
                         }));
-                        Thread.Sleep(_readDelay);
+                        await Task.Delay(_readDelay);
                     }
                 }
                 catch (ThreadAbortException)
                 {
                 }
             });
-
-            _thread.Start();
         }
 
         public class PlayContainerEx : PlayContainer

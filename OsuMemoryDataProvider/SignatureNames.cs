@@ -17,10 +17,12 @@
         MapString,
         MapFolderName,
         MapOsuFileName,
-
+        CurrentSkinData,
+        CurrentSkinFolder,
         OsuStatus,
         PlayContainer,
         Mods,
+        PlayingMods,
         Combo,
         ComboMax,
         Hit300c,

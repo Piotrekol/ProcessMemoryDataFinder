@@ -16,13 +16,14 @@ namespace OsuMemoryDataProvider
 
         string PlayerName();
         int GetMods();
+        int GetPlayingMods();
         int GetMapId();
         float GetMapAr();
         float GetMapCs();
         float GetMapHp();
         float GetMapOd();
         float GetMapSetId();
-
+        string GetSkinFolderName();
         string GetOsuFileName();
         string GetMapFolderName();
         string GetSongString();

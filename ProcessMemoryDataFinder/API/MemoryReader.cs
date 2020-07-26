@@ -68,12 +68,10 @@ namespace ProcessMemoryDataFinder.API
 
                 if (result != IntPtr.Zero)
                 {
-                    _internals.MemReg = new List<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION>();
                     return result;
                 }
             }
 
-            _internals.MemReg = new List<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION>();
             return IntPtr.Zero;
         }
 
@@ -145,11 +143,11 @@ namespace ProcessMemoryDataFinder.API
                 yield break;
             }
 
-                _internals.MemInfo(CurrentProcess.Handle);
+            var memInfoList = _internals.MemInfo(CurrentProcess.Handle);
 
-            for (var i = 0; i < _internals.MemReg.Count; i++)
+            foreach (var memoryInfo in memInfoList)
             {
-                yield return _internals.MemReg[i];
+                yield return memoryInfo;
             }
         }
 
