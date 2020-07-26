@@ -178,9 +178,9 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.TourneyBase, new SigEx
             {
                 Name = "TourneyBase",
-                Pattern = UnpackStr("704B000085C0"),
-                Mask = "xx??xx",
-                Offset = -0xE
+                Pattern = UnpackStr("7D15A10000000085C0"),
+                Mask = "xxx????xx",
+                Offset = -0xB
             });
             Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
             {
