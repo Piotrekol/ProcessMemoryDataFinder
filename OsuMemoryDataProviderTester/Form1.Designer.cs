@@ -188,8 +188,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(421, 13);
             this.label8.TabIndex = 15;
-            this.label8.Text = "Tourney Specific stuff (will contain garbage unless used on Tournament Client Man" +
-    "ager)";
+            this.label8.Text = "Tourney Specific stuff";
             // 
             // Form1
             // 

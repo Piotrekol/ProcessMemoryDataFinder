@@ -96,12 +96,32 @@ namespace OsuMemoryDataProviderTester
                         var gameMode = _reader.ReadSongSelectGameMode();
                         var displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
 
-                        var tourneyIpcState = _reader.GetTourneyIpcState(out var tourneyIpcStateNumber);
-                        var tourneyLeftStars = _reader.ReadTourneyLeftStars();
-                        var tourneyRightStars = _reader.ReadTourneyRightStars();
-                        var tourneyBO = _reader.ReadTourneyBO();
-                        var tourneyStarsVisible = _reader.ReadTourneyStarsVisible();
-                        var tourneyScoreVisible = _reader.ReadTourneyScoreVisible();
+                        TourneyIpcState tourneyIpcState;
+                        int tourneyLeftStars;
+                        int tourneyRightStars;
+                        int tourneyBO;
+                        bool tourneyStarsVisible;
+                        bool tourneyScoreVisible;
+                        int tourneyIpcStateNumber;
+                        if (status == OsuMemoryStatus.Tourney)
+                        {
+                            tourneyIpcState = _reader.GetTourneyIpcState(out tourneyIpcStateNumber);
+                            tourneyLeftStars = _reader.ReadTourneyLeftStars();
+                            tourneyRightStars = _reader.ReadTourneyRightStars();
+                            tourneyBO = _reader.ReadTourneyBO();
+                            tourneyStarsVisible = _reader.ReadTourneyStarsVisible();
+                            tourneyScoreVisible = _reader.ReadTourneyScoreVisible();
+                        }
+                        else
+                        {
+                            tourneyIpcState = TourneyIpcState.Unknown;
+                            tourneyIpcStateNumber = -1;
+                            tourneyLeftStars = -1;
+                            tourneyRightStars = -1;
+                            tourneyBO = -1;
+                            tourneyStarsVisible = false;
+                            tourneyScoreVisible = false;
+                        }
 
                         Invoke((MethodInvoker) (() =>
                         {
@@ -119,11 +139,18 @@ namespace OsuMemoryDataProviderTester
                                 $"PlayerName: {playerName}{Environment.NewLine}"+
                                 $"HitErrorCount: {hitErrorCount} ";
 
-                            textBox_TourneyStuff.Text =
-                                $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
-                                $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
-                                $"Warmup-State: {(tourneyStarsVisible ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
-                                $"Chat is hidden: {tourneyScoreVisible}{Environment.NewLine}";
+                            if (status == OsuMemoryStatus.Tourney)
+                            {
+                                textBox_TourneyStuff.Text =
+                                    $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
+                                    $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
+                                    $"Warmup-State: {(tourneyStarsVisible ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
+                                    $"Chat is hidden: {tourneyScoreVisible}{Environment.NewLine}";
+                            }
+                            else
+                            {
+                                textBox_TourneyStuff.Text = "no date since not in tourney mode";
+                            }
                         }));
                         await Task.Delay(_readDelay);
                     }
