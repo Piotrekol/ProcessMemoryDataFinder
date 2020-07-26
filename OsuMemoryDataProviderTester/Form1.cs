@@ -144,8 +144,8 @@ namespace OsuMemoryDataProviderTester
                                 textBox_TourneyStuff.Text =
                                     $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
                                     $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
-                                    $"Warmup-State: {(tourneyStarsVisible ? "scores visible" : "warmup is enabled")}{Environment.NewLine}" +
-                                    $"Chat is hidden: {tourneyScoreVisible}{Environment.NewLine}";
+                                    $"Warmup/Stars State: {(tourneyStarsVisible ? "stars visible, warmup disabled" : "stars hidden, warmup enabled")}{Environment.NewLine}" +
+                                    $"Score/Chat state: {(tourneyScoreVisible ? "chat hidden, score visible or no lobby joined" : "chat visible, score hidden")}{Environment.NewLine}";
                             }
                             else
                             {
