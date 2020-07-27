@@ -58,10 +58,9 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.OsuStatus, new SigEx
             {
                 Name = "OsuStatus",
-                Pattern = UnpackStr("4883F804731E"),
-                Offset = -4,
-                PointerOffsets = { 0 },
-                UseMask = false
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -60,
+                PointerOffsets = { 0 }
             });
             Signatures.Add((int)SignatureNames.PlayTime, new SigEx
             {
