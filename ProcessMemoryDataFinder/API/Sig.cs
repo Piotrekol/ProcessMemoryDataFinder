@@ -136,9 +136,15 @@ namespace ProcessMemoryDataFinder.API
 
         private IntPtr ReadPointer(IntPtr baseAddr)
         {
+#if x64
+            var data = _readDataFunc(baseAddr, 8);
+            if (data != null)
+                return new IntPtr(BitConverter.ToInt64(data, 0));
+#else
             var data = _readDataFunc(baseAddr, 4);
             if (data != null)
                 return new IntPtr(BitConverter.ToInt32(data, 0));
+#endif
             return IntPtr.Zero;
         }
 
