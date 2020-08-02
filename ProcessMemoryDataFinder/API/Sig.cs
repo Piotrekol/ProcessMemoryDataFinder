@@ -200,20 +200,36 @@ namespace ProcessMemoryDataFinder.API
             }
             else
             {
+#if x64
+                arrayAddress = ReadPointer(address + 8);
+#else
                 arrayAddress = ReadPointer(address + 4);
+#endif
                 if (arrayAddress == IntPtr.Zero) return null;
             }
 
             byte[] rawNumberOfElements;
             if (skip)
+            {
+#if x64
+                rawNumberOfElements = _readDataFunc(arrayAddress + 8, 4); //Amount of allocated space (char[] (strings))
+#else
                 rawNumberOfElements = _readDataFunc(arrayAddress + 4, 4); //Amount of allocated space (char[] (strings))
+#endif
+            }
             else
+            {
+#if x64
+                rawNumberOfElements = _readDataFunc(address + 24, 4); //Array.Count()
+#else
                 rawNumberOfElements = _readDataFunc(address + 12, 4); //Array.Count()
+#endif
+            }
 
             if (rawNumberOfElements == null) return null;
             var numberOfElements = BitConverter.ToInt32(rawNumberOfElements, 0);
 
-            return new Tuple<int, IntPtr>(numberOfElements, arrayAddress);
+            return Tuple.Create(numberOfElements, arrayAddress);
         }
 
         public List<int> GetIntList()
@@ -225,7 +241,11 @@ namespace ProcessMemoryDataFinder.API
             var ret = new List<int>();
             var expectedSize = 4 * (uint) headerResult.Item1;
 
+#if x64
+            var memoryFragment = _readDataFunc(headerResult.Item2 + 16, expectedSize);
+#else
             var memoryFragment = _readDataFunc(headerResult.Item2 + 8, expectedSize);
+#endif
 
             if (memoryFragment == null || memoryFragment.Length != expectedSize)
                 return null;
@@ -251,7 +271,13 @@ namespace ProcessMemoryDataFinder.API
              */
             if (stringLength > 262144) return string.Empty;
 
+            if (stringLength == 0) return string.Empty;
+
+#if x64
+            var stringData = _readDataFunc(headerResult.Item2 + 12, (uint)stringLength);
+#else
             var stringData = _readDataFunc(headerResult.Item2 + 8, (uint)stringLength);
+#endif
             if (stringData == null) return string.Empty;
 
             var result = Encoding.Unicode.GetString(stringData);
