@@ -66,10 +66,9 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.PlayTime, new SigEx
             {
                 Name = "PlayTime",
-                Pattern = UnpackStr("5E5F5DC3A100000000890004"),
-                Mask = "xxxxx????x?x",
-                Offset = 5,
-                PointerOffsets = { 0 }
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = 100,
+                PointerOffsets = { -16 }
             });
             Signatures[(int)SignatureNames.Mods] = new SigEx
             {
