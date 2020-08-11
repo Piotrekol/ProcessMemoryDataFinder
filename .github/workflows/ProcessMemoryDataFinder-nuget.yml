@@ -1,4 +1,4 @@
-name: nuget CI
+name: ProcessMemoryDataFinder nuget CI
 on:
   push:
     tags: 
@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: build
-      run: dotnet build -c Release
+      run: dotnet build -c Release /p:Platform=x86
     - name: Setup Nuget.exe
       uses: warrenbuckley/Setup-Nuget@v1
     - name: Nuget Push
