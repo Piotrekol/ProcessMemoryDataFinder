@@ -158,6 +158,16 @@
             this.numericUpDown_readDelay.Name = "numericUpDown_readDelay";
             this.numericUpDown_readDelay.Size = new System.Drawing.Size(178, 23);
             this.numericUpDown_readDelay.TabIndex = 10;
+            this.numericUpDown_readDelay.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDown_readDelay.Value = new decimal(new int[] {
+            33,
+            0,
+            0,
+            0});
             // 
             // label7
             // 
@@ -231,7 +241,7 @@
             this.groupBox1.Controls.Add(this.checkBox_OsuBase);
             this.groupBox1.Location = new System.Drawing.Point(451, 371);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(266, 75);
+            this.groupBox1.Size = new System.Drawing.Size(298, 153);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enabled Patterns";
@@ -241,12 +251,12 @@
             this.checkBox_PlayContainer.AutoSize = true;
             this.checkBox_PlayContainer.Checked = true;
             this.checkBox_PlayContainer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_PlayContainer.Location = new System.Drawing.Point(83, 22);
+            this.checkBox_PlayContainer.Location = new System.Drawing.Point(6, 47);
             this.checkBox_PlayContainer.Name = "checkBox_PlayContainer";
-            this.checkBox_PlayContainer.Size = new System.Drawing.Size(100, 19);
+            this.checkBox_PlayContainer.Size = new System.Drawing.Size(208, 19);
             this.checkBox_PlayContainer.TabIndex = 5;
             this.checkBox_PlayContainer.Tag = "PlayContainer";
-            this.checkBox_PlayContainer.Text = "PlayContainer";
+            this.checkBox_PlayContainer.Text = "PlayContainer (only when playing)";
             this.checkBox_PlayContainer.UseVisualStyleBackColor = true;
             this.checkBox_PlayContainer.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
@@ -255,12 +265,12 @@
             this.checkBox_TourneyBase.AutoSize = true;
             this.checkBox_TourneyBase.Checked = true;
             this.checkBox_TourneyBase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_TourneyBase.Location = new System.Drawing.Point(124, 47);
+            this.checkBox_TourneyBase.Location = new System.Drawing.Point(6, 72);
             this.checkBox_TourneyBase.Name = "checkBox_TourneyBase";
-            this.checkBox_TourneyBase.Size = new System.Drawing.Size(92, 19);
+            this.checkBox_TourneyBase.Size = new System.Drawing.Size(237, 19);
             this.checkBox_TourneyBase.TabIndex = 4;
             this.checkBox_TourneyBase.Tag = "TourneyBase";
-            this.checkBox_TourneyBase.Text = "TourneyBase";
+            this.checkBox_TourneyBase.Text = "TourneyBase (only when Tourney mode)";
             this.checkBox_TourneyBase.UseVisualStyleBackColor = true;
             this.checkBox_TourneyBase.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
@@ -269,7 +279,7 @@
             this.checkBox_CurrentSkinData.AutoSize = true;
             this.checkBox_CurrentSkinData.Checked = true;
             this.checkBox_CurrentSkinData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_CurrentSkinData.Location = new System.Drawing.Point(6, 47);
+            this.checkBox_CurrentSkinData.Location = new System.Drawing.Point(85, 22);
             this.checkBox_CurrentSkinData.Name = "checkBox_CurrentSkinData";
             this.checkBox_CurrentSkinData.Size = new System.Drawing.Size(112, 19);
             this.checkBox_CurrentSkinData.TabIndex = 3;
@@ -283,7 +293,7 @@
             this.checkBox_Mods.AutoSize = true;
             this.checkBox_Mods.Checked = true;
             this.checkBox_Mods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Mods.Location = new System.Drawing.Point(193, 22);
+            this.checkBox_Mods.Location = new System.Drawing.Point(203, 22);
             this.checkBox_Mods.Name = "checkBox_Mods";
             this.checkBox_Mods.Size = new System.Drawing.Size(56, 19);
             this.checkBox_Mods.TabIndex = 2;
