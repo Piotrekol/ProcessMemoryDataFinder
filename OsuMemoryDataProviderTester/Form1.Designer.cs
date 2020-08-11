@@ -51,8 +51,6 @@
             this.checkBox_TourneyBase = new System.Windows.Forms.CheckBox();
             this.checkBox_CurrentSkinData = new System.Windows.Forms.CheckBox();
             this.checkBox_Mods = new System.Windows.Forms.CheckBox();
-            this.checkBox_PlayTime = new System.Windows.Forms.CheckBox();
-            this.checkBox_OsuStatus = new System.Windows.Forms.CheckBox();
             this.checkBox_OsuBase = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_readDelay)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -230,12 +228,10 @@
             this.groupBox1.Controls.Add(this.checkBox_TourneyBase);
             this.groupBox1.Controls.Add(this.checkBox_CurrentSkinData);
             this.groupBox1.Controls.Add(this.checkBox_Mods);
-            this.groupBox1.Controls.Add(this.checkBox_PlayTime);
-            this.groupBox1.Controls.Add(this.checkBox_OsuStatus);
             this.groupBox1.Controls.Add(this.checkBox_OsuBase);
             this.groupBox1.Location = new System.Drawing.Point(451, 371);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(328, 75);
+            this.groupBox1.Size = new System.Drawing.Size(266, 75);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enabled Patterns";
@@ -245,7 +241,7 @@
             this.checkBox_PlayContainer.AutoSize = true;
             this.checkBox_PlayContainer.Checked = true;
             this.checkBox_PlayContainer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_PlayContainer.Location = new System.Drawing.Point(222, 47);
+            this.checkBox_PlayContainer.Location = new System.Drawing.Point(83, 22);
             this.checkBox_PlayContainer.Name = "checkBox_PlayContainer";
             this.checkBox_PlayContainer.Size = new System.Drawing.Size(100, 19);
             this.checkBox_PlayContainer.TabIndex = 5;
@@ -287,7 +283,7 @@
             this.checkBox_Mods.AutoSize = true;
             this.checkBox_Mods.Checked = true;
             this.checkBox_Mods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Mods.Location = new System.Drawing.Point(248, 22);
+            this.checkBox_Mods.Location = new System.Drawing.Point(193, 22);
             this.checkBox_Mods.Name = "checkBox_Mods";
             this.checkBox_Mods.Size = new System.Drawing.Size(56, 19);
             this.checkBox_Mods.TabIndex = 2;
@@ -295,34 +291,6 @@
             this.checkBox_Mods.Text = "Mods";
             this.checkBox_Mods.UseVisualStyleBackColor = true;
             this.checkBox_Mods.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
-            // 
-            // checkBox_PlayTime
-            // 
-            this.checkBox_PlayTime.AutoSize = true;
-            this.checkBox_PlayTime.Checked = true;
-            this.checkBox_PlayTime.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_PlayTime.Location = new System.Drawing.Point(168, 22);
-            this.checkBox_PlayTime.Name = "checkBox_PlayTime";
-            this.checkBox_PlayTime.Size = new System.Drawing.Size(74, 19);
-            this.checkBox_PlayTime.TabIndex = 1;
-            this.checkBox_PlayTime.Tag = "PlayTime";
-            this.checkBox_PlayTime.Text = "PlayTime";
-            this.checkBox_PlayTime.UseVisualStyleBackColor = true;
-            this.checkBox_PlayTime.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
-            // 
-            // checkBox_OsuStatus
-            // 
-            this.checkBox_OsuStatus.AutoSize = true;
-            this.checkBox_OsuStatus.Checked = true;
-            this.checkBox_OsuStatus.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_OsuStatus.Location = new System.Drawing.Point(83, 22);
-            this.checkBox_OsuStatus.Name = "checkBox_OsuStatus";
-            this.checkBox_OsuStatus.Size = new System.Drawing.Size(79, 19);
-            this.checkBox_OsuStatus.TabIndex = 0;
-            this.checkBox_OsuStatus.Tag = "OsuStatus";
-            this.checkBox_OsuStatus.Text = "OsuStatus";
-            this.checkBox_OsuStatus.UseVisualStyleBackColor = true;
-            this.checkBox_OsuStatus.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBox_OsuBase
             // 
@@ -395,8 +363,6 @@
         private System.Windows.Forms.Button button_ResetReadTimeMinMax;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBox_OsuBase;
-        private System.Windows.Forms.CheckBox checkBox_OsuStatus;
-        private System.Windows.Forms.CheckBox checkBox_PlayTime;
         private System.Windows.Forms.CheckBox checkBox_Mods;
         private System.Windows.Forms.CheckBox checkBox_CurrentSkinData;
         private System.Windows.Forms.CheckBox checkBox_TourneyBase;

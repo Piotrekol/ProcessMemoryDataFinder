@@ -75,6 +75,9 @@ namespace OsuMemoryDataProviderTester
                         var retrys = -1;
                         var gameMode = -1;
                         var mapData = string.Empty;
+                        var status = OsuMemoryStatus.Unknown;
+                        var statusNum = -1;
+                        var playTime = -1;
                         if (patternsToRead.OsuBase)
                         {
                             mapId = _reader.GetMapId();
@@ -86,6 +89,8 @@ namespace OsuMemoryDataProviderTester
                             gameMode = _reader.ReadSongSelectGameMode();
                             mapData =
                                 $"HP:{_reader.GetMapHp()} OD:{_reader.GetMapOd()}, CS:{_reader.GetMapCs()}, AR:{_reader.GetMapAr()}, setId:{_reader.GetMapSetId()}";
+                            status = _reader.GetCurrentStatus(out statusNum);
+                            playTime = _reader.ReadPlayTime();
                         }
 
                         #endregion
@@ -106,17 +111,6 @@ namespace OsuMemoryDataProviderTester
                         if (patternsToRead.CurrentSkinData)
                         {
                             skinFolderName = _reader.GetSkinFolderName();
-                        }
-
-                        #endregion
-
-                        #region OsuStatus
-
-                        var status = OsuMemoryStatus.Unknown;
-                        var statusNum = -1;
-                        if (patternsToRead.OsuStatus)
-                        {
-                            status = _reader.GetCurrentStatus(out statusNum);
                         }
 
                         #endregion
@@ -143,16 +137,6 @@ namespace OsuMemoryDataProviderTester
                         {
                             playReseted = true;
                             playContainer.Reset();
-                        }
-
-                        #endregion
-
-                        #region PlayTime
-
-                        var playTime = -1;
-                        if (patternsToRead.PlayTime)
-                        {
-                            playTime = _reader.ReadPlayTime();
                         }
 
                         #endregion
@@ -229,7 +213,7 @@ namespace OsuMemoryDataProviderTester
                             }
                             else
                             {
-                                textBox_TourneyStuff.Text = "no date since not in tourney mode";
+                                textBox_TourneyStuff.Text = "no data since not in tourney mode";
                             }
                         }));
                         await Task.Delay(_readDelay);
@@ -292,8 +276,6 @@ namespace OsuMemoryDataProviderTester
     internal struct PatternsToRead
     {
         public readonly bool OsuBase;
-        public readonly bool OsuStatus;
-        public readonly bool PlayTime;
         public readonly bool Mods;
         public readonly bool CurrentSkinData;
         public readonly bool TourneyBase;
@@ -302,8 +284,6 @@ namespace OsuMemoryDataProviderTester
         public PatternsToRead(ISet<string> patternsToSkip)
         {
             OsuBase = !patternsToSkip.Contains(nameof(OsuBase));
-            OsuStatus = !patternsToSkip.Contains(nameof(OsuStatus));
-            PlayTime = !patternsToSkip.Contains(nameof(PlayTime));
             Mods = !patternsToSkip.Contains(nameof(Mods));
             CurrentSkinData = !patternsToSkip.Contains(nameof(CurrentSkinData));
             TourneyBase = !patternsToSkip.Contains(nameof(TourneyBase));
