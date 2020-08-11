@@ -97,10 +97,9 @@ namespace ProcessMemoryDataFinder.API
                 return null;
             }
 
-            int bytesNumber;
             var bytesRead =
                 _reader.ReadProcessMemory(address, size,
-                    out bytesNumber);
+                    out var bytesNumber);
             if (bytesNumber == size)
             {
                 return bytesRead;

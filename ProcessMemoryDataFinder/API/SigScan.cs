@@ -224,7 +224,7 @@ namespace ProcessMemoryDataFinder.API
                     if (MaskCheck(x, btPattern, strMask))
                     {
                         // The pattern was found, return it.
-                        return new IntPtr((int)m_vAddress + (x + nOffset));
+                        return m_vAddress + (x + nOffset);
                     }
                 }
 
@@ -329,21 +329,21 @@ namespace ProcessMemoryDataFinder.API
                 if (!DumpMemory())
                     return IntPtr.Zero;
             }
-            var result = Scan(this.m_vDumpedRegion, patternBytes);
-            if (result != IntPtr.Zero)
-                return result + (int)m_vAddress+ nOffset;
-             return result;
-            
+            var result = Scan(m_vDumpedRegion, patternBytes);
+            if (result == -1)
+                return IntPtr.Zero;
+
+            return m_vAddress + (nOffset + result);
         }
 
-        private IntPtr Scan(byte[] sIn, byte[] sFor)
+        private static int Scan(byte[] sIn, byte[] sFor)
         {
             if (sIn == null)
             {
-                return IntPtr.Zero;
+                return -1;
             }
 
-            int[] sBytes = new int[256]; int pool = 0;
+            int[] sBytes = new int[256];
             int end = sFor.Length - 1;
             for (int i = 0; i < 256; i++)
             {
@@ -355,19 +355,20 @@ namespace ProcessMemoryDataFinder.API
                 sBytes[sFor[i]] = end - i;
             }
 
+            int pool = 0;
             while (pool <= sIn.Length - sFor.Length)
             {
                 for (int i = end; (sIn[pool + i] == sFor[i]); i--)
                 {
                     if (i == 0)
                     {
-                        return new IntPtr(pool);
+                        return pool;
                     }
                 }
 
                 pool += sBytes[sIn[pool + end]];
             }
-            return IntPtr.Zero;
+            return -1;
         }
     }
 

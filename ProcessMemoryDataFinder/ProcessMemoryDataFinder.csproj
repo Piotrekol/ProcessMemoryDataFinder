@@ -1,29 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup>
-	  <TargetFrameworks>netcoreapp3.1;net472;net471</TargetFrameworks>
-	  <AssemblyTitle>ProcessMemoryDataFinder</AssemblyTitle>
-	  <Product>ProcessMemoryDataFinder</Product>
-	  <Copyright>2019-2020 Piotr Partyka</Copyright>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Authors>Piotrekol</Authors>
-	  <PackageId>ProcessMemoryDataFinder</PackageId>
-	  <Description>Find and read data in processes based on pre-made memory signatures(patterns)</Description>
-	  <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-	  <PackageProjectUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/ProcessMemoryDataFinder</PackageProjectUrl>
-	  <RepositoryUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/ProcessMemoryDataFinder</RepositoryUrl>
-	  <title>ProcessMemoryDataFinder</title>
-	  <Summary>Find and read data in processes based on pre-made memory signatures(patterns)</Summary>
-	  <Version>0.0.1</Version>
-	  <IncludeSymbols>true</IncludeSymbols> 
-	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFrameworks>netcoreapp3.1;net472;net471</TargetFrameworks>
+    <Platforms>x64;x86</Platforms>
+    <AssemblyTitle>ProcessMemoryDataFinder</AssemblyTitle>
+    <Product>ProcessMemoryDataFinder</Product>
+    <Copyright>2019-2020 Piotr Partyka</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Piotrekol</Authors>
+    <PackageId>ProcessMemoryDataFinder</PackageId>
+    <Description>Find and read data in processes based on pre-made memory signatures(patterns)</Description>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/ProcessMemoryDataFinder</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/ProcessMemoryDataFinder</RepositoryUrl>
+    <title>ProcessMemoryDataFinder</title>
+    <Summary>Find and read data in processes based on pre-made memory signatures(patterns)</Summary>
+    <Version>0.0.2</Version>
+    <IncludeSymbols>true</IncludeSymbols> 
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -39,6 +32,26 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE;x64</DefineConstants>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|x64'">
+    <DefineConstants>DEBUG;TRACE;x64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|x64'">
+    <DefineConstants>TRACE;x64</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|x86'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|x86'">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
