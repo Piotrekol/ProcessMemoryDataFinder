@@ -36,7 +36,7 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.OsuBase, new SigEx
             {
                 Name = "OsuBase",
-                Pattern = UnpackStr("F801740483"),
+                Pattern = UnpackStr("F80174048365"),
                 UseMask = false
             });
             Signatures.Add((int)SignatureNames.GameMode, new SigEx
