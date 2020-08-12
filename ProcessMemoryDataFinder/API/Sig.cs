@@ -215,6 +215,7 @@ namespace ProcessMemoryDataFinder.API
 #endif
                 // in a list, regardless of platform, the size element is always 4 bytes
                 var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 4);
+                if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
                 numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
 
                 // lets point to the first element in the internal array:
@@ -245,12 +246,15 @@ namespace ProcessMemoryDataFinder.API
                 if (isString)
                 {
                     var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 4);
+                    if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
                     numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
                     firstElementPtr = numberOfElementsAddr + 4;
                 }
                 else
                 {
                     var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 8);
+                    if (numberOfElementBytes == null || numberOfElementBytes.Length != 8) return (-1, IntPtr.Zero);
+
                     var numberOfElementsLong = BitConverter.ToInt64(numberOfElementBytes, 0);
                     // ok, realistically we're probably never gonna get an array of more then 2^32-1 elements, so lets cast this down to an int
                     if (numberOfElementsLong > int.MaxValue)
@@ -264,6 +268,7 @@ namespace ProcessMemoryDataFinder.API
 #else
                 // 32bit platform, its always 4 bytes, regardless of the value of isString
                 var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 4);
+                if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
                 numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
                 firstElementPtr = numberOfElementsAddr + 4;
 #endif
