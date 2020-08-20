@@ -81,6 +81,7 @@ namespace OsuMemoryDataProvider
 
             CreateSkinSignatures();
             CreatePlaySignatures();
+            CreateTourneySignatures();
         }
 
         private void CreateSkinSignatures()
@@ -167,6 +168,47 @@ namespace OsuMemoryDataProvider
             {
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
                 PointerOffsets = { 56 }
+            });
+        }
+
+        private void CreateTourneySignatures()
+        {
+            Signatures.Add((int)SignatureNames.TourneyBase, new SigEx
+            {
+                Name = "TourneyBase",
+                Pattern = UnpackStr("7D15A10000000085C0"),
+                Mask = "xxx????xx",
+                Offset = -0xB
+            });
+            Signatures.Add((int)SignatureNames.TourneyIpcState, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x54 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyLeftStars, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x1C, 0x2C }
+            });
+            Signatures.Add((int)SignatureNames.TourneyRightStars, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x20, 0x2C }
+            });
+            Signatures.Add((int)SignatureNames.TourneyBO, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x20, 0x30 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyStarsVisible, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x20, 0x38 }
+            });
+            Signatures.Add((int)SignatureNames.TourneyScoreVisible, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.TourneyBase],
+                PointerOffsets = { 4, 0x20, 0x39 }
             });
         }
 
@@ -483,6 +525,54 @@ namespace OsuMemoryDataProvider
             return GetDouble((int)SignatureNames.PlayerHpSmoothed);
         }
 
+        public TourneyIpcState GetTourneyIpcState(out int ipcStateNumber)
+        {
+#if DEBUG && MemoryTimes
+            LogCaller("Start");
+#endif
+            int num;
+            lock (_lockingObject)
+            {
+                num = GetInt((int)SignatureNames.TourneyIpcState);
+            }
+#if DEBUG && MemoryTimes
+            LogCaller("End");
+#endif
+
+            ipcStateNumber = num;
+            if (Enum.IsDefined(typeof(TourneyIpcState), num))
+            {
+                return (TourneyIpcState)num;
+            }
+
+            return TourneyIpcState.Unknown;
+        }
+
+        public int ReadTourneyLeftStars()
+        {
+            return GetInt((int)SignatureNames.TourneyLeftStars);
+        }
+
+        public int ReadTourneyRightStars()
+        {
+            return GetInt((int)SignatureNames.TourneyRightStars);
+        }
+
+        public int ReadTourneyBO()
+        {
+            return GetInt((int)SignatureNames.TourneyBO);
+        }
+
+        public bool ReadTourneyStarsVisible()
+        {
+            return GetByte((int)SignatureNames.TourneyStarsVisible) != 0;
+        }
+
+        public bool ReadTourneyScoreVisible()
+        {
+            return GetByte((int)SignatureNames.TourneyScoreVisible) != 0;
+        }
+
         /// <summary>
         /// Gets the current osu! status.
         /// </summary>
@@ -568,6 +658,21 @@ namespace OsuMemoryDataProvider
 #endif
                 ResetPointer(signatureId);
                 return base.GetUShort(signatureId);
+#if DEBUG && MemoryTimes
+                LogCaller("End");
+#endif
+            }
+        }
+
+        protected override byte GetByte(int signatureId)
+        {
+            lock (_lockingObject)
+            {
+#if DEBUG && MemoryTimes
+                LogCaller("Start");
+#endif
+                ResetPointer(signatureId);
+                return base.GetByte(signatureId);
 #if DEBUG && MemoryTimes
                 LogCaller("End");
 #endif
