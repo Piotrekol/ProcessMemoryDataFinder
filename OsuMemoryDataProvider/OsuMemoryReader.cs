@@ -72,9 +72,9 @@ namespace OsuMemoryDataProvider
             Signatures[(int)SignatureNames.Mods] = new SigEx
             {
                 Name = "mods",
-                Pattern = UnpackStr("810D0000000000080000"),
-                Mask = "xx????xxxx",
-                Offset = 2,
+                Pattern = UnpackStr("C8FF0000000000810D0000000000080000"),
+                Mask = "xx?????xx????xxxx",
+                Offset = 9,
                 PointerOffsets = { 0 },
                 UseMask = true,
             };
