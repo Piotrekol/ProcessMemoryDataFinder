@@ -321,6 +321,13 @@ namespace OsuMemoryDataProvider
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
                 PointerOffsets = { 64, 20 }
             });
+
+            Signatures.Add((int)SignatureNames.ScoreV2, new SigEx
+            {
+                //int
+                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                PointerOffsets = { 0x4C, 0xC, 0x68, 0x4, 0xF8 }
+            });
         }
 
         #region IOsuMemoryReader members
@@ -508,6 +515,11 @@ namespace OsuMemoryDataProvider
         public int ReadScore()
         {
             return GetInt((int)SignatureNames.Score);
+        }
+
+        public int ReadScoreV2()
+        {
+            return GetInt((int)SignatureNames.ScoreV2);
         }
 
         public ushort ReadComboMax()

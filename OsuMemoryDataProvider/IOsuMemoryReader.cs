@@ -45,9 +45,14 @@ namespace OsuMemoryDataProvider
         ushort ReadComboMax();
 
         int GetRetrys();
-
+        
         int ReadScore();
 
+        /// <summary>
+        ///this works for both normal score and V2 but requires 5 pointer jumps compared to 2 in <see cref="ReadScore"/>
+        /// </summary>
+        /// <returns></returns>
+        int ReadScoreV2();
         TourneyIpcState GetTourneyIpcState(out int ipcNumber);
         int ReadTourneyLeftStars();
         int ReadTourneyRightStars();

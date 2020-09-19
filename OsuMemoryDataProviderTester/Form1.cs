@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -51,7 +51,7 @@ namespace OsuMemoryDataProviderTester
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
             _ = Task.Run(async () =>
-            { 
+            {
                 try
                 {
                     var playContainer = new PlayContainerEx();
@@ -118,11 +118,11 @@ namespace OsuMemoryDataProviderTester
                         #region PlayContainer
 
                         double hp = 0;
-                        var playerName=string.Empty;
+                        var playerName = string.Empty;
                         var hitErrorCount = -1;
                         var playingMods = -1;
                         double displayedPlayerHp = 0;
-
+                        int scoreV2 = -1;
                         if (status == OsuMemoryStatus.Playing && patternsToRead.PlayContainer)
                         {
                             playReseted = false;
@@ -132,6 +132,7 @@ namespace OsuMemoryDataProviderTester
                             hitErrorCount = _reader.HitErrors()?.Count ?? -2;
                             playingMods = _reader.GetPlayingMods();
                             displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
+                            scoreV2 = _reader.ReadScoreV2();
                         }
                         else if (!playReseted)
                         {
@@ -177,45 +178,46 @@ namespace OsuMemoryDataProviderTester
                             readTimeMsMax = _memoryReadTimeMax;
                         }
 
-                        Invoke((MethodInvoker) (() =>
-                        {
-                            textBox_readTime.Text = $"         ReadTimeMS: {readTimeMs}{Environment.NewLine}" +
-                                                    $" Min ReadTimeMS: {readTimeMsMin}{Environment.NewLine}" +
-                                                    $"Max ReadTimeMS: {readTimeMsMax}{Environment.NewLine}";
-                            
-                            textBox_mapId.Text = mapId.ToString();
-                            textBox_strings.Text = $"songString: \"{songString}\" {Environment.NewLine}" +
-                                                   $"md5: \"{mapMd5}\" {Environment.NewLine}" +
-                                                   $"mapFolder: \"{mapFolderName}\" {Environment.NewLine}" +
-                                                   $"fileName: \"{osuFileName}\" {Environment.NewLine}" +
-                                                   $"Retrys:{retrys} {Environment.NewLine}" +
-                                                   $"mods:{(Mods)mods}({mods}) {Environment.NewLine}" +
-                                                   $"SkinName: \"{skinFolderName}\"";
-                            textBox_time.Text = playTime.ToString();
-                            textBox_mapData.Text = mapData;
-                            textBox_Status.Text = status + " " + statusNum + " " + gameMode;
+                        Invoke((MethodInvoker)(() =>
+                       {
+                           textBox_readTime.Text = $"         ReadTimeMS: {readTimeMs}{Environment.NewLine}" +
+                                                   $" Min ReadTimeMS: {readTimeMsMin}{Environment.NewLine}" +
+                                                   $"Max ReadTimeMS: {readTimeMsMax}{Environment.NewLine}";
 
-                            textBox_CurrentPlayData.Text =
-                                playContainer + Environment.NewLine +
-                                $"hp________: {hp:00.##} {Environment.NewLine}" +
-                                $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
-                                $"playingMods:{(Mods)playingMods} ({playingMods}) " +
-                                $"PlayerName: {playerName}{Environment.NewLine}"+
-                                $"HitErrorCount: {hitErrorCount} ";
+                           textBox_mapId.Text = mapId.ToString();
+                           textBox_strings.Text = $"songString: \"{songString}\" {Environment.NewLine}" +
+                                                  $"md5: \"{mapMd5}\" {Environment.NewLine}" +
+                                                  $"mapFolder: \"{mapFolderName}\" {Environment.NewLine}" +
+                                                  $"fileName: \"{osuFileName}\" {Environment.NewLine}" +
+                                                  $"Retrys:{retrys} {Environment.NewLine}" +
+                                                  $"mods:{(Mods)mods}({mods}) {Environment.NewLine}" +
+                                                  $"SkinName: \"{skinFolderName}\"";
+                           textBox_time.Text = playTime.ToString();
+                           textBox_mapData.Text = mapData;
+                           textBox_Status.Text = status + " " + statusNum + " " + gameMode;
 
-                            if (status == OsuMemoryStatus.Tourney)
-                            {
-                                textBox_TourneyStuff.Text =
-                                    $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
-                                    $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
-                                    $"Warmup/Stars State: {(tourneyStarsVisible ? "stars visible, warmup disabled" : "stars hidden, warmup enabled")}{Environment.NewLine}" +
-                                    $"Score/Chat state: {(tourneyScoreVisible ? "chat hidden, score visible or no lobby joined" : "chat visible, score hidden")}{Environment.NewLine}";
-                            }
-                            else
-                            {
-                                textBox_TourneyStuff.Text = "no data since not in tourney mode";
-                            }
-                        }));
+                           textBox_CurrentPlayData.Text =
+                               playContainer + Environment.NewLine +
+                               $"scoreV2: {scoreV2} {Environment.NewLine}" +
+                               $"hp________: {hp:00.##} {Environment.NewLine}" +
+                               $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
+                               $"playingMods:{(Mods)playingMods} ({playingMods}) " +
+                               $"PlayerName: {playerName}{Environment.NewLine}" +
+                               $"HitErrorCount: {hitErrorCount} ";
+
+                           if (status == OsuMemoryStatus.Tourney)
+                           {
+                               textBox_TourneyStuff.Text =
+                                   $"IPC-State: {tourneyIpcState} ({tourneyIpcStateNumber}) | BO {tourneyBO}{Environment.NewLine}" +
+                                   $"Stars: {tourneyLeftStars} | {tourneyRightStars}{Environment.NewLine}" +
+                                   $"Warmup/Stars State: {(tourneyStarsVisible ? "stars visible, warmup disabled" : "stars hidden, warmup enabled")}{Environment.NewLine}" +
+                                   $"Score/Chat state: {(tourneyScoreVisible ? "chat hidden, score visible or no lobby joined" : "chat visible, score hidden")}{Environment.NewLine}";
+                           }
+                           else
+                           {
+                               textBox_TourneyStuff.Text = "no data since not in tourney mode";
+                           }
+                       }));
                         await Task.Delay(_readDelay);
                     }
                 }
@@ -247,8 +249,8 @@ namespace OsuMemoryDataProviderTester
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            var cb = (CheckBox) sender;
-            var name = (string) cb.Tag;
+            var cb = (CheckBox)sender;
+            var name = (string)cb.Tag;
             var shouldInclude = cb.Checked;
             lock (_patternsToSkip)
             {
