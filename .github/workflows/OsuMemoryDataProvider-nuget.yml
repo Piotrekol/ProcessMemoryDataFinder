@@ -1,0 +1,22 @@
+name: OsuMemoryDataProvider nuget CI
+on:
+  push:
+    tags: 
+      - osu_v*
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: build
+      run: dotnet build -c Release /p:Platform=x86
+    - name: Setup Nuget.exe
+      uses: warrenbuckley/Setup-Nuget@v1
+    - name: upload tester
+      uses: actions/upload-artifact@v2
+      with:
+        name: memoryTesterNet741
+        path: OsuMemoryDataProviderTester\bin\x86\Release\net471\*
+    - name: Nuget Push
+      run: nuget push OsuMemoryDataProvider\bin\x86\Release\*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json

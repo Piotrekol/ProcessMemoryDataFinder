@@ -1,4 +1,4 @@
-﻿namespace OsuMemoryDataProvider
+namespace OsuMemoryDataProvider
 {
 
     internal enum SignatureNames
@@ -33,6 +33,7 @@
         HitMissc,
         Acc,
         Score,
+        ScoreV2,
         PlayingGameMode,
         PlayerHp,
         PlayerHpSmoothed,
@@ -41,6 +42,15 @@
 
         PlayerName,
         HitErrors,
+
+        // tourney shit
+        TourneyBase,
+        TourneyIpcState,
+        TourneyLeftStars,
+        TourneyRightStars,
+        TourneyBO,
+        TourneyStarsVisible,
+        TourneyScoreVisible,
     }
 
 }

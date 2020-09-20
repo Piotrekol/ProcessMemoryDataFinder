@@ -1,4 +1,5 @@
-# ProcessMemoryDataFinder
+# ProcessMemoryDataFinder <a href="https://www.nuget.org/packages/ProcessMemoryDataFinder"><img src="https://img.shields.io/nuget/v/ProcessMemoryDataFinder?label=ProcessMemoryDataFinder" alt="nuget"></a> | <a href="https://www.nuget.org/packages/OsuMemoryDataProvider"><img src="https://img.shields.io/nuget/v/OsuMemoryDataProvider?label=OsuMemoryDataProvider" alt="nuget"></a>
+
 Provides means to find data based on pre-made memory signatures and read that data in windows processes.
 
 It was mainly created to be able to read various values from the game called [osu!](https://osu.ppy.sh) but it was written in a way that should allow use for any windows program.

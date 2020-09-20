@@ -67,7 +67,7 @@ namespace ProcessMemoryDataFinder.API
         /// <param name="bytesRead">The bytes read.</param>
         /// <returns></returns>
         /// <exception cref="Win32Exception"></exception>
-        public byte[] ReadProcessMemory(IntPtr memoryAddress, uint bytesToRead, out int bytesRead)
+        public byte[] ReadProcessMemory(IntPtr memoryAddress, uint bytesToRead, out uint bytesRead)
         {
             try
             {
@@ -78,17 +78,20 @@ namespace ProcessMemoryDataFinder.API
                 }
 
                 var buffer = new byte[bytesToRead];
-                var lpNumberOfBytesRead = new IntPtr();
                 if (
                     ProcessMemoryReaderApi.ReadProcessMemory(m_hProcess, memoryAddress, buffer, bytesToRead,
-                        out lpNumberOfBytesRead) == 0)
+                        out var lpNumberOfBytesRead) == 0)
                 {
                     var error = Marshal.GetLastWin32Error();
                     //Console.WriteLine(error);
                     throw new Win32Exception(error);
                 }
 
-                bytesRead = lpNumberOfBytesRead.ToInt32();
+                // lpNumberOfBytesRead is an IntPtr here so technically if we are 32bit platform we should be calling ToInt32()
+                // but that doesnt matter here since we just want a uint value, which on a 32bit platform will work just fine (just tiny bit of overhead of first going to a int64)
+                // and on a 64bit platform we dont have to worry about the value being larger then uint max, since we gave it a uint bytesToRead
+                // so this cast should never fail
+                bytesRead = (uint)lpNumberOfBytesRead.ToInt64();
                 return buffer;
             }
             catch

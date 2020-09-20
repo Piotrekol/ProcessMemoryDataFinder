@@ -92,6 +92,12 @@ namespace ProcessMemoryDataFinder.API
             return sig.GetUShort();
         }
 
+        protected virtual byte GetByte(int signatureId)
+        {
+            var sig = InitSignature(signatureId);
+            return sig.GetByte();
+        }
+
         protected virtual double GetDouble(int signatureId)
         {
             var sig = InitSignature(signatureId);
@@ -109,6 +115,12 @@ namespace ProcessMemoryDataFinder.API
         {
             var sig = InitSignature(signatureId);
             return sig.GetIntList();
+        }
+
+        protected virtual int[] GetIntArray(int signatureId)
+        {
+            var sig = InitSignature(signatureId);
+            return sig.GetIntArray();
         }
 
         #endregion

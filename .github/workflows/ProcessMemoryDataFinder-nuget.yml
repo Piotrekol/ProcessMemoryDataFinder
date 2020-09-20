@@ -1,0 +1,17 @@
+name: ProcessMemoryDataFinder nuget CI
+on:
+  push:
+    tags: 
+      - process_v*
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: build
+      run: dotnet build -c Release /p:Platform=x86
+    - name: Setup Nuget.exe
+      uses: warrenbuckley/Setup-Nuget@v1
+    - name: Nuget Push
+      run: nuget push ProcessMemoryDataFinder\bin\x86\Release\*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
