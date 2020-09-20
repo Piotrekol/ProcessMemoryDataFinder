@@ -153,6 +153,14 @@ namespace ProcessMemoryDataFinder.API
             return ReadPointer(ResolveAddress());
         }
 
+        public bool GetBoolean()
+        {
+            var data = GetValue(1);
+            if (data != null)
+                return BitConverter.ToBoolean(data, 0);
+            return false;
+        }
+
         public int GetInt()
         {
             var data = GetValue(4);

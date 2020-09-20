@@ -70,7 +70,7 @@
             this.textBox_strings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBox_strings.Multiline = true;
             this.textBox_strings.Name = "textBox_strings";
-            this.textBox_strings.Size = new System.Drawing.Size(703, 116);
+            this.textBox_strings.Size = new System.Drawing.Size(703, 143);
             this.textBox_strings.TabIndex = 1;
             // 
             // label1
@@ -114,7 +114,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 182);
+            this.label4.Location = new System.Drawing.Point(18, 218);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(178, 15);
@@ -123,7 +123,7 @@
             // 
             // textBox_CurrentPlayData
             // 
-            this.textBox_CurrentPlayData.Location = new System.Drawing.Point(16, 201);
+            this.textBox_CurrentPlayData.Location = new System.Drawing.Point(16, 237);
             this.textBox_CurrentPlayData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBox_CurrentPlayData.Multiline = true;
             this.textBox_CurrentPlayData.Name = "textBox_CurrentPlayData";
@@ -133,7 +133,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(448, 201);
+            this.label5.Location = new System.Drawing.Point(448, 237);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(374, 45);
@@ -145,7 +145,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(448, 258);
+            this.label6.Location = new System.Drawing.Point(448, 294);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(200, 15);
@@ -154,25 +154,15 @@
             // 
             // numericUpDown_readDelay
             // 
-            this.numericUpDown_readDelay.Location = new System.Drawing.Point(451, 276);
+            this.numericUpDown_readDelay.Location = new System.Drawing.Point(451, 312);
             this.numericUpDown_readDelay.Name = "numericUpDown_readDelay";
             this.numericUpDown_readDelay.Size = new System.Drawing.Size(178, 23);
             this.numericUpDown_readDelay.TabIndex = 10;
-            this.numericUpDown_readDelay.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numericUpDown_readDelay.Value = new decimal(new int[] {
-            33,
-            0,
-            0,
-            0});
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 137);
+            this.label7.Location = new System.Drawing.Point(16, 173);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(57, 15);
@@ -181,7 +171,7 @@
             // 
             // textBox_mapData
             // 
-            this.textBox_mapData.Location = new System.Drawing.Point(13, 156);
+            this.textBox_mapData.Location = new System.Drawing.Point(13, 192);
             this.textBox_mapData.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBox_mapData.Name = "textBox_mapData";
             this.textBox_mapData.Size = new System.Drawing.Size(271, 23);
@@ -197,7 +187,7 @@
             // 
             // textBox_TourneyStuff
             // 
-            this.textBox_TourneyStuff.Location = new System.Drawing.Point(16, 399);
+            this.textBox_TourneyStuff.Location = new System.Drawing.Point(16, 435);
             this.textBox_TourneyStuff.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBox_TourneyStuff.Multiline = true;
             this.textBox_TourneyStuff.Name = "textBox_TourneyStuff";
@@ -207,7 +197,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(18, 381);
+            this.label8.Location = new System.Drawing.Point(18, 417);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(120, 15);
@@ -216,7 +206,7 @@
             // 
             // textBox_readTime
             // 
-            this.textBox_readTime.Location = new System.Drawing.Point(451, 312);
+            this.textBox_readTime.Location = new System.Drawing.Point(451, 348);
             this.textBox_readTime.Multiline = true;
             this.textBox_readTime.Name = "textBox_readTime";
             this.textBox_readTime.Size = new System.Drawing.Size(168, 53);
@@ -224,7 +214,7 @@
             // 
             // button_ResetReadTimeMinMax
             // 
-            this.button_ResetReadTimeMinMax.Location = new System.Drawing.Point(625, 342);
+            this.button_ResetReadTimeMinMax.Location = new System.Drawing.Point(625, 378);
             this.button_ResetReadTimeMinMax.Name = "button_ResetReadTimeMinMax";
             this.button_ResetReadTimeMinMax.Size = new System.Drawing.Size(75, 23);
             this.button_ResetReadTimeMinMax.TabIndex = 17;
@@ -239,7 +229,7 @@
             this.groupBox1.Controls.Add(this.checkBox_CurrentSkinData);
             this.groupBox1.Controls.Add(this.checkBox_Mods);
             this.groupBox1.Controls.Add(this.checkBox_OsuBase);
-            this.groupBox1.Location = new System.Drawing.Point(451, 371);
+            this.groupBox1.Location = new System.Drawing.Point(451, 407);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(298, 153);
             this.groupBox1.TabIndex = 18;
@@ -320,7 +310,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(923, 550);
+            this.ClientSize = new System.Drawing.Size(923, 583);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button_ResetReadTimeMinMax);
             this.Controls.Add(this.textBox_readTime);

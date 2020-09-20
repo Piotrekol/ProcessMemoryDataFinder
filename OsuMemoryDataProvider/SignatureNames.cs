@@ -39,6 +39,8 @@ namespace OsuMemoryDataProvider
         PlayerHpSmoothed,
         PlayTime,
         Retrys,
+        Plays,
+        IsPlaying,
 
         PlayerName,
         HitErrors,

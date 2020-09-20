@@ -73,6 +73,8 @@ namespace OsuMemoryDataProviderTester
                         var mapFolderName = string.Empty;
                         var osuFileName = string.Empty;
                         var retrys = -1;
+                        var plays = -1;
+                        var isPlaying = false;
                         var gameMode = -1;
                         var mapData = string.Empty;
                         var status = OsuMemoryStatus.Unknown;
@@ -86,6 +88,8 @@ namespace OsuMemoryDataProviderTester
                             mapFolderName = _reader.GetMapFolderName();
                             osuFileName = _reader.GetOsuFileName();
                             retrys = _reader.GetRetrys();
+                            plays = _reader.GetPlays();
+                            isPlaying = _reader.GetPlayingStatus();
                             gameMode = _reader.ReadSongSelectGameMode();
                             mapData =
                                 $"HP:{_reader.GetMapHp()} OD:{_reader.GetMapOd()}, CS:{_reader.GetMapCs()}, AR:{_reader.GetMapAr()}, setId:{_reader.GetMapSetId()}";
@@ -190,6 +194,8 @@ namespace OsuMemoryDataProviderTester
                                                   $"mapFolder: \"{mapFolderName}\" {Environment.NewLine}" +
                                                   $"fileName: \"{osuFileName}\" {Environment.NewLine}" +
                                                   $"Retrys:{retrys} {Environment.NewLine}" +
+                                                  $"Plays:{plays} {Environment.NewLine}" +
+                                                  $"isPlaying:{isPlaying} {Environment.NewLine}" +
                                                   $"mods:{(Mods)mods}({mods}) {Environment.NewLine}" +
                                                   $"SkinName: \"{skinFolderName}\"";
                            textBox_time.Text = playTime.ToString();

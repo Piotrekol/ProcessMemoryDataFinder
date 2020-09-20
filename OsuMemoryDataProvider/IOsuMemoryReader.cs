@@ -45,7 +45,10 @@ namespace OsuMemoryDataProvider
         ushort ReadComboMax();
 
         int GetRetrys();
-        
+        int GetPlays();
+        bool GetPlayingStatus();
+
+
         int ReadScore();
 
         /// <summary>

@@ -53,6 +53,20 @@ namespace OsuMemoryDataProvider
                 PointerOffsets = { 8 }
             });
 
+            Signatures.Add((int)SignatureNames.Plays, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -51,
+                PointerOffsets = { 12 }
+            });
+
+            Signatures.Add((int)SignatureNames.IsPlaying, new SigEx
+            {
+                ParentSig = Signatures[(int)SignatureNames.OsuBase],
+                Offset = -51,
+                PointerOffsets = { 34 }
+            });
+
             CreateBeatmapDataSignatures();
 
             Signatures.Add((int)SignatureNames.OsuStatus, new SigEx
@@ -512,6 +526,16 @@ namespace OsuMemoryDataProvider
             return GetInt((int)SignatureNames.Retrys);
         }
 
+        public int GetPlays()
+        {
+            return GetInt((int)SignatureNames.Plays);
+        }
+
+        public bool GetPlayingStatus()
+        {
+            return GetBoolean((int)SignatureNames.IsPlaying);
+        }
+
         public int ReadScore()
         {
             return GetInt((int)SignatureNames.Score);
@@ -615,6 +639,20 @@ namespace OsuMemoryDataProvider
 
         #endregion
 
+        protected override bool GetBoolean(int signatureId)
+        {
+            lock (_lockingObject)
+            {
+#if DEBUG && MemoryTimes
+                LogCaller("Start");
+#endif
+                ResetPointer(signatureId);
+                return base.GetBoolean(signatureId);
+#if DEBUG && MemoryTimes
+                LogCaller("End");
+#endif
+            }
+        }
 
         protected override int GetInt(int signatureId)
         {
