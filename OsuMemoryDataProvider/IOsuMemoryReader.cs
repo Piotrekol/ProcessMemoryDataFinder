@@ -47,6 +47,7 @@ namespace OsuMemoryDataProvider
         int GetRetrys();
         
         int ReadScore();
+        bool IsReplay();
 
         /// <summary>
         ///this works for both normal score and V2 but requires 5 pointer jumps compared to 2 in <see cref="ReadScore"/>

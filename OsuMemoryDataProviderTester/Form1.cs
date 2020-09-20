@@ -123,6 +123,7 @@ namespace OsuMemoryDataProviderTester
                         var playingMods = -1;
                         double displayedPlayerHp = 0;
                         int scoreV2 = -1;
+                        bool isReplay = false;
                         if (status == OsuMemoryStatus.Playing && patternsToRead.PlayContainer)
                         {
                             playReseted = false;
@@ -133,6 +134,7 @@ namespace OsuMemoryDataProviderTester
                             playingMods = _reader.GetPlayingMods();
                             displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
                             scoreV2 = _reader.ReadScoreV2();
+                            isReplay = _reader.IsReplay();
                         }
                         else if (!playReseted)
                         {
@@ -199,6 +201,7 @@ namespace OsuMemoryDataProviderTester
                            textBox_CurrentPlayData.Text =
                                playContainer + Environment.NewLine +
                                $"scoreV2: {scoreV2} {Environment.NewLine}" +
+                               $"IsReplay: {isReplay} {Environment.NewLine}" +
                                $"hp________: {hp:00.##} {Environment.NewLine}" +
                                $"displayedHp: {displayedPlayerHp:00.##} {Environment.NewLine}" +
                                $"playingMods:{(Mods)playingMods} ({playingMods}) " +

@@ -39,6 +39,7 @@ namespace OsuMemoryDataProvider
                 Pattern = UnpackStr("F80174048365"),
                 UseMask = false
             });
+
             Signatures.Add((int)SignatureNames.GameMode, new SigEx
             {
                 ParentSig = Signatures[(int)SignatureNames.OsuBase],
@@ -75,6 +76,16 @@ namespace OsuMemoryDataProvider
                 Pattern = UnpackStr("C8FF0000000000810D0000000000080000"),
                 Mask = "xx?????xx????xxxx",
                 Offset = 9,
+                PointerOffsets = { 0 },
+                UseMask = true,
+            };
+
+            Signatures[(int)SignatureNames.IsReplay] = new SigEx
+            {
+                Name = "IsReplay",
+                Pattern = UnpackStr("741A80000000000000741180"),
+                Mask = "xxx??????xxx",
+                Offset = 13,
                 PointerOffsets = { 0 },
                 UseMask = true,
             };
@@ -515,6 +526,11 @@ namespace OsuMemoryDataProvider
         public int ReadScore()
         {
             return GetInt((int)SignatureNames.Score);
+        }
+
+        public bool IsReplay()
+        {
+            return GetBoolean((int)SignatureNames.IsReplay);
         }
 
         public int ReadScoreV2()
