@@ -67,6 +67,11 @@ namespace ProcessMemoryDataFinder.API
         }
 
         #region Signature readers
+        protected virtual bool GetBoolean(int signatureId)
+        {
+            var sig = InitSignature(signatureId);
+            return sig.GetBoolean();
+        }
 
         protected virtual int GetInt(int signatureId)
         {
