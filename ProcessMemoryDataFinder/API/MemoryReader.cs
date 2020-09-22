@@ -4,15 +4,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ProcessMemoryDataFinder.Misc;
-using Exception = System.Exception;
 
 namespace ProcessMemoryDataFinder.API
 {
-    public abstract class MemoryReader
+    public abstract class MemoryReader : IDisposable
     {
         public delegate IntPtr FindPatternF(byte[] btPattern, string strMask, int nOffset, bool useMask);
-
         public delegate byte[] ReadDataF(IntPtr adress, uint size);
 
         private readonly MemoryProcessAddressFinder _internals = new MemoryProcessAddressFinder();
@@ -22,13 +22,8 @@ namespace ProcessMemoryDataFinder.API
         private readonly ProcessMemoryReader _reader = new ProcessMemoryReader();
         private readonly SigScan _sigScan = new SigScan();
         private Process _currentProcess;
-
-        protected MemoryReader(string processName, string mainWindowTitleHint)
-        {
-            _processName = processName;
-            _mainWindowTitleHint = mainWindowTitleHint;
-        }
-
+        private Task ProcessWatcher;
+        private CancellationTokenSource cts = new CancellationTokenSource();
         protected virtual Process CurrentProcess
         {
             get => _currentProcess;
@@ -38,6 +33,30 @@ namespace ProcessMemoryDataFinder.API
                 _sigScan.Process = value;
                 _reader.ReadProcess = value;
                 ProcessChanged();
+                _reader.OpenProcess();
+            }
+        }
+
+        protected MemoryReader(string processName, string mainWindowTitleHint)
+        {
+            _processName = processName;
+            _mainWindowTitleHint = mainWindowTitleHint;
+            ProcessWatcher = Task.Run(MonitorProcess, cts.Token);
+        }
+
+        protected async Task MonitorProcess()
+        {
+            while (true)
+            {
+                if (cts.IsCancellationRequested)
+                    return;
+
+                if (CurrentProcess == null || CurrentProcess.SafeHasExited())
+                {
+                    OpenProcess();
+                }
+
+                await Task.Delay(1000);
             }
         }
 
@@ -45,7 +64,7 @@ namespace ProcessMemoryDataFinder.API
 
         protected IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask)
         {
-            var pageExecuteRead = (uint) MemoryProtectionOptions.PAGE_EXECUTE_READ;
+            var pageExecuteRead = (uint)MemoryProtectionOptions.PAGE_EXECUTE_READ;
             IntPtr result;
             foreach (var memoryAdress in GetMemoryAddresses())
             {
@@ -56,7 +75,7 @@ namespace ProcessMemoryDataFinder.API
 
                 _sigScan.ResetRegion();
                 _sigScan.Address = memoryAdress.BaseAddress;
-                _sigScan.Size = (int) memoryAdress.RegionSize;
+                _sigScan.Size = (int)memoryAdress.RegionSize;
                 if (useMask)
                 {
                     result = _sigScan.FindPattern(btPattern, strMask, nOffset);
@@ -77,22 +96,7 @@ namespace ProcessMemoryDataFinder.API
 
         protected byte[] ReadData(IntPtr address, uint size)
         {
-            if (address == IntPtr.Zero)
-            {
-                return null;
-            }
-
-            if (CurrentProcess == null || CurrentProcess.SafeHasExited())
-            {
-                OpenProcess();
-            }
-
-            if (CurrentProcess == null)
-            {
-                return null;
-            }
-
-            if (_reader.OpenProcess() == IntPtr.Zero)
+            if (address == IntPtr.Zero || CurrentProcess == null)
             {
                 return null;
             }
@@ -112,15 +116,10 @@ namespace ProcessMemoryDataFinder.API
         {
             try
             {
-                if (CurrentProcess != null && !CurrentProcess.SafeHasExited())
-                {
-                    return;
-                }
-
                 IEnumerable<Process> p = Process.GetProcessesByName(_processName);
-                if(!string.IsNullOrEmpty(_mainWindowTitleHint))
+                if (!string.IsNullOrEmpty(_mainWindowTitleHint))
                 {
-                    p = p.Where(x => x.MainWindowTitle.IndexOf(_mainWindowTitleHint) >= 0);
+                    p = p.Where(x => x.MainWindowTitle.IndexOf(_mainWindowTitleHint, StringComparison.Ordinal) >= 0);
                 }
                 var resolvedProcess = p.FirstOrDefault();
                 if (resolvedProcess != null || CurrentProcess != null)
@@ -136,7 +135,6 @@ namespace ProcessMemoryDataFinder.API
 
         private IEnumerable<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION> GetMemoryAddresses()
         {
-            OpenProcess();
             if (CurrentProcess == null)
             {
                 yield break;
@@ -164,6 +162,23 @@ namespace ProcessMemoryDataFinder.API
             PAGE_WRITECOPY = 0x08,
             PAGE_TARGETS_INVALID = 0x40000000,
             PAGE_TARGETS_NO_UPDATE = 0x40000000
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                cts?.Cancel();
+
+                ProcessWatcher?.Dispose();
+                _currentProcess?.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
