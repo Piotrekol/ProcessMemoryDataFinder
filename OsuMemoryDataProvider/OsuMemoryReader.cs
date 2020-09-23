@@ -230,9 +230,9 @@ namespace OsuMemoryDataProvider
                 //avaliable only when playing;
                 //need to reset on each play
                 Name = "PlayContainer",
-                Pattern = UnpackStr("85C9741F8D55F08B01"),
-                Offset = -4,
-                PointerOffsets = { 0 },
+                Pattern = UnpackStr("894608EB2A8B35"),
+                Offset = 7,
+                PointerOffsets = { 0x4, 0xC4, 0x4 },
                 UseMask = false
             });
 
