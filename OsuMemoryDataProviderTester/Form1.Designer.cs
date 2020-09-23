@@ -47,6 +47,7 @@
             this.textBox_readTime = new System.Windows.Forms.TextBox();
             this.button_ResetReadTimeMinMax = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox_IsReplay = new System.Windows.Forms.CheckBox();
             this.checkBox_PlayContainer = new System.Windows.Forms.CheckBox();
             this.checkBox_TourneyBase = new System.Windows.Forms.CheckBox();
             this.checkBox_CurrentSkinData = new System.Windows.Forms.CheckBox();
@@ -155,14 +156,14 @@
             // numericUpDown_readDelay
             // 
             this.numericUpDown_readDelay.Location = new System.Drawing.Point(451, 276);
-            this.numericUpDown_readDelay.Name = "numericUpDown_readDelay";
-            this.numericUpDown_readDelay.Size = new System.Drawing.Size(178, 23);
-            this.numericUpDown_readDelay.TabIndex = 10;
             this.numericUpDown_readDelay.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
+            this.numericUpDown_readDelay.Name = "numericUpDown_readDelay";
+            this.numericUpDown_readDelay.Size = new System.Drawing.Size(178, 23);
+            this.numericUpDown_readDelay.TabIndex = 10;
             this.numericUpDown_readDelay.Value = new decimal(new int[] {
             33,
             0,
@@ -234,6 +235,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBox_IsReplay);
             this.groupBox1.Controls.Add(this.checkBox_PlayContainer);
             this.groupBox1.Controls.Add(this.checkBox_TourneyBase);
             this.groupBox1.Controls.Add(this.checkBox_CurrentSkinData);
@@ -241,10 +243,24 @@
             this.groupBox1.Controls.Add(this.checkBox_OsuBase);
             this.groupBox1.Location = new System.Drawing.Point(451, 371);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(298, 153);
+            this.groupBox1.Size = new System.Drawing.Size(326, 153);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enabled Patterns";
+            // 
+            // checkBox_IsReplay
+            // 
+            this.checkBox_IsReplay.AutoSize = true;
+            this.checkBox_IsReplay.Checked = true;
+            this.checkBox_IsReplay.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_IsReplay.Location = new System.Drawing.Point(226, 47);
+            this.checkBox_IsReplay.Name = "checkBox_IsReplay";
+            this.checkBox_IsReplay.Size = new System.Drawing.Size(69, 19);
+            this.checkBox_IsReplay.TabIndex = 2;
+            this.checkBox_IsReplay.Tag = "IsReplay";
+            this.checkBox_IsReplay.Text = "IsReplay";
+            this.checkBox_IsReplay.UseVisualStyleBackColor = true;
+            this.checkBox_IsReplay.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
             // checkBox_PlayContainer
             // 
@@ -279,7 +295,7 @@
             this.checkBox_CurrentSkinData.AutoSize = true;
             this.checkBox_CurrentSkinData.Checked = true;
             this.checkBox_CurrentSkinData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_CurrentSkinData.Location = new System.Drawing.Point(85, 22);
+            this.checkBox_CurrentSkinData.Location = new System.Drawing.Point(157, 22);
             this.checkBox_CurrentSkinData.Name = "checkBox_CurrentSkinData";
             this.checkBox_CurrentSkinData.Size = new System.Drawing.Size(112, 19);
             this.checkBox_CurrentSkinData.TabIndex = 3;
@@ -293,7 +309,7 @@
             this.checkBox_Mods.AutoSize = true;
             this.checkBox_Mods.Checked = true;
             this.checkBox_Mods.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Mods.Location = new System.Drawing.Point(203, 22);
+            this.checkBox_Mods.Location = new System.Drawing.Point(89, 22);
             this.checkBox_Mods.Name = "checkBox_Mods";
             this.checkBox_Mods.Size = new System.Drawing.Size(56, 19);
             this.checkBox_Mods.TabIndex = 2;
@@ -377,6 +393,7 @@
         private System.Windows.Forms.CheckBox checkBox_CurrentSkinData;
         private System.Windows.Forms.CheckBox checkBox_TourneyBase;
         private System.Windows.Forms.CheckBox checkBox_PlayContainer;
+        private System.Windows.Forms.CheckBox checkBox_IsReplay;
     }
 }
 
