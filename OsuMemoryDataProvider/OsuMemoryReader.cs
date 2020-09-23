@@ -631,6 +631,20 @@ namespace OsuMemoryDataProvider
 
         #endregion
 
+        protected override bool GetBoolean(int signatureId)
+        {
+            lock (_lockingObject)
+            {
+#if DEBUG && MemoryTimes
+                LogCaller("Start");
+#endif
+                ResetPointer(signatureId);
+                return base.GetBoolean(signatureId);
+#if DEBUG && MemoryTimes
+                LogCaller("End");
+#endif
+            }
+        }
 
         protected override int GetInt(int signatureId)
         {
