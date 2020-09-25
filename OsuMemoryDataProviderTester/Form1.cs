@@ -115,6 +115,16 @@ namespace OsuMemoryDataProviderTester
 
                         #endregion
 
+                        #region IsReplay
+
+                        bool isReplay = false;
+                        if (status == OsuMemoryStatus.Playing && patternsToRead.IsReplay)
+                        {
+                            isReplay = _reader.IsReplay();
+                        }
+
+                        #endregion
+
                         #region PlayContainer
 
                         double hp = 0;
@@ -123,7 +133,6 @@ namespace OsuMemoryDataProviderTester
                         var playingMods = -1;
                         double displayedPlayerHp = 0;
                         int scoreV2 = -1;
-                        bool isReplay = false;
                         if (status == OsuMemoryStatus.Playing && patternsToRead.PlayContainer)
                         {
                             playReseted = false;
@@ -134,7 +143,6 @@ namespace OsuMemoryDataProviderTester
                             playingMods = _reader.GetPlayingMods();
                             displayedPlayerHp = _reader.ReadDisplayedPlayerHp();
                             scoreV2 = _reader.ReadScoreV2();
-                            isReplay = _reader.IsReplay();
                         }
                         else if (!playReseted)
                         {
@@ -282,6 +290,7 @@ namespace OsuMemoryDataProviderTester
     {
         public readonly bool OsuBase;
         public readonly bool Mods;
+        public readonly bool IsReplay;
         public readonly bool CurrentSkinData;
         public readonly bool TourneyBase;
         public readonly bool PlayContainer;
@@ -290,6 +299,7 @@ namespace OsuMemoryDataProviderTester
         {
             OsuBase = !patternsToSkip.Contains(nameof(OsuBase));
             Mods = !patternsToSkip.Contains(nameof(Mods));
+            IsReplay = !patternsToSkip.Contains(nameof(IsReplay));
             CurrentSkinData = !patternsToSkip.Contains(nameof(CurrentSkinData));
             TourneyBase = !patternsToSkip.Contains(nameof(TourneyBase));
             PlayContainer = !patternsToSkip.Contains(nameof(PlayContainer));
