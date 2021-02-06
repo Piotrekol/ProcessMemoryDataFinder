@@ -3,11 +3,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using ProcessMemoryDataFinder;
 using ProcessMemoryDataFinder.API;
 
 namespace OsuMemoryDataProvider
 {
-    public class OsuMemoryReader : MemoryReaderEx, IOsuMemoryReader
+    public class OsuMemoryReader : SigMemoryReader, IOsuMemoryReader
     {
         protected readonly object _lockingObject = new object();
 
@@ -36,7 +37,7 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.OsuBase, new SigEx
             {
                 Name = "OsuBase",
-                Pattern = UnpackStr("F80174048365"),
+                Pattern = PatternHelpers.UnpackStr("F80174048365"),
                 UseMask = false
             });
 
@@ -73,7 +74,7 @@ namespace OsuMemoryDataProvider
             Signatures[(int)SignatureNames.Mods] = new SigEx
             {
                 Name = "mods",
-                Pattern = UnpackStr("C8FF0000000000810D0000000000080000"),
+                Pattern = PatternHelpers.UnpackStr("C8FF0000000000810D0000000000080000"),
                 Mask = "xx?????xx????xxxx",
                 Offset = 9,
                 PointerOffsets = { 0 },
@@ -83,7 +84,7 @@ namespace OsuMemoryDataProvider
             Signatures[(int)SignatureNames.IsReplay] = new SigEx
             {
                 Name = "IsReplay",
-                Pattern = UnpackStr("741A80000000000000741180"),
+                Pattern = PatternHelpers.UnpackStr("741A80000000000000741180"),
                 Mask = "xxx??????xxx",
                 Offset = 13,
                 PointerOffsets = { 0 },
@@ -100,7 +101,7 @@ namespace OsuMemoryDataProvider
             Signatures[(int)SignatureNames.CurrentSkinData] = new SigEx
             {
                 Name = "currentSkinData",
-                Pattern = UnpackStr("75218b1d"),
+                Pattern = PatternHelpers.UnpackStr("75218b1d"),
                 UseMask = false,
                 Offset = 4,
                 PointerOffsets = { 0, 0 }
@@ -187,7 +188,7 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.TourneyBase, new SigEx
             {
                 Name = "TourneyBase",
-                Pattern = UnpackStr("7D15A10000000085C0"),
+                Pattern = PatternHelpers.UnpackStr("7D15A10000000085C0"),
                 Mask = "xxx????xx",
                 Offset = -0xB
             });
@@ -230,7 +231,7 @@ namespace OsuMemoryDataProvider
                 //avaliable only when playing;
                 //need to reset on each play
                 Name = "PlayContainer",
-                Pattern = UnpackStr("894608EB2A8B35"),
+                Pattern = PatternHelpers.UnpackStr("894608EB2A8B35"),
                 Offset = 7,
                 PointerOffsets = { 0x4, 0xC4, 0x4 },
                 UseMask = false

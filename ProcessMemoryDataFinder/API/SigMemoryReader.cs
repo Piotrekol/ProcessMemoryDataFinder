@@ -3,18 +3,16 @@ using System.Collections.Generic;
 
 namespace ProcessMemoryDataFinder.API
 {
-    public abstract class MemoryReaderEx : MemoryReader
+    public abstract class SigMemoryReader : MemoryReader
     {
         protected Dictionary<int, SigEx> Signatures = new Dictionary<int, SigEx>();
-
-        protected MemoryReaderEx(string processName, string mainWindowTitleHint = null) : base(processName, mainWindowTitleHint)
+        protected IObjectReader ObjectReader;
+        protected SigMemoryReader(string processName, string mainWindowTitleHint = null) : base(processName, mainWindowTitleHint)
         {
+            ObjectReader = new ObjectReader(this);
+            ProcessChanged += (_, __) => ResetAllSignatures();
         }
 
-        protected override void ProcessChanged()
-        {
-            ResetAllSignatures();
-        }
 
         public void ResetAllSignatures()
         {
@@ -46,24 +44,8 @@ namespace ProcessMemoryDataFinder.API
             var sig = Signatures[signatureId];
             sig.SetFindPatternF(FindPattern);
             sig.SetReadDataF(ReadData);
+            sig.SetObjectReader(ObjectReader);
             return sig;
-        }
-
-        protected static byte[] UnpackStr(string str)
-        {
-            return StringToByteArray(str);
-        }
-
-        protected static byte[] StringToByteArray(string hex)
-        {
-            var numberChars = hex.Length;
-            var bytes = new byte[numberChars / 2];
-            for (var i = 0; i < numberChars; i += 2)
-            {
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            }
-
-            return bytes;
         }
 
         #region Signature readers

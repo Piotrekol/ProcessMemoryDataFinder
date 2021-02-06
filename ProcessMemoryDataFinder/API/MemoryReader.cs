@@ -10,7 +10,7 @@ using ProcessMemoryDataFinder.Misc;
 
 namespace ProcessMemoryDataFinder.API
 {
-    public abstract class MemoryReader : IDisposable
+    public class MemoryReader : IDisposable
     {
         public delegate IntPtr FindPatternF(byte[] btPattern, string strMask, int nOffset, bool useMask);
         public delegate byte[] ReadDataF(IntPtr adress, uint size);
@@ -24,6 +24,7 @@ namespace ProcessMemoryDataFinder.API
         private Process _currentProcess;
         private Task ProcessWatcher;
         private CancellationTokenSource cts = new CancellationTokenSource();
+        public event EventHandler ProcessChanged;
         protected virtual Process CurrentProcess
         {
             get => _currentProcess;
@@ -32,12 +33,12 @@ namespace ProcessMemoryDataFinder.API
                 _currentProcess = value;
                 _sigScan.Process = value;
                 _reader.ReadProcess = value;
-                ProcessChanged();
+                ProcessChanged?.Invoke(null, EventArgs.Empty);
                 _reader.OpenProcess();
             }
         }
 
-        protected MemoryReader(string processName, string mainWindowTitleHint)
+        public MemoryReader(string processName, string mainWindowTitleHint)
         {
             _processName = processName;
             _mainWindowTitleHint = mainWindowTitleHint;
@@ -60,9 +61,8 @@ namespace ProcessMemoryDataFinder.API
             }
         }
 
-        protected abstract void ProcessChanged();
 
-        protected IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask)
+        public IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask)
         {
             var pageExecuteRead = (uint)MemoryProtectionOptions.PAGE_EXECUTE_READ;
             IntPtr result;
@@ -94,7 +94,7 @@ namespace ProcessMemoryDataFinder.API
             return IntPtr.Zero;
         }
 
-        protected byte[] ReadData(IntPtr address, uint size)
+        public byte[] ReadData(IntPtr address, uint size)
         {
             if (address == IntPtr.Zero || CurrentProcess == null)
             {
@@ -172,6 +172,7 @@ namespace ProcessMemoryDataFinder.API
 
                 ProcessWatcher?.Dispose();
                 _currentProcess?.Dispose();
+                cts?.Dispose();
             }
         }
 

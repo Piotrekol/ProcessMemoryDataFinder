@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OsuMemoryDataProvider;
+using OsuMemoryDataProvider.Models;
 
 namespace OsuMemoryDataProviderTester
 {
@@ -19,12 +20,14 @@ namespace OsuMemoryDataProviderTester
         private double _memoryReadTimeMax = double.NegativeInfinity;
         private readonly ISet<string> _patternsToSkip = new HashSet<string>();
         private readonly IOsuMemoryReader _reader;
+        private readonly StructuredOsuMemoryReader _sreader;
         private CancellationTokenSource cts = new CancellationTokenSource();
         public Form1(string osuWindowTitleHint)
         {
             _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
             _reader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+            _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
             Shown += OnShown;
             Closing += OnClosing;
             numericUpDown_readDelay.ValueChanged += NumericUpDownReadDelayOnValueChanged;
@@ -54,8 +57,11 @@ namespace OsuMemoryDataProviderTester
             {
                 try
                 {
+                    Stopwatch stopwatch;
+                    double readTimeMs, readTimeMsMin, readTimeMsMax;
                     var playContainer = new PlayContainerEx();
                     var playReseted = false;
+                    var baseAddresses = new BaseAddresses();
                     while (true)
                     {
                         if (cts.IsCancellationRequested)
@@ -63,7 +69,7 @@ namespace OsuMemoryDataProviderTester
 
                         var patternsToRead = GetPatternsToRead();
 
-                        var stopwatch = Stopwatch.StartNew();
+                        stopwatch = Stopwatch.StartNew();
 
                         #region OsuBase
 
@@ -176,9 +182,7 @@ namespace OsuMemoryDataProviderTester
 
                         stopwatch.Stop();
 
-                        var readTimeMs = stopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
-                        double readTimeMsMin;
-                        double readTimeMsMax;
+                        readTimeMs = stopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
                         lock (_minMaxLock)
                         {
                             if (readTimeMs < _memoryReadTimeMin) _memoryReadTimeMin = readTimeMs;
