@@ -33,14 +33,20 @@ namespace OsuMemoryDataProvider
 
         public Dictionary<string, string> BaseAddresses { get; } = new Dictionary<string, string>
         {
+            //class pointers
             {"Base", "F80174048365"},
             {"CurrentBeatmap","[Base-0xC]"},
-            {"OsuStatus", "[Base-0x3C]"},
             {"CurrentSkinData","[75218B1D+0x4]"},
             {"CurrentRuleset","[C7864801000001000000A1+0xB]+0x4"},// or backup: 7D15A1????????85C0-B]+4 //TourneyBase
-            {"IsReplay","[[741A80????????????741180+0xD]]"},
 
-            {"Mods","[[C8FF??????????810D????????00080000+0x9]]"},
+
+            //static values
+            {"OsuStatus", "[Base-0x3C]"},
+            {"GameMode", "[Base-0x33]"},
+            {"Retries", "[Base-0x33]+0x8"},
+            {"AudioTime","[Base+0x64]-0x10"},
+            {"Mods","[C8FF??????????810D????????00080000+0x9]"},
+            {"IsReplay","[741A80????????????741180+0xD]"},
         };
 
         public StructuredOsuMemoryReader(string mainWindowTitleHint = null)
