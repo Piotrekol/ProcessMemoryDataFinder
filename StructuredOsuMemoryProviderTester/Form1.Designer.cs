@@ -35,6 +35,7 @@ namespace StructuredOsuMemoryProviderTester
             this.label6 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.textBox_Data = new System.Windows.Forms.TextBox();
+            this.textBox_ReadTimes = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_readDelay)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +93,7 @@ namespace StructuredOsuMemoryProviderTester
             this.panel1.Controls.Add(this.button_ResetReadTimeMinMax);
             this.panel1.Controls.Add(this.numericUpDown_readDelay);
             this.panel1.Controls.Add(this.textBox_readTime);
-            this.panel1.Location = new System.Drawing.Point(524, 12);
+            this.panel1.Location = new System.Drawing.Point(595, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(264, 121);
             this.panel1.TabIndex = 22;
@@ -106,14 +107,26 @@ namespace StructuredOsuMemoryProviderTester
             this.textBox_Data.Multiline = true;
             this.textBox_Data.Name = "textBox_Data";
             this.textBox_Data.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.textBox_Data.Size = new System.Drawing.Size(518, 450);
+            this.textBox_Data.Size = new System.Drawing.Size(589, 578);
             this.textBox_Data.TabIndex = 23;
+            // 
+            // textBox_ReadTimes
+            // 
+            this.textBox_ReadTimes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_ReadTimes.Location = new System.Drawing.Point(595, 235);
+            this.textBox_ReadTimes.Multiline = true;
+            this.textBox_ReadTimes.Name = "textBox_ReadTimes";
+            this.textBox_ReadTimes.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.textBox_ReadTimes.Size = new System.Drawing.Size(276, 343);
+            this.textBox_ReadTimes.TabIndex = 24;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(871, 578);
+            this.Controls.Add(this.textBox_ReadTimes);
             this.Controls.Add(this.textBox_Data);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
@@ -134,6 +147,7 @@ namespace StructuredOsuMemoryProviderTester
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox textBox_Data;
+        private System.Windows.Forms.TextBox textBox_ReadTimes;
     }
 }
 

@@ -68,20 +68,23 @@ namespace ProcessMemoryDataFinder.Structured
                     case TokenType.CloseBracket:
                         var result = _memoryReader.ReadData(baseAddress, (uint)IntPtr.Size);
                         if (result == null || result.Length != IntPtr.Size)
-                            throw new InvalidPointerReadException();
+                            return IntPtr.Zero;
 
                         baseAddress = new IntPtr(BitConverter.ToInt32(result, 0));
                         break;
-                    case TokenType.HexValue:
+                    case TokenType.HexValue when lastToken == TokenType.Add || lastToken == TokenType.Subtract:
                         ProcessValue(Convert.ToInt32(token.Value, 16));
                         break;
-                    case TokenType.NumberValue:
+                    case TokenType.NumberValue when lastToken == TokenType.Add || lastToken == TokenType.Subtract:
                         ProcessValue(Convert.ToInt32(token.Value));
                         break;
                     case TokenType.OpenBracket:
                     case TokenType.Add:
                     case TokenType.Subtract:
+                    case TokenType.SequenceTerminator:
                         break;
+                    default:
+                        throw new InvalidAddressPatternException();
                 }
 
                 lastToken = token.TokenType;
@@ -91,16 +94,12 @@ namespace ProcessMemoryDataFinder.Structured
 
             void ProcessValue(int value)
             {
-                if (lastToken == TokenType.Add)
-                    baseAddress += value;
-                else if (lastToken == TokenType.Subtract)
-                    baseAddress -= value;
-                else
-                    throw new InvalidAddressPatternException();
+                baseAddress += lastToken == TokenType.Add
+                    ? value
+                    : -value;
             }
         }
         public class UnknownConstantAddressException : Exception { }
-        public class InvalidPointerReadException : Exception { }
         public class InvalidAddressPatternException : Exception { }
 
     }

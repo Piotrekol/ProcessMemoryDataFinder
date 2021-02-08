@@ -2,7 +2,7 @@
 
 namespace ProcessMemoryDataFinder.Structured
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.All, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false)]
     public class MemoryAddressAttribute : Attribute
     {
         public string RelativePath { get; }

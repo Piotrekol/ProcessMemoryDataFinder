@@ -17,6 +17,14 @@ namespace OsuMemoryDataProvider
         private static readonly ConcurrentDictionary<string, StructuredOsuMemoryReader> Instances =
             new ConcurrentDictionary<string, StructuredOsuMemoryReader>();
 
+        public bool WithTimes
+        {
+            get => _memoryReader.WithTimes;
+            set => _memoryReader.WithTimes = value;
+        } 
+        public Dictionary<string, double> ReadTimes => _memoryReader.ReadTimes;
+
+
         public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
         {
             if (string.IsNullOrEmpty(windowTitleHint)) return Instance;

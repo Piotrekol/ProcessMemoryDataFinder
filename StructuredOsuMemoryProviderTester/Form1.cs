@@ -57,13 +57,12 @@ namespace StructuredOsuMemoryProviderTester
         private async void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
-            var tbaseAddresses = new BaseAddresses();
             await Task.Run(async () =>
             {
                 Stopwatch stopwatch;
                 double readTimeMs, readTimeMsMin, readTimeMsMax;
-                var playReseted = false;
                 var baseAddresses = new BaseAddresses();
+                _sreader.WithTimes = true;
                 while (true)
                 {
                     if (cts.IsCancellationRequested)
@@ -72,11 +71,19 @@ namespace StructuredOsuMemoryProviderTester
                     stopwatch = Stopwatch.StartNew();
                     _sreader.Read(baseAddresses.Beatmap);
                     _sreader.Read(baseAddresses.Skin);
-                    _sreader.Read(baseAddresses.OsuStatus);
-                    if (baseAddresses.OsuStatus.Status == OsuMemoryStatus.ResultsScreen)
+                    _sreader.Read(baseAddresses.MiscData);
+                    if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.Read(baseAddresses.ResultsScreen);
-                    if (baseAddresses.OsuStatus.Status == OsuMemoryStatus.Playing)
+                    if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.Playing)
                         _sreader.Read(baseAddresses.Play);
+
+                    if (baseAddresses.Play?.HitErrors != null)
+                    {
+                        var hitErrorsCount = baseAddresses.Play.HitErrors.Count;
+                        baseAddresses.Play.HitErrors.Clear();
+                        baseAddresses.Play.HitErrors.Add(hitErrorsCount);
+                    }
+
                     stopwatch.Stop();
 
                     readTimeMs = stopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
@@ -88,14 +95,25 @@ namespace StructuredOsuMemoryProviderTester
                         readTimeMsMin = _memoryReadTimeMin;
                         readTimeMsMax = _memoryReadTimeMax;
                     }
-                    Invoke((MethodInvoker)(() =>
-                    {
-                        textBox_readTime.Text = $"         ReadTimeMS: {readTimeMs}{Environment.NewLine}" +
-                                                $" Min ReadTimeMS: {readTimeMsMin}{Environment.NewLine}" +
-                                                $"Max ReadTimeMS: {readTimeMsMax}{Environment.NewLine}";
-                        textBox_Data.Text = JsonConvert.SerializeObject(baseAddresses, Formatting.Indented);
-                    }));
 
+                    try
+                    {
+                        Invoke((MethodInvoker) (() =>
+                        {
+                            textBox_readTime.Text = $"         ReadTimeMS: {readTimeMs}{Environment.NewLine}" +
+                                                    $" Min ReadTimeMS: {readTimeMsMin}{Environment.NewLine}" +
+                                                    $"Max ReadTimeMS: {readTimeMsMax}{Environment.NewLine}";
+                            textBox_Data.Text = JsonConvert.SerializeObject(baseAddresses, Formatting.Indented);
+                            textBox_ReadTimes.Text =
+                                JsonConvert.SerializeObject(_sreader.ReadTimes, Formatting.Indented);
+                        }));
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        return;
+                    }
+
+                    _sreader.ReadTimes.Clear();
                     await Task.Delay(_readDelay);
                 }
             }, cts.Token);

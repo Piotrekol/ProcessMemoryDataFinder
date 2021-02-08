@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using ProcessMemoryDataFinder.API;
@@ -13,6 +14,14 @@ namespace ProcessMemoryDataFinder.Structured
         private AddressFinder _addressFinder;
         private AddressTokenizer _addressTokenizer = new AddressTokenizer();
         protected IObjectReader ObjectReader;
+        /// <summary>
+        /// Should memory read times be tracked and saved in <see cref="ReadTimes"/>?
+        /// </summary>
+        public bool WithTimes { get; set; }
+        /// <summary>
+        /// When <see cref="WithTimes"/> is true, stores per-prop read times
+        /// </summary>
+        public Dictionary<string, double> ReadTimes { get; } = new Dictionary<string, double>();
         private Dictionary<object, (Type Type, string ClassPath, List<PropInfo> Props)> typeCache =
             new Dictionary<object, (Type Type, string ClassPath, List<PropInfo> Props)>();
         protected Dictionary<Type, object> DefaultValues = new Dictionary<Type, object>
@@ -27,8 +36,7 @@ namespace ProcessMemoryDataFinder.Structured
             { typeof(int[]) , null },
             { typeof(List<int>) , null },
         };
-
-        public Dictionary<Type, uint> SizeDictionary = new Dictionary<Type, uint>
+        protected Dictionary<Type, uint> SizeDictionary = new Dictionary<Type, uint>
         {
             { typeof(int) , 4 },
             { typeof(short) , 2 },
@@ -70,6 +78,8 @@ namespace ProcessMemoryDataFinder.Structured
             _addressFinder.ResetGroupReadCache();
             return InternalRead(readObj);
         }
+        
+        Stopwatch readStopwatch;
 
         protected T InternalRead<T>(T readObj) where T : class
         {
@@ -86,8 +96,19 @@ namespace ProcessMemoryDataFinder.Structured
                 }
                 else
                 {
+                    if (WithTimes)
+                        readStopwatch = Stopwatch.StartNew();
+                    
                     var result = ReadObjectAt(ResolvePath(cacheEntry.ClassPath, prop.MemoryPath), prop.PropType);
                     prop.Setter(result ?? DefaultValues[prop.PropType]);
+                    
+                    if (WithTimes)
+                    {
+                        readStopwatch.Stop();
+
+                        var readTimeMs = readStopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
+                        ReadTimes[prop.Path] = readTimeMs;
+                    }
                 }
             }
             return readObj;
@@ -106,16 +127,9 @@ namespace ProcessMemoryDataFinder.Structured
                 var p = prop.GetCustomAttribute(typeof(MemoryAddressAttribute), true);
                 if (p is MemoryAddressAttribute memoryAddressAttribute)
                 {
-                    Action<object> setterInvoker = v => prop.SetValue(readObject, v);
-
-                    if (prop.Name.Contains("HitErrors"))
-                    {
-                        var a = prop.PropertyType.GetGenericTypeDefinition();
-                        var ba = a== typeof(List<>);
-                    }
                     typeCache[readObject].Props.Add(new PropInfo($"{type.Name}.{prop.Name}", prop, prop.PropertyType, prop.PropertyType.IsClass,
                         prop.PropertyType == typeof(string) || (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
-                        , memoryAddressAttribute.RelativePath, setterInvoker));
+                        , memoryAddressAttribute.RelativePath, v => prop.SetValue(readObject, v)));
                 }
             }
 
@@ -136,7 +150,7 @@ namespace ProcessMemoryDataFinder.Structured
             var propValue = _memoryReader.ReadData(finalAddress, SizeDictionary[type]);
             if (propValue == null)
                 return null;
-            
+
             if (type == typeof(int))
                 return BitConverter.ToInt32(propValue, 0);
             if (type == typeof(float))
