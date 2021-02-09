@@ -93,39 +93,40 @@ namespace StructuredOsuMemoryProviderTester
             this.panel1.Controls.Add(this.button_ResetReadTimeMinMax);
             this.panel1.Controls.Add(this.numericUpDown_readDelay);
             this.panel1.Controls.Add(this.textBox_readTime);
-            this.panel1.Location = new System.Drawing.Point(595, 12);
+            this.panel1.Location = new System.Drawing.Point(550, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(264, 121);
             this.panel1.TabIndex = 22;
             // 
             // textBox_Data
             // 
-            this.textBox_Data.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_Data.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox_Data.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox_Data.Location = new System.Drawing.Point(0, 0);
             this.textBox_Data.Multiline = true;
             this.textBox_Data.Name = "textBox_Data";
-            this.textBox_Data.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.textBox_Data.Size = new System.Drawing.Size(589, 578);
+            this.textBox_Data.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox_Data.Size = new System.Drawing.Size(544, 578);
             this.textBox_Data.TabIndex = 23;
             // 
             // textBox_ReadTimes
             // 
-            this.textBox_ReadTimes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textBox_ReadTimes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_ReadTimes.Location = new System.Drawing.Point(595, 235);
+            this.textBox_ReadTimes.Location = new System.Drawing.Point(550, 139);
             this.textBox_ReadTimes.Multiline = true;
             this.textBox_ReadTimes.Name = "textBox_ReadTimes";
-            this.textBox_ReadTimes.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.textBox_ReadTimes.Size = new System.Drawing.Size(276, 343);
+            this.textBox_ReadTimes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox_ReadTimes.Size = new System.Drawing.Size(407, 439);
             this.textBox_ReadTimes.TabIndex = 24;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(871, 578);
+            this.ClientSize = new System.Drawing.Size(957, 578);
             this.Controls.Add(this.textBox_ReadTimes);
             this.Controls.Add(this.textBox_Data);
             this.Controls.Add(this.panel1);

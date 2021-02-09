@@ -75,13 +75,17 @@ namespace StructuredOsuMemoryProviderTester
                     if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.Read(baseAddresses.ResultsScreen);
                     if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.Playing)
-                        _sreader.Read(baseAddresses.Play);
-
-                    if (baseAddresses.Play?.HitErrors != null)
                     {
-                        var hitErrorsCount = baseAddresses.Play.HitErrors.Count;
-                        baseAddresses.Play.HitErrors.Clear();
-                        baseAddresses.Play.HitErrors.Add(hitErrorsCount);
+                        _sreader.Read(baseAddresses.Player);
+                        //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)
+                        _sreader.Read(baseAddresses.LeaderBoard);
+                    }
+
+                    if (baseAddresses.Player?.HitErrors != null)
+                    {
+                        var hitErrorsCount = baseAddresses.Player.HitErrors.Count;
+                        baseAddresses.Player.HitErrors.Clear();
+                        baseAddresses.Player.HitErrors.Add(hitErrorsCount);
                     }
 
                     stopwatch.Stop();

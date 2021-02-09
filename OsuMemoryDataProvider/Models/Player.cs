@@ -4,15 +4,15 @@ using ProcessMemoryDataFinder.Structured;
 namespace OsuMemoryDataProvider.Models
 {
     [MemoryAddress("[[CurrentRuleset] + 0x60]")]
-    public class Play : RulesetPlayData
+    public class Player : RulesetPlayData
     {
         //[MemoryAddress("")]
         //public int Retries { get; set; }
 
         [MemoryAddress("[+0x40]+0x14")]
-        public double PlayerHPSmooth { get; set; }
+        public double HPSmooth { get; set; }
         [MemoryAddress("[+0x40]+0x1C")]
-        public double PlayerHP { get; set; }
+        public double HP { get; set; }
         [MemoryAddress("[+0x48]+0xC")]
         public double Accuracy { get; set; }
         [MemoryAddress("[+0x38]+0x38")]
@@ -20,5 +20,7 @@ namespace OsuMemoryDataProvider.Models
 
         [MemoryAddress("IsReplay")]
         public bool IsReplay { get; set; }
+        [MemoryAddress(null)]
+        public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }
