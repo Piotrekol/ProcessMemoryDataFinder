@@ -8,9 +8,9 @@ namespace OsuMemoryDataProvider.Models
         [MemoryAddress("[+0x38]+0x28")]
         public string Username { get; set; }
         [MemoryAddress("[[+0x38]+0x1C]+0xC")]
-        public int ModsXor1 { get; set; }
+        private int ModsXor1 { get; set; }
         [MemoryAddress("[[+0x38]+0x1C]+0x8")]
-        public int ModsXor2 { get; set; }
+        private int ModsXor2 { get; set; }
         public int Mods => ModsXor1 ^ ModsXor2;
 
         [MemoryAddress("[+0x38]+0x64")]

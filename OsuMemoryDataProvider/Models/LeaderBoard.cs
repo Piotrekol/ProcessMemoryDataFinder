@@ -14,7 +14,7 @@ namespace OsuMemoryDataProvider.Models
         }
 
         [MemoryAddress("")]
-        public int RawHasLeaderboard { get; set; }
+        private int RawHasLeaderboard { get; set; }
         public bool HasLeaderBoard => RawHasLeaderboard != 0;
 
         [MemoryAddress("[[]+0x10]")]

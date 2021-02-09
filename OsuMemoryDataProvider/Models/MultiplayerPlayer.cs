@@ -13,9 +13,9 @@ namespace OsuMemoryDataProvider.Models
         [MemoryAddress("[+0x20]+0x68")]
         public ushort MaxCombo { get; set; }
         [MemoryAddress("[[+0x20]+0x1C]+0x8")]
-        public int ModsXor1 { get; set; }
+        private int ModsXor1 { get; set; }
         [MemoryAddress("[[+0x20]+0x1C]+0xC")]
-        public int ModsXor2 { get; set; }
+        private int ModsXor2 { get; set; }
         public int Mods => ModsXor1 ^ ModsXor2;
 
         [MemoryAddress("[+0x20]+0x8A")]
