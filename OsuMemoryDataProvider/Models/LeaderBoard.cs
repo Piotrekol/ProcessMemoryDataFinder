@@ -18,7 +18,7 @@ namespace OsuMemoryDataProvider.Models
         public bool HasLeaderBoard => RawHasLeaderboard != 0;
 
         [MemoryAddress("[[]+0x10]")]
-        public MultiplayerPlayer MainPlayer { get; set; } = new MultiplayerPlayer();
+        public MainPlayer MainPlayer { get; set; } = new MainPlayer();
 
         [MemoryAddress("[[]+0x4]+0xC")]
         public int AmountOfPlayers { get; set; }
