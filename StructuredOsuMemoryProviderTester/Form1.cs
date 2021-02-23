@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using OsuMemoryDataProvider;
 using OsuMemoryDataProvider.Models;
+using OsuMemoryDataProvider.Models.Memory;
 
 namespace StructuredOsuMemoryProviderTester
 {
@@ -57,21 +54,46 @@ namespace StructuredOsuMemoryProviderTester
         private async void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
+
             await Task.Run(async () =>
             {
                 Stopwatch stopwatch;
                 double readTimeMs, readTimeMsMin, readTimeMsMax;
-                var baseAddresses = new BaseAddresses();
                 _sreader.WithTimes = true;
+                var readUsingProperty= true;
+                var baseAddresses = new BaseAddresses();
                 while (true)
                 {
                     if (cts.IsCancellationRequested)
                         return;
 
                     stopwatch = Stopwatch.StartNew();
-                    _sreader.Read(baseAddresses.Beatmap);
-                    _sreader.Read(baseAddresses.Skin);
-                    _sreader.Read(baseAddresses.MiscData);
+                    if (readUsingProperty)
+                    {
+                        baseAddresses.Beatmap.Id = (int)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Id));
+                        baseAddresses.Beatmap.SetId = (int)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.SetId));
+                        baseAddresses.Beatmap.MapString = (string)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.MapString));
+                        baseAddresses.Beatmap.FolderName = (string)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.FolderName));
+                        baseAddresses.Beatmap.OsuFileName = (string)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.OsuFileName));
+                        baseAddresses.Beatmap.Md5 = (string)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Md5));
+                        baseAddresses.Beatmap.Ar = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Ar));
+                        baseAddresses.Beatmap.Cs = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Cs));
+                        baseAddresses.Beatmap.Hp = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Hp));
+                        baseAddresses.Beatmap.Od = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Od));
+                        baseAddresses.Skin.Folder = (string)_sreader.ReadProperty(baseAddresses.Skin, nameof(Skin.Folder));
+                        baseAddresses.MiscData.RawStatus = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.RawStatus));
+                        baseAddresses.MiscData.GameMode = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.GameMode));
+                        baseAddresses.MiscData.Retries = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.Retries));
+                        baseAddresses.MiscData.AudioTime = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.AudioTime));
+                        baseAddresses.MiscData.Mods = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.Mods));
+                        baseAddresses.MiscData.IsReplay = (bool)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.IsReplay));
+                    }
+                    else
+                    {
+                        _sreader.Read(baseAddresses.Beatmap);
+                        _sreader.Read(baseAddresses.Skin);
+                        _sreader.Read(baseAddresses.MiscData);
+                    }
                     if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.Read(baseAddresses.ResultsScreen);
                     if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.Playing)
@@ -79,6 +101,11 @@ namespace StructuredOsuMemoryProviderTester
                         _sreader.Read(baseAddresses.Player);
                         //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)
                         _sreader.Read(baseAddresses.LeaderBoard);
+                        if (readUsingProperty)
+                        {
+                            var mods = (Mods)_sreader.ReadProperty(baseAddresses.Player, nameof(Player.Mods));
+                            var HitErrors = (List<int>)_sreader.ReadProperty(baseAddresses.Player, nameof(Player.HitErrors));
+                        }
                     }
 
                     if (baseAddresses.Player?.HitErrors != null)

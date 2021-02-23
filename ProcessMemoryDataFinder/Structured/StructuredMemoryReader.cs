@@ -8,7 +8,7 @@ using ProcessMemoryDataFinder.Structured.Tokenizer;
 
 namespace ProcessMemoryDataFinder.Structured
 {
-    public class StructuredMemoryReader : IDisposable
+    public class StructuredMemoryReader : IDisposable, IStructuredMemoryReader
     {
         protected MemoryReader _memoryReader;
         private AddressFinder _addressFinder;
@@ -56,20 +56,16 @@ namespace ProcessMemoryDataFinder.Structured
             ObjectReader = objectReader ?? new ObjectReader(_memoryReader);
         }
 
-        /// <summary>
-        /// Reads data contained at <see cref="pattern"/>
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
-        public object Read<T>(string pattern) => ReadObjectAt(ResolvePath(null, pattern, null).FinalAddress, new PropInfo("", null, typeof(T), false, false, null, null, null));
+        public object ReadProperty(object readObj, string propertyName)
+        {
+            var cacheEntry = typeCache[PrepareReadObject(readObj, string.Empty)];
+            var propInfo = cacheEntry.Props.FirstOrDefault(p => p.PropertyInfo.Name == propertyName);
+            if (propInfo == null)
+                return null;
 
-        /// <summary>
-        /// Recursively reads all props in <see cref="T"/> hierarchy marked with <see cref="MemoryAddressAttribute"/>
-        /// </summary>
-        /// <typeparam name="T">class to read</typeparam>
-        /// <param name="readObj"><see cref="T"/></param>
-        /// <returns></returns>
+            return ResolveProp(readObj, IntPtr.Zero, propInfo, cacheEntry).PropValue;
+        }
+
         public T Read<T>(T readObj) where T : class
         {
             if (readObj == null)
@@ -79,48 +75,65 @@ namespace ProcessMemoryDataFinder.Structured
             return InternalRead(readObj);
         }
 
-
         protected T InternalRead<T>(T readObj, IntPtr? classAddress = null, string classPath = null) where T : class
         {
             var cacheEntry = typeCache[PrepareReadObject(readObj, classPath)];
+
             foreach (var prop in cacheEntry.Props)
             {
-                if (prop.IsClass && !prop.IsStringOrArrayOrList)
+                Stopwatch readStopwatch = null;
+                if (WithTimes)
+                    readStopwatch = Stopwatch.StartNew();
+
+                var result = ResolveProp(readObj, classAddress, prop, cacheEntry);
+                classAddress = result.ClassAdress;
+                SetPropValue(prop, result.PropValue);
+                if (WithTimes && readStopwatch != null)
                 {
-                    var propValue = prop.PropertyInfo.GetValue(readObj);
-                    if (propValue == null)
-                        continue;
-
-                    IntPtr? address = prop.MemoryPath == null
-                        ? (IntPtr?)null
-                        : ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress).FinalAddress;
-
-                    InternalRead(propValue, address, prop.Path);
-                }
-                else
-                {
-                    Stopwatch readStopwatch = null;
-                    if (WithTimes)
-                        readStopwatch = Stopwatch.StartNew();
-
-                    IntPtr propAddress;
-                    (propAddress, classAddress) = ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress);
-                    var result = ReadObjectAt(propAddress, prop);
-                    if (result != null)
-                        prop.Setter(result);
-                    else if (DefaultValues.ContainsKey(prop.PropType))
-                        prop.Setter(DefaultValues[prop.PropType]);
-
-                    if (WithTimes && readStopwatch != null)
-                    {
-                        readStopwatch.Stop();
-
-                        var readTimeMs = readStopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
-                        ReadTimes[prop.Path] = readTimeMs;
-                    }
+                    readStopwatch.Stop();
+                    var readTimeMs = readStopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
+                    ReadTimes[prop.Path] = readTimeMs;
                 }
             }
+
             return readObj;
+        }
+
+        private (IntPtr? ClassAdress, object PropValue) ResolveProp<T>(T readObj, IntPtr? classAddress, PropInfo prop,
+            (Type Type, string ClassPath, List<PropInfo> Props) cacheEntry) where T : class
+        {
+            if (prop.IsClass && !prop.IsStringOrArrayOrList)
+            {
+                var propValue = prop.PropertyInfo.GetValue(readObj);
+                if (propValue == null)
+                    return (classAddress, null);
+
+                IntPtr? address = prop.MemoryPath == null
+                    ? (IntPtr?)null
+                    : ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress).FinalAddress;
+
+                return (classAddress, InternalRead(propValue, address, prop.Path));
+            }
+
+            var result = ReadValueForPropInMemory(classAddress, prop, cacheEntry);
+            classAddress = result.ClassAddress;
+            return (classAddress, result.Result);
+        }
+
+        private (object Result, IntPtr ClassAddress) ReadValueForPropInMemory(IntPtr? classAddress, PropInfo prop,
+            (Type Type, string ClassPath, List<PropInfo> Props) cacheEntry)
+        {
+            var (propAddress, newClassAddress) = ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress);
+            var result = ReadObjectAt(propAddress, prop);
+            return (result, newClassAddress);
+        }
+
+        private void SetPropValue(PropInfo prop, object result)
+        {
+            if (result != null)
+                prop.Setter(result);
+            else if (DefaultValues.ContainsKey(prop.PropType))
+                prop.Setter(DefaultValues[prop.PropType]);
         }
 
         private T PrepareReadObject<T>(T readObject, string classPath)
@@ -133,19 +146,26 @@ namespace ProcessMemoryDataFinder.Structured
             typeCache[readObject] = (type, classMemoryPath, new List<PropInfo>());
             foreach (var prop in classProps)
             {
-                if (prop.GetCustomAttribute(typeof(MemoryAddressAttribute), true) is MemoryAddressAttribute memoryAddressAttribute)
-                {
-                    string finalPath = $"{type.Name}.{prop.Name}";
-                    if (!string.IsNullOrEmpty(classPath))
-                        finalPath = $"{classPath}.{finalPath}";
-
-                    typeCache[readObject].Props.Add(new PropInfo(finalPath, prop, prop.PropertyType, prop.PropertyType.IsClass,
-                        prop.PropertyType == typeof(string) || (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
-                        , memoryAddressAttribute.RelativePath, v => prop.SetValue(readObject, v), () => prop.GetValue(readObject)));
-                }
+                var propInfo = CreatePropInfo(readObject, prop, classPath, type.Name);
+                if (propInfo != null)
+                    typeCache[readObject].Props.Add(propInfo);
             }
 
             return readObject;
+        }
+
+        private PropInfo CreatePropInfo<T>(T readObject, PropertyInfo propertyInfo, string classPath, string parentTypeName)
+        {
+            if (!(propertyInfo.GetCustomAttribute(typeof(MemoryAddressAttribute), true) is MemoryAddressAttribute memoryAddressAttribute))
+                return null;
+
+            string finalPath = $"{parentTypeName}.{propertyInfo.Name}";
+            if (!string.IsNullOrEmpty(classPath))
+                finalPath = $"{classPath}.{finalPath}";
+
+            return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
+                propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                , memoryAddressAttribute.RelativePath, v => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
         }
 
         protected virtual object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)

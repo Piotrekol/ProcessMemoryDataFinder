@@ -1,4 +1,5 @@
-﻿using ProcessMemoryDataFinder.Structured;
+﻿using OsuMemoryDataProvider.Models.Memory;
+using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider.Models
 {
@@ -6,11 +7,9 @@ namespace OsuMemoryDataProvider.Models
     {
         [MemoryAddress("[+0x38]+0x28")]
         public string Username { get; set; }
-        [MemoryAddress("[[+0x38]+0x1C]+0xC")]
-        private int ModsXor1 { get; set; }
-        [MemoryAddress("[[+0x38]+0x1C]+0x8")]
-        private int ModsXor2 { get; set; }
-        public int Mods => ModsXor1 ^ ModsXor2;
+
+        [MemoryAddress("[+0x38]")]
+        public Mods Mods { get; set; } = new Mods();
 
         [MemoryAddress("[+0x38]+0x64")]
         public int Mode { get; set; }

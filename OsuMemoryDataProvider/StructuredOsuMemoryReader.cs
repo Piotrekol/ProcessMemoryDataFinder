@@ -6,10 +6,10 @@ using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider
 {
-    public class StructuredOsuMemoryReader : IDisposable
+    public class StructuredOsuMemoryReader : IStructuredMemoryReader, IDisposable
     {
         private StructuredMemoryReader _memoryReader;
-
+        public BaseAddresses OsuMemoryAddresses { get; } = new BaseAddresses();
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="StructuredOsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-pattern-location work
@@ -54,12 +54,11 @@ namespace OsuMemoryDataProvider
             _memoryReader = new MultiplayerPlayerStructuredMemoryReader("osu!", BaseAddresses, mainWindowTitleHint);
         }
 
-        public T Read<T>(T readObj) where T : class, new()
+        public T Read<T>(T readObj) where T : class
             => _memoryReader.Read(readObj);
 
-
-
-
+        public object ReadProperty(object readObj, string propertyName)
+            => _memoryReader.ReadProperty(readObj, propertyName);
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
