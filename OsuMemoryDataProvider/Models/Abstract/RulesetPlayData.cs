@@ -4,7 +4,6 @@ namespace OsuMemoryDataProvider.Models
 {
     public abstract class RulesetPlayData
     {
-
         [MemoryAddress("[+0x38]+0x28")]
         public string Username { get; set; }
         [MemoryAddress("[[+0x38]+0x1C]+0xC")]

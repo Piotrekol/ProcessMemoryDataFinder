@@ -5,7 +5,7 @@ namespace OsuMemoryDataProvider.Models
     public class MultiplayerPlayer
     {
         [MemoryAddress("+0x8")]
-        public string Name { get; set; }
+        public string Username { get; set; }
         [MemoryAddress("+0x30")]
         public int Score { get; set; }
         [MemoryAddress("[+0x20]+0x94")]
