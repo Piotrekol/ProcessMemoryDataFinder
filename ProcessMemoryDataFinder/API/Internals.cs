@@ -23,9 +23,9 @@ namespace ProcessMemoryDataFinder.API
         protected static extern int VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, int dwLength);
 
         /// <summary>
-        /// Finds process fragmented memory information and saves it to <see cref="MemReg"/> property
+        /// Finds process fragmented memory information
         /// </summary>
-        /// <param name="pHandle">The p handle.</param>
+        /// <param name="pHandle">process handle</param>
         public List<MEMORY_BASIC_INFORMATION> MemInfo(IntPtr pHandle)
         {
             IntPtr addy = new IntPtr();

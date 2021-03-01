@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace ProcessMemoryDataFinder.Structured
 {
-    public interface IStructuredMemoryReader
+    public interface IStructuredMemoryReader : IDisposable
     {
         /// <summary>
         /// Should memory read times be tracked and saved in <see cref="ReadTimes"/>?
@@ -30,7 +31,5 @@ namespace ProcessMemoryDataFinder.Structured
         /// <param name="propertyNameToRead"></param>
         /// <returns></returns>
         object ReadProperty(object readObj, string propertyName);
-
-        void Dispose();
     }
 }
