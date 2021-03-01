@@ -87,7 +87,6 @@ namespace StructuredOsuMemoryProviderTester
                         baseAddresses.GeneralData.Retries = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.Retries));
                         baseAddresses.GeneralData.AudioTime = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.AudioTime));
                         baseAddresses.GeneralData.Mods = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.Mods));
-                        baseAddresses.GeneralData.IsReplay = (bool)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.IsReplay));
                     }
                     else
                     {

@@ -17,8 +17,6 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         public int AudioTime { get; set; }
         [MemoryAddress("Mods")]
         public int Mods { get; set; }
-        [MemoryAddress("IsReplay")]
-        public bool IsReplay { get; set; }
         public OsuMemoryStatus OsuStatus
         {
             get
