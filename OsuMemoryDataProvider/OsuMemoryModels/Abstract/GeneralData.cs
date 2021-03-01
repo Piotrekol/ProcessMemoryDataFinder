@@ -1,9 +1,9 @@
 using System;
 using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
 {
-    public class Misc
+    public class GeneralData
     {
         [MemoryAddress("OsuStatus")]
         public int RawStatus { get; set; }

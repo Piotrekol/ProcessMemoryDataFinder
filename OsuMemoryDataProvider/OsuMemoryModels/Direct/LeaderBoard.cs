@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
     [MemoryAddress("[[CurrentRuleset]+0x74]+0x24")]
     public class LeaderBoard

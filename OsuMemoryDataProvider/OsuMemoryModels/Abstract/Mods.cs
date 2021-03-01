@@ -1,6 +1,6 @@
 ﻿using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models.Memory
+namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
 {
     public class Mods
     {

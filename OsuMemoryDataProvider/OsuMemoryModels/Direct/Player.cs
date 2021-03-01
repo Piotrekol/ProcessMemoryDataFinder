@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
     [MemoryAddress("[[CurrentRuleset] + 0x60]")]
     public class Player : RulesetPlayData

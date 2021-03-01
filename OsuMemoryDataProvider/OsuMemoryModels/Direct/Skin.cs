@@ -1,6 +1,6 @@
 ﻿using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
     [MemoryAddress("[CurrentSkinData]")]
     public class Skin

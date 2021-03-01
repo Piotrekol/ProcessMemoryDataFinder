@@ -1,6 +1,6 @@
 ﻿using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
     [MemoryAddress("[[[[CurrentRuleset]+0xA8]+0x10]+0x4]")]
     public class KeyOverlay

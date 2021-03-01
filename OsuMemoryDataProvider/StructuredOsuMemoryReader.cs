@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using OsuMemoryDataProvider.Models;
+using OsuMemoryDataProvider.OsuMemoryModels;
+using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider
@@ -9,7 +10,7 @@ namespace OsuMemoryDataProvider
     public class StructuredOsuMemoryReader : IStructuredMemoryReader, IDisposable
     {
         private StructuredMemoryReader _memoryReader;
-        public BaseAddresses OsuMemoryAddresses { get; } = new BaseAddresses();
+        public OsuBaseAddresses OsuMemoryAddresses { get; } = new OsuBaseAddresses();
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="StructuredOsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-pattern-location work

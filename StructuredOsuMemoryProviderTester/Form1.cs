@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using OsuMemoryDataProvider;
-using OsuMemoryDataProvider.Models;
-using OsuMemoryDataProvider.Models.Memory;
+using OsuMemoryDataProvider.OsuMemoryModels;
+using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
+using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 
 namespace StructuredOsuMemoryProviderTester
 {
@@ -60,8 +61,8 @@ namespace StructuredOsuMemoryProviderTester
                 Stopwatch stopwatch;
                 double readTimeMs, readTimeMsMin, readTimeMsMax;
                 _sreader.WithTimes = true;
-                var readUsingProperty= true;
-                var baseAddresses = new BaseAddresses();
+                var readUsingProperty= false;
+                var baseAddresses = new OsuBaseAddresses();
                 while (true)
                 {
                     if (cts.IsCancellationRequested)
@@ -81,22 +82,22 @@ namespace StructuredOsuMemoryProviderTester
                         baseAddresses.Beatmap.Hp = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Hp));
                         baseAddresses.Beatmap.Od = (float)_sreader.ReadProperty(baseAddresses.Beatmap, nameof(CurrentBeatmap.Od));
                         baseAddresses.Skin.Folder = (string)_sreader.ReadProperty(baseAddresses.Skin, nameof(Skin.Folder));
-                        baseAddresses.MiscData.RawStatus = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.RawStatus));
-                        baseAddresses.MiscData.GameMode = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.GameMode));
-                        baseAddresses.MiscData.Retries = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.Retries));
-                        baseAddresses.MiscData.AudioTime = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.AudioTime));
-                        baseAddresses.MiscData.Mods = (int)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.Mods));
-                        baseAddresses.MiscData.IsReplay = (bool)_sreader.ReadProperty(baseAddresses.MiscData, nameof(Misc.IsReplay));
+                        baseAddresses.GeneralData.RawStatus = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.RawStatus));
+                        baseAddresses.GeneralData.GameMode = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.GameMode));
+                        baseAddresses.GeneralData.Retries = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.Retries));
+                        baseAddresses.GeneralData.AudioTime = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.AudioTime));
+                        baseAddresses.GeneralData.Mods = (int)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.Mods));
+                        baseAddresses.GeneralData.IsReplay = (bool)_sreader.ReadProperty(baseAddresses.GeneralData, nameof(GeneralData.IsReplay));
                     }
                     else
                     {
                         _sreader.Read(baseAddresses.Beatmap);
                         _sreader.Read(baseAddresses.Skin);
-                        _sreader.Read(baseAddresses.MiscData);
+                        _sreader.Read(baseAddresses.GeneralData);
                     }
-                    if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.ResultsScreen)
+                    if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.Read(baseAddresses.ResultsScreen);
-                    if (baseAddresses.MiscData.OsuStatus == OsuMemoryStatus.Playing)
+                    if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing)
                     {
                         _sreader.Read(baseAddresses.Player);
                         //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)

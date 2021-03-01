@@ -1,9 +1,8 @@
-﻿using OsuMemoryDataProvider.Models.Memory;
-using ProcessMemoryDataFinder.Structured;
+﻿using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.Models
+namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
 {
-    public abstract class RulesetPlayData
+    public class RulesetPlayData
     {
         [MemoryAddress("[+0x38]+0x28")]
         public string Username { get; set; }

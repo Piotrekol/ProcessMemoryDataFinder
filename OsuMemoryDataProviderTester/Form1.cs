@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OsuMemoryDataProvider;
-using OsuMemoryDataProvider.Models;
+using OsuMemoryDataProvider.OsuMemoryModels;
 
 namespace OsuMemoryDataProviderTester
 {
@@ -61,7 +61,7 @@ namespace OsuMemoryDataProviderTester
                     double readTimeMs, readTimeMsMin, readTimeMsMax;
                     var playContainer = new PlayContainerEx();
                     var playReseted = false;
-                    var baseAddresses = new BaseAddresses();
+                    var baseAddresses = new OsuBaseAddresses();
                     while (true)
                     {
                         if (cts.IsCancellationRequested)
