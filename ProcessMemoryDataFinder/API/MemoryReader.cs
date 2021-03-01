@@ -25,6 +25,7 @@ namespace ProcessMemoryDataFinder.API
         private Task ProcessWatcher;
         private CancellationTokenSource cts = new CancellationTokenSource();
         public event EventHandler ProcessChanged;
+        protected virtual IntPtr CurrentProcessHandle { get; set; } = IntPtr.Zero;
         protected virtual Process CurrentProcess
         {
             get => _currentProcess;
@@ -35,6 +36,14 @@ namespace ProcessMemoryDataFinder.API
                 _reader.ReadProcess = value;
                 ProcessChanged?.Invoke(null, EventArgs.Empty);
                 _reader.OpenProcess();
+                try
+                {
+                    CurrentProcessHandle = value?.Handle ?? IntPtr.Zero;
+                }
+                catch (InvalidOperationException)
+                {
+                    CurrentProcessHandle = IntPtr.Zero;
+                }
             }
         }
 
@@ -56,14 +65,27 @@ namespace ProcessMemoryDataFinder.API
                 {
                     OpenProcess();
                 }
+                if (CurrentProcess != null)
+                {
+                    while (!CurrentProcess.WaitForExit(1000))
+                    {
+                        if (cts.IsCancellationRequested)
+                            return;
+                    }
 
-                await Task.Delay(1000);
+                    CurrentProcess = null;
+                }
+                else
+                    await Task.Delay(100);
             }
         }
 
 
         public IntPtr FindPattern(byte[] btPattern, string strMask, int nOffset, bool useMask)
         {
+            if (CurrentProcess == null)
+                return IntPtr.Zero;
+
             var pageExecuteRead = (uint)MemoryProtectionOptions.PAGE_EXECUTE_READ;
             IntPtr result;
             foreach (var memoryAdress in GetMemoryAddresses())
@@ -135,12 +157,7 @@ namespace ProcessMemoryDataFinder.API
 
         private IEnumerable<MemoryProcessAddressFinder.MEMORY_BASIC_INFORMATION> GetMemoryAddresses()
         {
-            if (CurrentProcess == null)
-            {
-                yield break;
-            }
-
-            var memInfoList = _internals.MemInfo(CurrentProcess.Handle);
+            var memInfoList = _internals.MemInfo(CurrentProcessHandle);
 
             foreach (var memoryInfo in memInfoList)
             {
