@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OsuMemoryDataProvider.OsuMemoryModels;
@@ -42,7 +42,7 @@ namespace OsuMemoryDataProvider
             {"CurrentRuleset","[C7864801000001000000A1+0xB]+0x4"},// or backup: 7D15A1????????85C0-B]+4 //TourneyBase
 
             //static values
-            {"OsuStatus", "[Base-0x3C]"},
+            {"OsuStatus", "[4883F804731E-0x4]"},//[Base-0x3C]
             {"GameMode", "[Base-0x33]"},
             {"Retries", "[Base-0x33]+0x8"},
             {"AudioTime","[Base+0x64]-0x10"},
