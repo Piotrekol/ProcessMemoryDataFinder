@@ -15,7 +15,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         [MemoryAddress("[+0x38]+0x68")]
         public ushort MaxCombo { get; set; }
         //[MemoryAddress("[+0x38]+0x78")]
-        [MemoryAddress("[[[[[+0x4C]+0xC]+0x68]+0x4]+0xF8]")] //reads both scoreV1 and V2
+        [MemoryAddress("[[[[+0x4C]+0xC]+0x68]+0x4]+0xF8")] //reads both scoreV1 and V2
         public int Score { get; set; }
         [MemoryAddress("[+0x38]+0x88")]
         public ushort Hit100 { get; set; }
