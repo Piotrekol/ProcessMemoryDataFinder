@@ -74,6 +74,7 @@ namespace OsuMemoryDataProviderTester
                         #region OsuBase
 
                         var mapId = -1;
+                        var mapSetId = -1;
                         var songString = string.Empty;
                         var mapMd5 = string.Empty;
                         var mapFolderName = string.Empty;
@@ -87,6 +88,7 @@ namespace OsuMemoryDataProviderTester
                         if (patternsToRead.OsuBase)
                         {
                             mapId = _reader.GetMapId();
+                            mapSetId = _reader.GetMapSetId();
                             songString = _reader.GetSongString();
                             mapMd5 = _reader.GetMapMd5();
                             mapFolderName = _reader.GetMapFolderName();
@@ -198,7 +200,7 @@ namespace OsuMemoryDataProviderTester
                                                    $" Min ReadTimeMS: {readTimeMsMin}{Environment.NewLine}" +
                                                    $"Max ReadTimeMS: {readTimeMsMax}{Environment.NewLine}";
 
-                           textBox_mapId.Text = mapId.ToString();
+                           textBox_mapId.Text = $"Id:{mapId} setId:{mapSetId}";
                            textBox_strings.Text = $"songString: \"{songString}\" {Environment.NewLine}" +
                                                   $"md5: \"{mapMd5}\" {Environment.NewLine}" +
                                                   $"mapFolder: \"{mapFolderName}\" {Environment.NewLine}" +

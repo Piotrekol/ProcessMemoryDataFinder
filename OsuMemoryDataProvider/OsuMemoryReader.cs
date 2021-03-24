@@ -439,7 +439,7 @@ namespace OsuMemoryDataProvider
             return GetFloat((int)SignatureNames.MapOd);
         }
 
-        public float GetMapSetId()
+        public int GetMapSetId()
         {
             return GetInt((int)SignatureNames.MapSetId);
         }
