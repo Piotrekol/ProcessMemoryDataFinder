@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ProcessMemoryDataFinder.API;
 using ProcessMemoryDataFinder.Structured.Tokenizer;
@@ -24,7 +24,8 @@ namespace ProcessMemoryDataFinder.Structured
 
         private void MemoryReaderOnProcessChanged(object sender, EventArgs e)
         {
-            ResetCache();
+            lock (_groupReadAddressesCache)
+                ResetCache();
         }
 
         private void ResetCache()
@@ -37,8 +38,16 @@ namespace ProcessMemoryDataFinder.Structured
 
         public IntPtr FindAddress(IReadOnlyList<DslToken> tokens, IntPtr baseAddress)
         {
-            if (_groupReadAddressesCache.ContainsKey((tokens, baseAddress)))
-                return _groupReadAddressesCache[(tokens, baseAddress)];
+            lock (_groupReadAddressesCache)
+            {
+                return InternalFindAddress(tokens, baseAddress);
+            }
+        }
+
+        private IntPtr InternalFindAddress(IReadOnlyList<DslToken> tokens, IntPtr baseAddress)
+        {
+            if (_groupReadAddressesCache.TryGetValue((tokens, baseAddress), out var address))
+                return address;
 
             var lastToken = TokenType.SequenceTerminator;
             foreach (var token in tokens)
@@ -49,8 +58,8 @@ namespace ProcessMemoryDataFinder.Structured
 
                         if (!_constantAddresses.ContainsKey(token.Value))
                             throw new UnknownConstantAddressException();
-                        if (_constantAddressesCache.ContainsKey(token.Value))
-                            baseAddress = _constantAddressesCache[token.Value];
+                        if (_constantAddressesCache.TryGetValue(token.Value, out var constantAdress))
+                            baseAddress = constantAdress;
                         else
                         {
                             var findResult = FindAddress(_addressTokenizer.Tokenize(_constantAddresses[token.Value]), IntPtr.Zero);
