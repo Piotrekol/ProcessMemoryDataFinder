@@ -12,11 +12,19 @@ namespace ProcessMemoryDataFinder
         string ReadUnicodeString(IntPtr baseAddress);
         byte[] ReadStringBytes(IntPtr baseAddress, int bytesPerCharacter = 2);
         IntPtr ReadPointer(IntPtr baseAddr);
+        int IntPtrSize { get; set; }
     }
 
     public class ObjectReader : IObjectReader
     {
         private readonly MemoryReader _memoryReader;
+
+        /// <summary>
+        /// Size of pointers in searched process
+        /// </summary>
+        public int IntPtrSize { get; set; } = IntPtr.Size;
+
+        private bool IsX64 => IntPtrSize == 8;
 
         public ObjectReader(MemoryReader memoryReader)
         {
@@ -64,7 +72,8 @@ namespace ProcessMemoryDataFinder
         public string ReadUnicodeString(IntPtr baseAddress)
         {
             var bytes = ReadStringBytes(baseAddress);
-            if (bytes == null || bytes.Length == 0) return null;
+            if (bytes == null) return null;
+            if (bytes.Length == 0) return string.Empty;
 
             return Encoding.Unicode.GetString(bytes);
         }
@@ -107,16 +116,13 @@ namespace ProcessMemoryDataFinder
             if (address == IntPtr.Zero) return (-1, IntPtr.Zero);
 
             int numberOfElements;
-            IntPtr firstElementPtr;
+            IntPtr firstElementPtr, numberOfElementsAddr;
 
             if (isList)
             {
                 // its a list, not an array, read the length from the list object and get the firstElementPtr from the internal array
-#if x64
-                var numberOfElementsAddr = address + 0x18;
-#else
-                var numberOfElementsAddr = address + 0x0C;
-#endif
+                numberOfElementsAddr = address + 3 * IntPtrSize; //(IsX64 ? 0x18 : 0x0C);
+
                 // in a list, regardless of platform, the size element is always 4 bytes
                 var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
                 if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
@@ -126,56 +132,51 @@ namespace ProcessMemoryDataFinder
                 // 1. skip VTable of list structure (4 or 8 bytes depending on platform)
                 // 2. resolve pinter to internal array
                 // 3. skip VTable and internal number of elements (both 4 or 8 bytes depending on platform)
-#if x64
-                var internalArray = ReadPointer(address + 8);
-                firstElementPtr = internalArray + 16;
-#else
-                var internalArray = ReadPointer(address + 4);
-                firstElementPtr = internalArray + 8;
-#endif
+                var internalArray = ReadPointer(address + IntPtrSize);
+                firstElementPtr = internalArray + 2 * IntPtrSize;// IsX64 ? internalArray +16 : internalArray + 8
             }
             else
             {
                 // normal array, first element in the structure is the length, skip VTable
-#if x64
-                var numberOfElementsAddr = address + 8;
-#else
-                var numberOfElementsAddr = address + 4;
-#endif
+                numberOfElementsAddr = address + IntPtrSize;
+
                 // in an array structure the size of of the numberOfElements field depends on the platform (4 bytes or 8 bytes)
                 // except for a string, then its always 4 bytes
                 // first element in the array is after the numberOfElements field
-#if x64
-                // 64bit platform, unless string size bytes is 8
-                if (isString)
+                if (IsX64)
                 {
-                    var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 4);
+                    // 64bit platform, unless string size bytes is 8
+                    if (isString)
+                    {
+                        var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
+                        if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
+                        numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
+                        firstElementPtr = numberOfElementsAddr + 4;
+                    }
+                    else
+                    {
+                        var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 8);
+                        if (numberOfElementBytes == null || numberOfElementBytes.Length != 8) return (-1, IntPtr.Zero);
+
+                        var numberOfElementsLong = BitConverter.ToInt64(numberOfElementBytes, 0);
+                        // ok, realistically we're probably never gonna get an array of more then 2^32-1 elements, so lets cast this down to an int
+                        if (numberOfElementsLong > int.MaxValue)
+                        {
+                            // unable to read, lets just return nothing
+                            return (-1, IntPtr.Zero);
+                        }
+                        numberOfElements = (int)numberOfElementsLong;
+                        firstElementPtr = numberOfElementsAddr + 8;
+                    }
+                }
+                else
+                {
+                    // 32bit platform, its always 4 bytes, regardless of the value of isString
+                    var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
                     if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
                     numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
                     firstElementPtr = numberOfElementsAddr + 4;
                 }
-                else
-                {
-                    var numberOfElementBytes = _readDataFunc(numberOfElementsAddr, 8);
-                    if (numberOfElementBytes == null || numberOfElementBytes.Length != 8) return (-1, IntPtr.Zero);
-
-                    var numberOfElementsLong = BitConverter.ToInt64(numberOfElementBytes, 0);
-                    // ok, realistically we're probably never gonna get an array of more then 2^32-1 elements, so lets cast this down to an int
-                    if (numberOfElementsLong > int.MaxValue)
-                    {
-                        // unable to read, lets just return nothing
-                        return (-1, IntPtr.Zero);
-                    }
-                    numberOfElements = (int) numberOfElementsLong;
-                    firstElementPtr = numberOfElementsAddr + 8;
-                }
-#else
-                // 32bit platform, its always 4 bytes, regardless of the value of isString
-                var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
-                if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
-                numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
-                firstElementPtr = numberOfElementsAddr + 4;
-#endif
             }
 
             return (numberOfElements, firstElementPtr);
@@ -183,15 +184,12 @@ namespace ProcessMemoryDataFinder
 
         public IntPtr ReadPointer(IntPtr baseAddr)
         {
-#if x64
             var data = _memoryReader.ReadData(baseAddr, 8);
             if (data != null)
-                return new IntPtr(BitConverter.ToInt64(data, 0));
-#else
-            var data = _memoryReader.ReadData(baseAddr, 4);
-            if (data != null)
-                return new IntPtr(BitConverter.ToInt32(data, 0));
-#endif
+                return new IntPtr(IsX64
+                    ? BitConverter.ToInt64(data, 0)
+                    : BitConverter.ToInt32(data, 0));
+
             return IntPtr.Zero;
         }
     }
