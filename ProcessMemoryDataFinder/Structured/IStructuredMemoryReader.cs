@@ -16,20 +16,26 @@ namespace ProcessMemoryDataFinder.Structured
         Dictionary<string, double> ReadTimes { get; }
 
         /// <summary>
+        /// Should an attempt at reading invalid address in <see cref="TryRead{T}"/> abort read call(and return false)?
+        /// </summary>
+        bool AbortReadOnInvalidValue { get; set; }
+
+        /// <summary>
         /// Recursively reads all props in <see cref="T"/> hierarchy marked with <see cref="MemoryAddressAttribute"/>
         /// </summary>
         /// <typeparam name="T">class to read</typeparam>
         /// <param name="readObj"><see cref="T"/></param>
         /// <param name="propertyNameToRead"></param>
         /// <returns></returns>
-        T Read<T>(T readObj) where T : class;
+        bool TryRead<T>(T readObj) where T : class;
 
         /// <summary>
         /// Reads single prop value in <see cref="readObj"/>
         /// </summary>
         /// <param name="readObj"></param>
         /// <param name="propertyNameToRead"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        object ReadProperty(object readObj, string propertyName);
+        bool TryReadProperty(object readObj, string propertyName, out object result);
     }
 }

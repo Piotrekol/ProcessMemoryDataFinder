@@ -25,6 +25,11 @@ namespace OsuMemoryDataProvider
             set => _memoryReader.WithTimes = value;
         }
         public Dictionary<string, double> ReadTimes => _memoryReader.ReadTimes;
+        public bool AbortReadOnInvalidValue
+        {
+            get => _memoryReader.AbortReadOnInvalidValue;
+            set => _memoryReader.AbortReadOnInvalidValue = value;
+        }
 
 
         public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
@@ -55,11 +60,11 @@ namespace OsuMemoryDataProvider
             _memoryReader = new MultiplayerPlayerStructuredMemoryReader("osu!", BaseAddresses, mainWindowTitleHint);
         }
 
-        public T Read<T>(T readObj) where T : class
-            => _memoryReader.Read(readObj);
+        public bool TryRead<T>(T readObj) where T : class
+            => _memoryReader.TryRead(readObj);
 
-        public object ReadProperty(object readObj, string propertyName)
-            => _memoryReader.ReadProperty(readObj, propertyName);
+        public bool TryReadProperty(object readObj, string propertyName, out object result)
+            => _memoryReader.TryReadProperty(readObj, propertyName, out result);
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -95,7 +100,7 @@ namespace OsuMemoryDataProvider
                     var path = $"{propInfo.Path}[*{playerClassPointers.Count}]";
                     for (int i = 0; i < playerClassPointers.Count; i++)
                     {
-                        InternalRead(playerList[i], new IntPtr(playerClassPointers[i]), path);
+                        TryInternalRead(playerList[i], new IntPtr(playerClassPointers[i]), path);
                     }
 
                     return playerList;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ProcessMemoryDataFinder.API;
 using ProcessMemoryDataFinder.Structured.Tokenizer;
@@ -13,6 +13,11 @@ namespace ProcessMemoryDataFinder.Structured
         private readonly Dictionary<(IReadOnlyList<DslToken> tokens, IntPtr baseAddress), IntPtr> _groupReadAddressesCache;
 
         private readonly AddressTokenizer _addressTokenizer = new AddressTokenizer();
+        /// <summary>
+        /// Size of pointers in searched process
+        /// </summary>
+        public int IntPtrSize { get; set; } = IntPtr.Size;
+
         public AddressFinder(MemoryReader memoryReader, Dictionary<string, string> constantAddresses)
         {
             _memoryReader = memoryReader;
@@ -74,8 +79,8 @@ namespace ProcessMemoryDataFinder.Structured
                         baseAddress = _memoryReader.FindPattern(pattern.Bytes, pattern.Mask, 0, pattern.Mask.Contains("?"));
                         break;
                     case TokenType.CloseBracket:
-                        var result = _memoryReader.ReadData(baseAddress, (uint)IntPtr.Size);
-                        if (result == null || result.Length != IntPtr.Size || AllZeros(result))
+                        var result = _memoryReader.ReadData(baseAddress, (uint)IntPtrSize);
+                        if (result == null || result.Length != IntPtrSize || AllZeros(result))
                             return _groupReadAddressesCache[(tokens, baseAddress)] = IntPtr.Zero;
 
                         baseAddress = new IntPtr(BitConverter.ToInt32(result, 0));
