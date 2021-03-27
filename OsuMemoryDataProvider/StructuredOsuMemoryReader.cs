@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OsuMemoryDataProvider.OsuMemoryModels;
@@ -53,6 +53,7 @@ namespace OsuMemoryDataProvider
             {"AudioTime","[Base+0x64]-0x10"},
             {"Mods","[C8FF??????????810D????????00080000+0x9]"},
             {"IsReplay","[741A80????????????741180+0xD]"},
+            {"ChatIsExpanded","0AD7233C0000??01-0x20"}
         };
 
         public StructuredOsuMemoryReader(string mainWindowTitleHint = null)
