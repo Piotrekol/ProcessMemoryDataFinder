@@ -72,7 +72,7 @@ namespace ProcessMemoryDataFinder.Structured
 
             var resolvedProp = ResolveProp(readObj, IntPtr.Zero, propInfo, cacheEntry);
             result = resolvedProp.PropValue;
-            return resolvedProp.ClassAdress != IntPtr.Zero || resolvedProp.PropClassAdress != IntPtr.Zero;
+            return resolvedProp.ClassAdress.HasValue && resolvedProp.ClassAdress != IntPtr.Zero;
         }
 
         public bool TryRead<T>(T readObj) where T : class
@@ -114,25 +114,25 @@ namespace ProcessMemoryDataFinder.Structured
             return true;
         }
 
-        private (IntPtr? ClassAdress, IntPtr? PropClassAdress, bool InvalidRead, object PropValue) ResolveProp<T>(T readObj, IntPtr? classAddress, PropInfo prop,
+        private (IntPtr? ClassAdress, bool InvalidRead, object PropValue) ResolveProp<T>(T readObj, IntPtr? classAddress, PropInfo prop,
             (Type Type, string ClassPath, List<PropInfo> Props) cacheEntry) where T : class
         {
             if (prop.IsClass && !prop.IsStringOrArrayOrList)
             {
                 var propValue = prop.PropertyInfo.GetValue(readObj);
                 if (propValue == null)
-                    return (classAddress, null, false, null);
+                    return (classAddress, false, null);
 
                 IntPtr? address = prop.MemoryPath == null
                     ? (IntPtr?)null
                     : ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress).FinalAddress;
 
                 var readSuccessful = TryInternalRead(propValue, address, prop.Path);
-                return (classAddress, address, !readSuccessful, propValue);
+                return (classAddress, !readSuccessful, propValue);
             }
 
             var result = ReadValueForPropInMemory(classAddress, prop, cacheEntry);
-            return (result.ClassAddress, null, result.InvalidRead, result.Result);
+            return (result.ClassAddress, result.InvalidRead, result.Result);
         }
 
         private (object Result, IntPtr ClassAddress, bool InvalidRead) ReadValueForPropInMemory(IntPtr? classAddress, PropInfo prop,
