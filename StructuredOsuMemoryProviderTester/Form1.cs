@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -121,19 +121,14 @@ namespace StructuredOsuMemoryProviderTester
                     if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.TryRead(baseAddresses.ResultsScreen);
 
-                    List<int> hitErrors = baseAddresses.Player?.HitErrors;
                     if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.Playing)
                     {
                         _sreader.TryRead(baseAddresses.Player);
                         //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)
                         _sreader.TryRead(baseAddresses.LeaderBoard);
-                        if (readUsingProperty)
-                        {
-                            var mods = ReadClassProperty<Mods>(baseAddresses.Player, nameof(Player.Mods));
-                            hitErrors = ReadClassProperty<List<int>>(baseAddresses.Player, nameof(Player.HitErrors));
-                        }
                     }
 
+                    var hitErrors = baseAddresses.Player?.HitErrors;
                     if (hitErrors != null)
                     {
                         var hitErrorsCount = hitErrors.Count;
@@ -142,7 +137,6 @@ namespace StructuredOsuMemoryProviderTester
                     }
 
                     stopwatch.Stop();
-
                     readTimeMs = stopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
                     lock (_minMaxLock)
                     {
