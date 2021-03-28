@@ -126,6 +126,11 @@ namespace StructuredOsuMemoryProviderTester
                         _sreader.TryRead(baseAddresses.Player);
                         //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)
                         _sreader.TryRead(baseAddresses.LeaderBoard);
+                        if (readUsingProperty)
+                        {
+                            //Testing reading of reference types(other than string)
+                            _sreader.TryReadProperty(baseAddresses.Player, nameof(Player.Mods), out var dummyResult);
+                        }
                     }
 
                     var hitErrors = baseAddresses.Player?.HitErrors;

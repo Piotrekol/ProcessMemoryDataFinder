@@ -72,7 +72,7 @@ namespace ProcessMemoryDataFinder.Structured
 
             var resolvedProp = ResolveProp(readObj, IntPtr.Zero, propInfo, cacheEntry);
             result = resolvedProp.PropValue;
-            return resolvedProp.ClassAdress.HasValue && resolvedProp.ClassAdress != IntPtr.Zero;
+            return !resolvedProp.InvalidRead;
         }
 
         public bool TryRead<T>(T readObj) where T : class
