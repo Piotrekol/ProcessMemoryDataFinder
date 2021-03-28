@@ -16,10 +16,15 @@ jobs:
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         nuget-version: 'latest'
-    - name: upload tester
+    - name: upload sig tester
       uses: actions/upload-artifact@v2
       with:
-        name: memoryTesterNet741
+        name: sigMemoryTester-Net471
         path: OsuMemoryDataProviderTester\bin\x86\Release\net471\*
+    - name: upload structured tester
+      uses: actions/upload-artifact@v2
+      with:
+        name: structuredMemoryTester-Net5
+        path: StructuredOsuMemoryProviderTester\bin\x86\Release\net5.0-windows\*
     - name: Nuget Push
       run: nuget push OsuMemoryDataProvider\bin\x86\Release\*.nupkg -Source https://api.nuget.org/v3/index.json
