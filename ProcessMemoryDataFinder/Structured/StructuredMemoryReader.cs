@@ -146,7 +146,7 @@ namespace ProcessMemoryDataFinder.Structured
 
         private void SetPropValue(PropInfo prop, object result)
         {
-            if (result != null)
+            if (result != null || prop.IsNullable)
                 prop.Setter(result);
             else if (DefaultValues.ContainsKey(prop.PropType))
                 prop.Setter(DefaultValues[prop.PropType]);
@@ -178,8 +178,8 @@ namespace ProcessMemoryDataFinder.Structured
             string finalPath = $"{parentTypeName}.{propertyInfo.Name}";
             if (!string.IsNullOrEmpty(classPath))
                 finalPath = $"{classPath}.{finalPath}";
-
-            return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
+            
+            return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
                 propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
                 Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, v => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
         }
@@ -188,7 +188,7 @@ namespace ProcessMemoryDataFinder.Structured
         {
             if (finalAddress == IntPtr.Zero) return null;
 
-            var type = propInfo.PropType;
+            var type = propInfo.UnderlyingPropType;
             if (type == typeof(string))
                 return ObjectReader.ReadUnicodeString(finalAddress);
             if (type == typeof(int[]))
@@ -197,7 +197,7 @@ namespace ProcessMemoryDataFinder.Structured
                 return ObjectReader.ReadIntList(finalAddress);
 
             if (!SizeDictionary.ContainsKey(type))
-                throw new NotImplementedException($"Type {type?.FullName} doesn't have its size set in SizeDictionary/DefaultValues. Override ReadObjectAt to read custom object lists/arrays.");
+                throw new NotImplementedException($"Prop {propInfo.Path} with type {type?.FullName} doesn't have its size set in SizeDictionary/DefaultValues. Override ReadObjectAt to read custom object lists/arrays.");
 
             var propValue = _memoryReader.ReadData(finalAddress, SizeDictionary[type]);
             if (propValue == null)
