@@ -2,9 +2,10 @@
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
-    [MemoryAddress("[[[[CurrentRuleset]+0xA8]+0x10]+0x4]")]
+    [MemoryAddress(KeyOverlay.ClassAddress)]
     public class KeyOverlay
     {
+        internal const string ClassAddress = "[[[[CurrentRuleset]+0xA8]+0x10]+0x4]";
         [MemoryAddress("[+0x8]+0x1C")]
         public bool K1Pressed { get; set; }
         [MemoryAddress("[+0x8]+0x14")]

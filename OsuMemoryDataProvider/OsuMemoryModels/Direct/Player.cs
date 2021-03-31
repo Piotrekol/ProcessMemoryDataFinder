@@ -21,7 +21,5 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 
         [MemoryAddress("IsReplay")]
         public bool IsReplay { get; set; }
-        [MemoryAddress(null)]
-        public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }
