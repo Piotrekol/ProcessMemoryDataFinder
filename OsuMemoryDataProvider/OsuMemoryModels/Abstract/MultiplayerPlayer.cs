@@ -8,22 +8,17 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         public string Username { get; set; }
         [MemoryAddress("+0x30")]
         public int Score { get; set; }
-        [MemoryAddress("[+0x20]+0x94")]
-        public ushort Combo { get; set; }
-        [MemoryAddress("[+0x20]+0x68")]
-        public ushort MaxCombo { get; set; }
 
         [MemoryAddress("[+0x20]")]
-        public Mods Mods { get; set; } = new Mods();
+        private MultiplayerPlayerPlayData _multiplayerPlayerPlayData { get; set; } = new MultiplayerPlayerPlayData();
 
-        [MemoryAddress("[+0x20]+0x8A")]
-        public ushort Hit300 { get; set; }
-        [MemoryAddress("[+0x20]+0x88")]
-        public ushort Hit100 { get; set; }
-        [MemoryAddress("[+0x20]+0x8C")]
-        public ushort Hit50 { get; set; }
-        [MemoryAddress("[+0x20]+0x92")]
-        public ushort HitMiss { get; set; }
+        public ushort Combo => _multiplayerPlayerPlayData?.Combo ?? 0;
+        public ushort MaxCombo => _multiplayerPlayerPlayData?.MaxCombo ?? 0;
+        public Mods Mods => _multiplayerPlayerPlayData?.Mods;
+        public ushort Hit300 => _multiplayerPlayerPlayData?.Hit300 ?? 0;
+        public ushort Hit100 => _multiplayerPlayerPlayData?.Hit100 ?? 0;
+        public ushort Hit50 => _multiplayerPlayerPlayData?.Hit50 ?? 0;
+        public ushort HitMiss => _multiplayerPlayerPlayData?.HitMiss ?? 0;
         [MemoryAddress("+0x40")]
         public int Team { get; set; }
         [MemoryAddress("+0x2C")]

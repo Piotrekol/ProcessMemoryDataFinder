@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using ProcessMemoryDataFinder.Structured;
@@ -15,25 +16,43 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         }
 
         [MemoryAddress("")]
-        private int RawHasLeaderboard { get; set; }
-        public bool HasLeaderBoard => RawHasLeaderboard != 0;
+        private int? RawHasLeaderboard { get; set; }
+        public bool HasLeaderBoard => RawHasLeaderboard.HasValue && RawHasLeaderboard != 0;
+        private MainPlayer _mainPlayer = new MainPlayer();
 
         [MemoryAddress("[[]+0x10]")]
-        public MainPlayer MainPlayer { get; set; } = new MainPlayer();
+        public MainPlayer MainPlayer
+        {
+            get => HasLeaderBoard ? _mainPlayer : null;
+            set => _mainPlayer = value;
+        }
+
+        private int? _amountOfPlayers;
 
         [MemoryAddress("[[]+0x4]+0xC")]
-        public int AmountOfPlayers { get; set; }
+        public int? AmountOfPlayers
+        {
+            get => _amountOfPlayers;
+            set
+            {
+                _amountOfPlayers = value;
+                if (value.HasValue && value.Value > 0)
+                    Players = _players.GetRange(0, value.Value);
+                else
+                    Players.Clear();
+            }
+        }
         private List<MultiplayerPlayer> _players;
         [MemoryAddress("[]+0x4")]
         private List<MultiplayerPlayer> RawPlayers
         {
-            get => _players;
+            //toggle reading of players depending on HasLeaderboard value
+            get => HasLeaderBoard ? _players : null;
             set
             {
                 _players = value;
-                Players = _players.GetRange(0, AmountOfPlayers > _players.Count ? _players.Count : AmountOfPlayers);
             }
         }
-        public List<MultiplayerPlayer> Players { get; private set; }
+        public List<MultiplayerPlayer> Players { get; private set; } = new List<MultiplayerPlayer>();
     }
 }
