@@ -103,9 +103,10 @@ namespace OsuMemoryDataProvider
                     if (playerClassPointers == null || playerClassPointers.Count == 0 || playerClassPointers.Count > playerList.Count)
                         return playerList;
 
-                    var path = $"{propInfo.Path}[*{playerClassPointers.Count}]";
                     for (int i = 0; i < playerClassPointers.Count; i++)
                     {
+                        var path = $"{propInfo.Path}[*{i}]";
+
                         TryInternalRead(playerList[i], new IntPtr(playerClassPointers[i]), path);
                     }
 
