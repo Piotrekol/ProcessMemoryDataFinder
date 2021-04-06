@@ -125,7 +125,8 @@ namespace StructuredOsuMemoryProviderTester
             // 
             // listBox_logs
             // 
-            this.listBox_logs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.listBox_logs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listBox_logs.FormattingEnabled = true;
             this.listBox_logs.ItemHeight = 15;
             this.listBox_logs.Location = new System.Drawing.Point(550, 503);

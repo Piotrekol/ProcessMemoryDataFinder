@@ -183,7 +183,8 @@ namespace StructuredOsuMemoryProviderTester
             {
                 if (InvokeRequired)
                 {
-                    Invoke((MethodInvoker)(() => SreaderOnInvalidRead(sender, e)));
+                    //Async call to not impact memory read times(too much)
+                    BeginInvoke((MethodInvoker)(() => SreaderOnInvalidRead(sender, e)));
                     return;
                 }
 
