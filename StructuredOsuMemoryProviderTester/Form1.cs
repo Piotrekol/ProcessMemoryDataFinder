@@ -88,6 +88,7 @@ namespace StructuredOsuMemoryProviderTester
                 _sreader.WithTimes = true;
                 var readUsingProperty = false;
                 var baseAddresses = new OsuBaseAddresses();
+                baseAddresses.GeneralData.KeyOverlay = null;
                 while (true)
                 {
                     if (cts.IsCancellationRequested)
