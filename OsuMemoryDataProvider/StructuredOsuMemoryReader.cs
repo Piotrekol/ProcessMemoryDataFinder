@@ -100,7 +100,7 @@ namespace OsuMemoryDataProvider
                 {
                     var playerClassPointers = ObjectReader.ReadIntList(finalAddress);
                     var playerList = (List<MultiplayerPlayer>)propInfo.Getter();
-                    if (playerClassPointers.Count == 0 || playerClassPointers.Count > playerList.Count)
+                    if (playerClassPointers == null || playerClassPointers.Count == 0 || playerClassPointers.Count > playerList.Count)
                         return playerList;
 
                     var path = $"{propInfo.Path}[*{playerClassPointers.Count}]";
