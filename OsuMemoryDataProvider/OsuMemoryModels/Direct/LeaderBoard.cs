@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
@@ -9,10 +9,12 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
     [MemoryAddress("[[CurrentRuleset]+0x74]+0x24")]
     public class LeaderBoard
     {
+        //single player: top50 + player top score + current score. possibly more with local scores leaderboard?
+        protected const int AmountOfPlayerSlots = 52;
+
         public LeaderBoard()
         {
-            //single player: top50 + player top score + current score
-            RawPlayers = Enumerable.Range(0, 52).Select(x => new MultiplayerPlayer()).ToList();
+            RawPlayers = Enumerable.Range(0, AmountOfPlayerSlots).Select(x => new MultiplayerPlayer()).ToList();
         }
 
         [MemoryAddress("")]
@@ -37,7 +39,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
             {
                 _amountOfPlayers = value;
                 if (value.HasValue && value.Value > 0)
-                    Players = _players.GetRange(0, value.Value);
+                    Players = _players.GetRange(0, Math.Clamp(value.Value, 0, AmountOfPlayerSlots));
                 else
                     Players.Clear();
             }
