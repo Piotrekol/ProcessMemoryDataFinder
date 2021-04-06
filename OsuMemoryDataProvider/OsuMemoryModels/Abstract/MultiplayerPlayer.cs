@@ -25,7 +25,5 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         public int Position { get; set; }
         [MemoryAddress("+0x4B")]
         public bool IsPassing { get; set; }
-        [MemoryAddress("[+0x24]+0x20")]
-        public bool IsLeaderboardVisible { get; set; }
     }
 }

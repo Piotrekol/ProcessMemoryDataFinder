@@ -6,6 +6,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
     [MemoryAddress("[[[[CurrentRuleset]+0x74]+0x24]+0x10]")]
     public class MainPlayer : MultiplayerPlayer
     {
-        
+        [MemoryAddress("[+0x24]+0x20")]
+        public bool IsLeaderboardVisible { get; set; }
     }
 }
