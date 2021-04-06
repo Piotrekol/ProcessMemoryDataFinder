@@ -26,17 +26,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
             }
         }
 
-        [MemoryAddress(KeyOverlay.ClassAddress)]
-        private int? KeyOverlayAddress { get; set; }
-
-        private bool KeyOverlayExists => KeyOverlayAddress.HasValue && KeyOverlayAddress != 0;
-        private KeyOverlay _keyOverlay { get; set; } = new KeyOverlay();
-
         [MemoryAddress(null)]
-        public KeyOverlay KeyOverlay
-        {
-            get => KeyOverlayExists ? _keyOverlay : null;
-            set => _keyOverlay = value;
-        }
+        public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }
