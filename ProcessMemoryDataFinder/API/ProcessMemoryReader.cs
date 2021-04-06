@@ -82,9 +82,8 @@ namespace ProcessMemoryDataFinder.API
                     ProcessMemoryReaderApi.ReadProcessMemory(m_hProcess, memoryAddress, buffer, bytesToRead,
                         out var lpNumberOfBytesRead) == 0)
                 {
-                    var error = Marshal.GetLastWin32Error();
-                    //Console.WriteLine(error);
-                    throw new Win32Exception(error);
+                    bytesRead = 0;
+                    return null;
                 }
 
                 // lpNumberOfBytesRead is an IntPtr here so technically if we are 32bit platform we should be calling ToInt32()
