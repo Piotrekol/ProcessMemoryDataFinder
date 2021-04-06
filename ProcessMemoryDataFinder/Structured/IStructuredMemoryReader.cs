@@ -20,6 +20,8 @@ namespace ProcessMemoryDataFinder.Structured
         /// </summary>
         bool AbortReadOnInvalidValue { get; set; }
 
+        event EventHandler<(object readObject, string propPath)> InvalidRead;
+
         /// <summary>
         /// Recursively reads all props in <see cref="T"/> hierarchy marked with <see cref="MemoryAddressAttribute"/>
         /// </summary>

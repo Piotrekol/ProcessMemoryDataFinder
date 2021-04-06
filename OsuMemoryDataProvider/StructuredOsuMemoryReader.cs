@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OsuMemoryDataProvider.OsuMemoryModels;
@@ -31,7 +31,12 @@ namespace OsuMemoryDataProvider
             set => _memoryReader.AbortReadOnInvalidValue = value;
         }
 
-
+        public event EventHandler<(object readObject, string propPath)> InvalidRead
+        {
+            add => _memoryReader.InvalidRead += value;
+            remove => _memoryReader.InvalidRead -= value;
+        }
+        
         public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
         {
             if (string.IsNullOrEmpty(windowTitleHint)) return Instance;

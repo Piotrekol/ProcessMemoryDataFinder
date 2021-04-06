@@ -36,6 +36,7 @@ namespace StructuredOsuMemoryProviderTester
             this.panel1 = new System.Windows.Forms.Panel();
             this.textBox_Data = new System.Windows.Forms.TextBox();
             this.textBox_ReadTimes = new System.Windows.Forms.TextBox();
+            this.listBox_logs = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_readDelay)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -119,14 +120,25 @@ namespace StructuredOsuMemoryProviderTester
             this.textBox_ReadTimes.Multiline = true;
             this.textBox_ReadTimes.Name = "textBox_ReadTimes";
             this.textBox_ReadTimes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_ReadTimes.Size = new System.Drawing.Size(407, 439);
+            this.textBox_ReadTimes.Size = new System.Drawing.Size(407, 358);
             this.textBox_ReadTimes.TabIndex = 24;
+            // 
+            // listBox_logs
+            // 
+            this.listBox_logs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.listBox_logs.FormattingEnabled = true;
+            this.listBox_logs.ItemHeight = 15;
+            this.listBox_logs.Location = new System.Drawing.Point(550, 503);
+            this.listBox_logs.Name = "listBox_logs";
+            this.listBox_logs.Size = new System.Drawing.Size(407, 79);
+            this.listBox_logs.TabIndex = 25;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(957, 578);
+            this.Controls.Add(this.listBox_logs);
             this.Controls.Add(this.textBox_ReadTimes);
             this.Controls.Add(this.textBox_Data);
             this.Controls.Add(this.panel1);
@@ -149,6 +161,7 @@ namespace StructuredOsuMemoryProviderTester
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox textBox_Data;
         private System.Windows.Forms.TextBox textBox_ReadTimes;
+        private System.Windows.Forms.ListBox listBox_logs;
     }
 }
 

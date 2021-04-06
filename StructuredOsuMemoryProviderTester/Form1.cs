@@ -80,6 +80,7 @@ namespace StructuredOsuMemoryProviderTester
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
 
+            _sreader.InvalidRead += SreaderOnInvalidRead;
             await Task.Run(async () =>
             {
                 Stopwatch stopwatch;
@@ -173,6 +174,29 @@ namespace StructuredOsuMemoryProviderTester
                     await Task.Delay(_readDelay);
                 }
             }, cts.Token);
+        }
+
+        private void SreaderOnInvalidRead(object sender, (object readObject, string propPath) e)
+        {
+            try
+            {
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)(() => SreaderOnInvalidRead(sender, e)));
+                    return;
+                }
+
+                listBox_logs.Items.Add($"{DateTime.Now:T} Error reading {e.propPath}{Environment.NewLine}");
+                if (listBox_logs.Items.Count > 500)
+                    listBox_logs.Items.RemoveAt(0);
+
+                listBox_logs.SelectedIndex = listBox_logs.Items.Count - 1;
+                listBox_logs.ClearSelected();
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
         }
 
         private void button_ResetReadTimeMinMax_Click(object sender, EventArgs e)

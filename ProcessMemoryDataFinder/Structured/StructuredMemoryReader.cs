@@ -23,6 +23,8 @@ namespace ProcessMemoryDataFinder.Structured
         /// </summary>
         public Dictionary<string, double> ReadTimes { get; } = new Dictionary<string, double>();
 
+        public event EventHandler<(object readObject, string propPath)> InvalidRead;
+
         public bool AbortReadOnInvalidValue { get; set; } = true;
 
         private Dictionary<object, (Type Type, string ClassPath, List<PropInfo> Props)> typeCache =
@@ -99,6 +101,7 @@ namespace ProcessMemoryDataFinder.Structured
                 if (result.InvalidRead && AbortReadOnInvalidValue && !prop.IgnoreNullPtr)
                 {
                     readStopwatch?.Stop();
+                    InvalidRead?.Invoke(this, (readObj, prop.Path));
                     return false;
                 }
 
