@@ -96,7 +96,7 @@ namespace ProcessMemoryDataFinder.Structured
 
                 var result = ResolveProp(readObj, classAddress, prop, cacheEntry);
                 classAddress = result.ClassAdress;
-                if (result.InvalidRead && AbortReadOnInvalidValue)
+                if (result.InvalidRead && AbortReadOnInvalidValue && !prop.IgnoreNullPtr)
                 {
                     readStopwatch?.Stop();
                     return false;
@@ -178,10 +178,10 @@ namespace ProcessMemoryDataFinder.Structured
             string finalPath = $"{parentTypeName}.{propertyInfo.Name}";
             if (!string.IsNullOrEmpty(classPath))
                 finalPath = $"{classPath}.{finalPath}";
-            
+
             return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
                 propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, v => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
+                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, v => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
         }
 
         protected virtual object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)

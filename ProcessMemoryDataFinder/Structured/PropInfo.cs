@@ -13,11 +13,12 @@ namespace ProcessMemoryDataFinder.Structured
         public bool IsStringOrArrayOrList { get; }
         public bool IsNullable { get; }
         public string MemoryPath { get; }
+        public bool IgnoreNullPtr { get; }
         public Action<object> Setter { get; }
         public Func<object> Getter { get; }
 
         public PropInfo(string path, PropertyInfo propertyInfo, Type propType, Type underlyingPropType, bool isClass, bool isStringOrArrayOrList,
-            bool isNullable, string memoryPath, Action<object> setter, Func<object> getter)
+            bool isNullable, string memoryPath, bool ignoreNullPtr, Action<object> setter, Func<object> getter)
         {
             Path = path;
             PropertyInfo = propertyInfo;
@@ -27,6 +28,7 @@ namespace ProcessMemoryDataFinder.Structured
             IsStringOrArrayOrList = isStringOrArrayOrList;
             IsNullable = isNullable;
             MemoryPath = memoryPath;
+            IgnoreNullPtr = ignoreNullPtr;
             Setter = setter;
             Getter = getter;
         }

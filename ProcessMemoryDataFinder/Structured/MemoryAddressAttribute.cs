@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ProcessMemoryDataFinder.Structured
 {
@@ -9,10 +9,11 @@ namespace ProcessMemoryDataFinder.Structured
     public class MemoryAddressAttribute : Attribute
     {
         public string RelativePath { get; }
-
+        public bool IgnoreNullPtr { get; }
         public MemoryAddressAttribute(string relativePath = null)
         {
             RelativePath = relativePath;
+            IgnoreNullPtr = ignoreNullPtr;
         }
     }
 }
