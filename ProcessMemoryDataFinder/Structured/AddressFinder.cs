@@ -86,6 +86,9 @@ namespace ProcessMemoryDataFinder.Structured
                         baseAddress = new IntPtr(BitConverter.ToInt32(result, 0));
 
                         break;
+                    case TokenType.HexValue when baseAddress == IntPtr.Zero:
+                    case TokenType.NumberValue when baseAddress == IntPtr.Zero:
+                        return IntPtr.Zero;
                     case TokenType.HexValue when lastToken == TokenType.Add || lastToken == TokenType.Subtract:
                         ProcessValue(Convert.ToInt32(token.Value, 16));
                         break;
