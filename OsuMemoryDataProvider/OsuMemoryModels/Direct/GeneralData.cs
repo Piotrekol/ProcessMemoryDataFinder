@@ -1,8 +1,7 @@
 using System;
-using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 using ProcessMemoryDataFinder.Structured;
 
-namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
+namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
     public class GeneralData
     {
