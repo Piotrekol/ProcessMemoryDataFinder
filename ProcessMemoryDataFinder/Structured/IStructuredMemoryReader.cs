@@ -26,6 +26,9 @@ namespace ProcessMemoryDataFinder.Structured
         /// </summary>
         bool AbortReadOnInvalidValue { get; set; }
 
+        /// <summary>
+        /// Triggers whenever memory read results in invalid address or null pointer
+        /// </summary>
         event EventHandler<(object readObject, string propPath)> InvalidRead;
 
         /// <summary>
@@ -34,16 +37,16 @@ namespace ProcessMemoryDataFinder.Structured
         /// <typeparam name="T">class to read</typeparam>
         /// <param name="readObj"><see cref="T"/></param>
         /// <param name="propertyNameToRead"></param>
-        /// <returns></returns>
+        /// <returns>false if only part of read completed, otherwise true</returns>
         bool TryRead<T>(T readObj) where T : class;
 
         /// <summary>
         /// Reads single prop value in <see cref="readObj"/>
         /// </summary>
-        /// <param name="readObj"></param>
-        /// <param name="propertyNameToRead"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <param name="readObj">base object with contains property that is going to be read</param>
+        /// <param name="propertyNameToRead">property name to be read (use nameof())</param>
+        /// <param name="result">new value of the prop from memory</param>
+        /// <returns>false if only part of read completed, otherwise true</returns>
         bool TryReadProperty(object readObj, string propertyName, out object result);
     }
 }
