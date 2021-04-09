@@ -26,10 +26,10 @@ namespace ProcessMemoryDataFinder.API
         private CancellationTokenSource cts = new CancellationTokenSource();
         public event EventHandler ProcessChanged;
         protected virtual IntPtr CurrentProcessHandle { get; set; } = IntPtr.Zero;
-        protected virtual Process CurrentProcess
+        public virtual Process CurrentProcess
         {
             get => _currentProcess;
-            set
+            private set
             {
                 _currentProcess = value;
                 _sigScan.Process = value;

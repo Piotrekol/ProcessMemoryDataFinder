@@ -94,6 +94,16 @@ namespace StructuredOsuMemoryProviderTester
                     if (cts.IsCancellationRequested)
                         return;
 
+                    if (!_sreader.CanRead)
+                    {
+                        Invoke((MethodInvoker)(() =>
+                        {
+                            textBox_Data.Text = "osu! process not found";
+                        }));
+                        await Task.Delay(_readDelay);
+                        continue;
+                    }
+
                     stopwatch = Stopwatch.StartNew();
                     if (readUsingProperty)
                     {

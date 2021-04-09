@@ -25,6 +25,8 @@ namespace OsuMemoryDataProvider
             set => _memoryReader.WithTimes = value;
         }
         public Dictionary<string, double> ReadTimes => _memoryReader.ReadTimes;
+        public bool CanRead => _memoryReader.CanRead;
+
         public bool AbortReadOnInvalidValue
         {
             get => _memoryReader.AbortReadOnInvalidValue;

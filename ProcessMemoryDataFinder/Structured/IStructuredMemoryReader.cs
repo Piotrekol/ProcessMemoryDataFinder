@@ -16,6 +16,12 @@ namespace ProcessMemoryDataFinder.Structured
         Dictionary<string, double> ReadTimes { get; }
 
         /// <summary>
+        /// Is current reader instance ready for read calls (is there valid process available)<para/>
+        /// Reads started while this is false will always fail
+        /// </summary>
+        bool CanRead { get; }
+
+        /// <summary>
         /// Should an attempt at reading invalid address in <see cref="TryRead{T}"/> abort read call(and return false)?
         /// </summary>
         bool AbortReadOnInvalidValue { get; set; }

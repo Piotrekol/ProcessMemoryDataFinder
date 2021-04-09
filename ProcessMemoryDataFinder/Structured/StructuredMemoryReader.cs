@@ -23,6 +23,8 @@ namespace ProcessMemoryDataFinder.Structured
         /// </summary>
         public Dictionary<string, double> ReadTimes { get; } = new Dictionary<string, double>();
 
+        public bool CanRead => _memoryReader.CurrentProcess != null;
+
         public event EventHandler<(object readObject, string propPath)> InvalidRead;
 
         public bool AbortReadOnInvalidValue { get; set; } = true;
