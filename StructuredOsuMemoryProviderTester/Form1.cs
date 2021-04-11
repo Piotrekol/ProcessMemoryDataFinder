@@ -218,6 +218,8 @@ namespace StructuredOsuMemoryProviderTester
                 _memoryReadTimeMin = double.PositiveInfinity;
                 _memoryReadTimeMax = double.NegativeInfinity;
             }
+
+            listBox_logs.Items.Clear();
         }
     }
 }
