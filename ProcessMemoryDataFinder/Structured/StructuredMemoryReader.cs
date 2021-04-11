@@ -132,6 +132,9 @@ namespace ProcessMemoryDataFinder.Structured
                     ? (IntPtr?)null
                     : ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress).FinalAddress;
 
+                if (address == IntPtr.Zero)
+                    return (classAddress, !prop.IgnoreNullPtr, propValue);
+
                 var readSuccessful = TryInternalRead(propValue, address, prop.Path);
                 return (classAddress, !readSuccessful, propValue);
             }
