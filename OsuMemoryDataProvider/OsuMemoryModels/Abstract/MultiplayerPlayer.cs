@@ -9,7 +9,10 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         [MemoryAddress("+0x30")]
         public int Score { get; set; }
 
-        [MemoryAddress("[+0x20]")]
+        //Nested play data is created after specific user achieved any hitresult during current play.
+        //that means in singleplayer this will not resolve until user has hit anything,
+        //and in multiplayer ^ and if any of the players in the room decides to quit before reporting any hitresult
+        [MemoryAddress("[+0x20]", true)]
         private MultiplayerPlayerPlayData _multiplayerPlayerPlayData { get; set; } = new MultiplayerPlayerPlayData();
 
         public ushort Combo => _multiplayerPlayerPlayData?.Combo ?? 0;
