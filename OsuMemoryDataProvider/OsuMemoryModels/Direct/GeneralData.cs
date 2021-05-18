@@ -11,6 +11,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         [MemoryAddress("AudioTime")] public int AudioTime { get; set; }
         [MemoryAddress("ChatIsExpanded")] public bool ChatIsExpanded { get; set; }
         [MemoryAddress("Mods")] public int Mods { get; set; }
+        [MemoryAddress("[Settings + 0x4] + 0xC")] public bool ShowPlayingInterface { get; set; }
 
         public OsuMemoryStatus OsuStatus
         {
