@@ -217,6 +217,8 @@ namespace ProcessMemoryDataFinder.Structured
                 return BitConverter.ToSingle(propValue, 0);
             if (type == typeof(double))
                 return BitConverter.ToDouble(propValue, 0);
+            if (type == typeof(short))
+                return BitConverter.ToInt16(propValue, 0);
             if (type == typeof(ushort))
                 return BitConverter.ToUInt16(propValue, 0);
             if (type == typeof(bool))
