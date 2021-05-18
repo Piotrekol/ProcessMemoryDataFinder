@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/ProcessMemoryDataFinder</RepositoryUrl>
     <title>ProcessMemoryDataFinder</title>
     <Summary>Find and read data in processes based on pre-made memory signatures(patterns)</Summary>
-    <Version>0.5.2</Version>
+    <Version>0.5.3</Version>
     <IncludeSymbols>true</IncludeSymbols> 
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
