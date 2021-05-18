@@ -25,5 +25,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         public float Hp { get; set; }
         [MemoryAddress("+0x38")]
         public float Od { get; set; }
+        [MemoryAddress("+0x124")]
+        public short Status { get; set; }
     }
 }

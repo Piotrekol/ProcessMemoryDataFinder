@@ -69,6 +69,8 @@ namespace StructuredOsuMemoryProviderTester
 
         private int ReadInt(object readObj, string propName)
             => ReadProperty<int>(readObj, propName, -5);
+        private short ReadShort(object readObj, string propName)
+            => ReadProperty<short>(readObj, propName, -5);
 
         private float ReadFloat(object readObj, string propName)
             => ReadProperty<float>(readObj, propName, -5f);
@@ -117,6 +119,7 @@ namespace StructuredOsuMemoryProviderTester
                         baseAddresses.Beatmap.Cs = ReadFloat(baseAddresses.Beatmap, nameof(CurrentBeatmap.Cs));
                         baseAddresses.Beatmap.Hp = ReadFloat(baseAddresses.Beatmap, nameof(CurrentBeatmap.Hp));
                         baseAddresses.Beatmap.Od = ReadFloat(baseAddresses.Beatmap, nameof(CurrentBeatmap.Od));
+                        baseAddresses.Beatmap.Status = ReadShort(baseAddresses.Beatmap, nameof(CurrentBeatmap.Status));
                         baseAddresses.Skin.Folder = ReadString(baseAddresses.Skin, nameof(Skin.Folder));
                         baseAddresses.GeneralData.RawStatus = ReadInt(baseAddresses.GeneralData, nameof(GeneralData.RawStatus));
                         baseAddresses.GeneralData.GameMode = ReadInt(baseAddresses.GeneralData, nameof(GeneralData.GameMode));
