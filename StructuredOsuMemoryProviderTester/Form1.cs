@@ -81,7 +81,7 @@ namespace StructuredOsuMemoryProviderTester
         private async void OnShown(object sender, EventArgs eventArgs)
         {
             if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
-
+            Text += $" ({(Environment.Is64BitProcess ? "x64" : "x86")})";
             _sreader.InvalidRead += SreaderOnInvalidRead;
             await Task.Run(async () =>
             {
