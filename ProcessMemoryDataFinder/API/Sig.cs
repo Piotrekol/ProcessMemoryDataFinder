@@ -61,6 +61,7 @@ namespace ProcessMemoryDataFinder.API
         public void SetObjectReader(IObjectReader objectReader)
         {
             _objectReader = objectReader;
+            ParentSig?.SetObjectReader(objectReader);
         }
 
         /// <summary>
@@ -141,19 +142,7 @@ namespace ProcessMemoryDataFinder.API
             return _readDataFunc(address, size);
         }
 
-        private IntPtr ReadPointer(IntPtr baseAddr)
-        {
-#if x64
-            var data = _readDataFunc(baseAddr, 8);
-            if (data != null)
-                return new IntPtr(BitConverter.ToInt64(data, 0));
-#else
-            var data = _readDataFunc(baseAddr, 4);
-            if (data != null)
-                return new IntPtr(BitConverter.ToInt32(data, 0));
-#endif
-            return IntPtr.Zero;
-        }
+        private IntPtr ReadPointer(IntPtr baseAddr) => _objectReader.ReadPointer(baseAddr);
 
         public IntPtr GetPointer() => _objectReader.ReadPointer(ResolveAddress());
 
