@@ -90,7 +90,6 @@ namespace StructuredOsuMemoryProviderTester
                 _sreader.WithTimes = true;
                 var readUsingProperty = false;
                 var baseAddresses = new OsuBaseAddresses();
-                baseAddresses.GeneralData.KeyOverlay = null;
                 while (true)
                 {
                     if (cts.IsCancellationRequested)
@@ -141,6 +140,7 @@ namespace StructuredOsuMemoryProviderTester
                         _sreader.TryRead(baseAddresses.Player);
                         //TODO: flag needed for single/multi player detection (should be read once per play in singleplayer)
                         _sreader.TryRead(baseAddresses.LeaderBoard);
+                        _sreader.TryRead(baseAddresses.KeyOverlay);
                         if (readUsingProperty)
                         {
                             //Testing reading of reference types(other than string)

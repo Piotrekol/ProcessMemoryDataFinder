@@ -25,8 +25,5 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
                 return OsuMemoryStatus.Unknown;
             }
         }
-
-        [MemoryAddress(null)]
-        public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }

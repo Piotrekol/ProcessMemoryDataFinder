@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using ProcessMemoryDataFinder.API;
 using ProcessMemoryDataFinder.Structured.Tokenizer;
 
@@ -14,6 +15,7 @@ namespace ProcessMemoryDataFinder.Structured
         protected AddressFinder _addressFinder;
         private AddressTokenizer _addressTokenizer = new AddressTokenizer();
         protected IObjectReader ObjectReader;
+
         /// <summary>
         /// Should memory read times be tracked and saved in <see cref="ReadTimes"/>?
         /// </summary>
@@ -29,8 +31,28 @@ namespace ProcessMemoryDataFinder.Structured
 
         public bool AbortReadOnInvalidValue { get; set; } = true;
 
-        private Dictionary<object, (Type Type, string ClassPath, List<PropInfo> Props)> typeCache =
-            new Dictionary<object, (Type Type, string ClassPath, List<PropInfo> Props)>();
+        private class DummyAddressChecker
+        {
+            public int? AddressProp { get; set; }
+        }
+
+        protected class TypeCacheEntry
+        {
+            public Type Type { get; }
+            public string ClassPath { get; }
+            public List<PropInfo> Props { get; }
+            public PropInfo ReadCheckerPropertyInfo { get; set; }
+
+            public TypeCacheEntry(Type type, string classPath, List<PropInfo> props)
+            {
+                Type = type;
+                ClassPath = classPath;
+                Props = props;
+            }
+        }
+
+        private Dictionary<object, TypeCacheEntry> typeCache =
+            new Dictionary<object, TypeCacheEntry>();
         protected Dictionary<Type, object> DefaultValues = new Dictionary<Type, object>
         {
             { typeof(int) , -1 },
@@ -92,6 +114,15 @@ namespace ProcessMemoryDataFinder.Structured
         {
             var cacheEntry = typeCache[PrepareReadObject(readObj, classPath)];
 
+            if (cacheEntry.ReadCheckerPropertyInfo != null)
+            {
+                var resolvedProp = ResolveProp(readObj, classAddress, cacheEntry.ReadCheckerPropertyInfo, cacheEntry);
+                SetPropValue(cacheEntry.ReadCheckerPropertyInfo, resolvedProp.PropValue);
+                classAddress = resolvedProp.ClassAdress;
+                if (resolvedProp.InvalidRead || resolvedProp.PropValue == null || (int?)resolvedProp.PropValue == 0)
+                    return false;
+            }
+
             foreach (var prop in cacheEntry.Props)
             {
                 Stopwatch readStopwatch = null;
@@ -119,8 +150,7 @@ namespace ProcessMemoryDataFinder.Structured
             return true;
         }
 
-        private (IntPtr? ClassAdress, bool InvalidRead, object PropValue) ResolveProp<T>(T readObj, IntPtr? classAddress, PropInfo prop,
-            (Type Type, string ClassPath, List<PropInfo> Props) cacheEntry) where T : class
+        private (IntPtr? ClassAdress, bool InvalidRead, object PropValue) ResolveProp<T>(T readObj, IntPtr? classAddress, PropInfo prop, TypeCacheEntry cacheEntry) where T : class
         {
             if (prop.IsClass && !prop.IsStringOrArrayOrList)
             {
@@ -143,8 +173,7 @@ namespace ProcessMemoryDataFinder.Structured
             return (result.ClassAddress, result.InvalidRead, result.Result);
         }
 
-        private (object Result, IntPtr ClassAddress, bool InvalidRead) ReadValueForPropInMemory(IntPtr? classAddress, PropInfo prop,
-            (Type Type, string ClassPath, List<PropInfo> Props) cacheEntry)
+        private (object Result, IntPtr ClassAddress, bool InvalidRead) ReadValueForPropInMemory(IntPtr? classAddress, PropInfo prop, TypeCacheEntry cacheEntry)
         {
             var (propAddress, newClassAddress) = ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress);
             var result = ReadObjectAt(propAddress, prop);
@@ -166,9 +195,20 @@ namespace ProcessMemoryDataFinder.Structured
 
             var type = readObject.GetType();
             var classProps = type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-            var classMemoryPath = (string)readObject.GetType().GetCustomAttributesData().FirstOrDefault()?.ConstructorArguments[0].Value;
-            typeCache[readObject] = (type, classMemoryPath, new List<PropInfo>());
-            foreach (var prop in classProps)
+            var classMemoryAddressAttribute = type.GetCustomAttribute(typeof(MemoryAddressAttribute), true) as MemoryAddressAttribute;
+
+            typeCache[readObject] = new TypeCacheEntry(type, classMemoryAddressAttribute?.RelativePath, new List<PropInfo>());
+
+            if (classMemoryAddressAttribute != null && classMemoryAddressAttribute.CheckClassAddress)
+            {
+                var dummyProp = typeof(DummyAddressChecker).GetProperty(nameof(DummyAddressChecker.AddressProp));
+                if (string.IsNullOrEmpty(classMemoryAddressAttribute.CheckClassAddressPropName))
+                    typeCache[readObject].ReadCheckerPropertyInfo = CreatePropInfo(readObject, dummyProp, classPath, type.Name, true);
+                else
+                    typeCache[readObject].ReadCheckerPropertyInfo = CreatePropInfo(readObject, classProps.First(x => x.Name == classMemoryAddressAttribute.CheckClassAddressPropName), classPath, type.Name);
+            }
+
+            foreach (var prop in classProps.Where(x => x.Name != classMemoryAddressAttribute?.CheckClassAddressPropName))
             {
                 var propInfo = CreatePropInfo(readObject, prop, classPath, type.Name);
                 if (propInfo != null)
@@ -178,7 +218,7 @@ namespace ProcessMemoryDataFinder.Structured
             return readObject;
         }
 
-        private PropInfo CreatePropInfo<T>(T readObject, PropertyInfo propertyInfo, string classPath, string parentTypeName)
+        private PropInfo CreatePropInfo<T>(T readObject, PropertyInfo propertyInfo, string classPath, string parentTypeName, bool classAddressGetter = false)
         {
             if (!(propertyInfo.GetCustomAttribute(typeof(MemoryAddressAttribute), true) is MemoryAddressAttribute memoryAddressAttribute))
                 return null;
@@ -186,10 +226,14 @@ namespace ProcessMemoryDataFinder.Structured
             string finalPath = $"{parentTypeName}.{propertyInfo.Name}";
             if (!string.IsNullOrEmpty(classPath))
                 finalPath = $"{classPath}.{finalPath}";
+            if (classAddressGetter)
+                return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
+                    propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
+                    Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, "", false, (v) => { }, () => null);
 
             return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
                 propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, v => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
+                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, (v) => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
         }
 
         protected virtual object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)

@@ -10,6 +10,9 @@ namespace ProcessMemoryDataFinder.Structured
     {
         public string RelativePath { get; }
         public bool IgnoreNullPtr { get; }
+        public bool CheckClassAddress { get; }
+        public string CheckClassAddressPropName { get; }
+
         /// <summary>
         /// Marks property to be filled by <see cref="IStructuredMemoryReader"/> 
         /// </summary>
@@ -24,10 +27,18 @@ namespace ProcessMemoryDataFinder.Structured
         /// classes however won't be null'ed as to not disable future attempts at reading this value <para/>
         /// This can be instead achieved manually by first reading class address in a separate (int?) prop and refactoring actual prop value to be dependent on address value being non-null/zero
         /// </param>
-        public MemoryAddressAttribute(string relativePath = null, bool ignoreNullPtr = false)
+        /// <param name="checkClassAddress">
+        /// Should base class address be checked for non-0 memory address before attempting reading of any props inside?
+        /// </param>
+        /// <param name="checkClassAddressPropName">
+        /// Optional (int?) prop name to fill with class memory address after <see cref="CheckClassAddress"/> read is finished
+        /// </param>
+        public MemoryAddressAttribute(string relativePath = null, bool ignoreNullPtr = false, bool checkClassAddress = false, string checkClassAddressPropName = null)
         {
+            CheckClassAddressPropName = checkClassAddressPropName;
             RelativePath = relativePath;
             IgnoreNullPtr = ignoreNullPtr;
+            CheckClassAddress = checkClassAddress;
         }
     }
 }

@@ -1,4 +1,3 @@
-using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using OsuMemoryDataProvider.OsuMemoryModels.Direct;
 
 namespace OsuMemoryDataProvider.OsuMemoryModels
@@ -11,5 +10,6 @@ namespace OsuMemoryDataProvider.OsuMemoryModels
         public Skin Skin { get; set; } = new Skin();
         public ResultsScreen ResultsScreen { get; set; } = new ResultsScreen();
         public GeneralData GeneralData { get; set; } = new GeneralData();
+        public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }

@@ -1,11 +1,17 @@
-﻿using ProcessMemoryDataFinder.Structured;
+﻿using System;
+using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
-    [MemoryAddress(KeyOverlay.ClassAddress)]
+    [MemoryAddress(KeyOverlay.ClassAddress, false, true, nameof(RawHasKeyOverlay))]
     public class KeyOverlay
     {
         internal const string ClassAddress = "[[[[CurrentRuleset]+0xA8]+0x10]+0x4]";
+
+        [MemoryAddress("")]
+        private int? RawHasKeyOverlay { get; set; }
+        public bool Enabled => RawHasKeyOverlay.HasValue && RawHasKeyOverlay != 0;
+
         [MemoryAddress("[+0x8]+0x1C")]
         public bool K1Pressed { get; set; }
         [MemoryAddress("[+0x8]+0x14")]
@@ -22,6 +28,5 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         public bool M2Pressed { get; set; }
         [MemoryAddress("[+0x14] + 0x14")]
         public int M2Count { get; set; }
-
     }
 }
