@@ -10,7 +10,6 @@ namespace ProcessMemoryDataFinder.API
         protected SigMemoryReader(string processName, string mainWindowTitleHint = null) : base(processName, mainWindowTitleHint)
         {
             ObjectReader = new ObjectReader(this);
-            ObjectReader.IntPtrSize = 4;
             ProcessChanged += (_, __) => ResetAllSignatures();
         }
 

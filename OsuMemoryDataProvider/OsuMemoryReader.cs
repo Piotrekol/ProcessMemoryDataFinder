@@ -29,6 +29,7 @@ namespace OsuMemoryDataProvider
 
         public OsuMemoryReader(string mainWindowTitleHint = null) : base("osu!", mainWindowTitleHint)
         {
+            ObjectReader.IntPtrSize = 4;
             CreateSignatures();
         }
 
