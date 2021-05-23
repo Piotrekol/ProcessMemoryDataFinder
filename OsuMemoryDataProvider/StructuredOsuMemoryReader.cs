@@ -38,7 +38,7 @@ namespace OsuMemoryDataProvider
             add => _memoryReader.InvalidRead += value;
             remove => _memoryReader.InvalidRead -= value;
         }
-        
+
         public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
         {
             if (string.IsNullOrEmpty(windowTitleHint)) return Instance;
@@ -92,8 +92,7 @@ namespace OsuMemoryDataProvider
         {
             public MultiplayerPlayerStructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null) : base(processName, baseAdresses, mainWindowTitleHint)
             {
-                ObjectReader.IntPtrSize = 4;
-                _addressFinder.IntPtrSize = 4;
+                ObjectReader.IntPtrSize = _addressFinder.IntPtrSize = _memoryReader.IntPtrSize = 4;
             }
 
             protected override object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)
