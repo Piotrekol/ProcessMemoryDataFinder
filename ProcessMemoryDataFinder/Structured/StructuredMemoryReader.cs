@@ -72,6 +72,7 @@ namespace ProcessMemoryDataFinder.Structured
             { typeof(ushort) , 2 },
             { typeof(float) , 8 },
             { typeof(double) , 8 },
+            { typeof(long) , 8 },
             { typeof(bool) , 1 },
 
             { typeof(string) , 0 },
@@ -267,7 +268,8 @@ namespace ProcessMemoryDataFinder.Structured
                 return BitConverter.ToUInt16(propValue, 0);
             if (type == typeof(bool))
                 return BitConverter.ToBoolean(propValue, 0);
-
+            if (type == typeof(long))
+                return BitConverter.ToInt64(propValue, 0);
             throw new NotImplementedException($"Reading of {type?.FullName} is not implemented. Override ReadObjectAt.");
         }
 

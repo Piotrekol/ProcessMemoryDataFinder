@@ -132,6 +132,12 @@ namespace StructuredOsuMemoryProviderTester
                         _sreader.TryRead(baseAddresses.Skin);
                         _sreader.TryRead(baseAddresses.GeneralData);
                     }
+
+                    if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.SongSelect)
+                        _sreader.TryRead(baseAddresses.SongSelectionScores);
+                    else
+                        baseAddresses.SongSelectionScores.Scores.Clear();
+
                     if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.ResultsScreen)
                         _sreader.TryRead(baseAddresses.ResultsScreen);
 
@@ -146,6 +152,10 @@ namespace StructuredOsuMemoryProviderTester
                             //Testing reading of reference types(other than string)
                             _sreader.TryReadProperty(baseAddresses.Player, nameof(Player.Mods), out var dummyResult);
                         }
+                    }
+                    else
+                    {
+                        baseAddresses.LeaderBoard.Players.Clear();
                     }
 
                     var hitErrors = baseAddresses.Player?.HitErrors;

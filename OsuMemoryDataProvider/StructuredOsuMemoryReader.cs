@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OsuMemoryDataProvider.OsuMemoryModels;
@@ -98,23 +99,26 @@ namespace OsuMemoryDataProvider
             protected override object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)
             {
                 if (finalAddress == IntPtr.Zero) return null;
-                if (propInfo.PropType == typeof(List<MultiplayerPlayer>))
-                {
-                    var playerClassPointers = ObjectReader.ReadIntList(finalAddress);
-                    var playerList = (List<MultiplayerPlayer>)propInfo.Getter();
-                    if (playerClassPointers == null || playerClassPointers.Count == 0 || playerClassPointers.Count > playerList.Count)
-                        return playerList;
-
-                    var rootPath = $"{propInfo.Path}*{playerClassPointers.Count}";
-                    for (int i = 0; i < playerClassPointers.Count; i++)
-                    {
-                        TryInternalRead(playerList[i], new IntPtr(playerClassPointers[i]), $"{rootPath}[{i}]");
-                    }
-
-                    return playerList;
-                }
+                if (propInfo.PropType == typeof(List<MultiplayerPlayer>) || propInfo.PropType == typeof(List<PlayerScore>))
+                    return ReadList(finalAddress, propInfo);
 
                 return base.ReadObjectAt(finalAddress, propInfo);
+            }
+
+            private IList ReadList(IntPtr finalAddress, PropInfo propInfo)
+            {
+                var classPointers = ObjectReader.ReadIntList(finalAddress);
+                var propListValue = (IList)propInfo.Getter();
+                if (classPointers == null || classPointers.Count == 0 || classPointers.Count > propListValue.Count)
+                    return propListValue;
+
+                var rootPath = $"{propInfo.Path}*{classPointers.Count}";
+                for (int i = 0; i < classPointers.Count; i++)
+                {
+                    TryInternalRead(propListValue[i], new IntPtr(classPointers[i]), $"{rootPath}[{i}]");
+                }
+
+                return propListValue;
             }
         }
     }
