@@ -17,9 +17,18 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         [MemoryAddress("+0x90")] public ushort HitKatu { get; set; }
         [MemoryAddress("+0x92")] public ushort HitMiss { get; set; }
         [MemoryAddress("+0xA0")] private long RawDate { get; set; }
-        public DateTime Date => new DateTime(RawDate & InternalTicksMask);
+        public DateTime Date
+        {
+            get
+            {
+                var ticks = RawDate & InternalTicksMask;
+                if (ticks > DateTime.MinValue.Ticks && ticks < DateTime.MaxValue.Ticks)
+                    return new DateTime(ticks);
+                return DateTime.MinValue;
+            }
+        }
         [MemoryAddress("[+0x48]+0x70")] public int? UserId { get; set; }
-        
+
         private static long InternalTicksMask = 4611686018427387903L;
     }
 }
