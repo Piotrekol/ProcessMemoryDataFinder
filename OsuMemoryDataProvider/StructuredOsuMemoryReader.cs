@@ -107,7 +107,7 @@ namespace OsuMemoryDataProvider
 
             private IList ReadList(IntPtr finalAddress, PropInfo propInfo)
             {
-                var classPointers = ObjectReader.ReadIntList(finalAddress);
+                var classPointers = ObjectReader.ReadUIntList(finalAddress);
                 var propListValue = (IList)propInfo.Getter();
                 if (classPointers == null || classPointers.Count == 0 || classPointers.Count > propListValue.Count)
                     return propListValue;

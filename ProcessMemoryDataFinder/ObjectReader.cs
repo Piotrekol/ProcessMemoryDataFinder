@@ -8,6 +8,7 @@ namespace ProcessMemoryDataFinder
     public interface IObjectReader
     {
         List<int> ReadIntList(IntPtr baseAddress);
+        List<uint> ReadUIntList(IntPtr baseAddress);
         int[] ReadIntArray(IntPtr baseAddress);
         string ReadUnicodeString(IntPtr baseAddress);
         byte[] ReadStringBytes(IntPtr baseAddress, int bytesPerCharacter = 2);
@@ -31,23 +32,45 @@ namespace ProcessMemoryDataFinder
             _memoryReader = memoryReader;
         }
 
-        public List<int> ReadIntList(IntPtr baseAddress)
+        public List<uint> ReadUIntList(IntPtr baseAddress)
         {
-            var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(true, false, baseAddress);
-            if (numberOfElements < 0) return null;
-            if (numberOfElements == 0) return new List<int>();
+            var readResult = ReadListBytes(baseAddress, 4);
+            if (readResult.Bytes == null) return null;
 
-            var totalByteCount = 4 * numberOfElements;
-            var bytes = _memoryReader.ReadData(firstElementPtr, (uint)totalByteCount);
-            if (bytes == null || bytes.Length != totalByteCount) return null;
-
-            var list = new List<int>(numberOfElements);
-            for (var offset = 0; offset < totalByteCount; offset += 4)
+            var list = new List<uint>(readResult.NumberOfElements);
+            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += IntPtrSize)
             {
-                list.Add(BitConverter.ToInt32(bytes, offset));
+                list.Add(BitConverter.ToUInt32(readResult.Bytes, offset));
             }
 
             return list;
+        }
+
+        public List<int> ReadIntList(IntPtr baseAddress)
+        {
+            var readResult = ReadListBytes(baseAddress, 4);
+            if (readResult.Bytes == null) return null;
+
+            var list = new List<int>(readResult.NumberOfElements);
+            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += IntPtrSize)
+            {
+                list.Add(BitConverter.ToInt32(readResult.Bytes, offset));
+            }
+
+            return list;
+        }
+
+        protected (int NumberOfElements, byte[] Bytes) ReadListBytes(IntPtr baseAddress, int entrySize)
+        {
+            var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(true, false, baseAddress);
+            if (numberOfElements < 0) return (-1, null);
+            if (numberOfElements == 0) return (0, Array.Empty<byte>());
+
+            var totalByteCount = entrySize * numberOfElements;
+            var bytes = _memoryReader.ReadData(firstElementPtr, (uint)totalByteCount);
+            if (bytes == null || bytes.Length != totalByteCount) return (-1, null);
+
+            return (numberOfElements, bytes);
         }
 
         public int[] ReadIntArray(IntPtr baseAddress)
