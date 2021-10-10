@@ -83,8 +83,8 @@ namespace ProcessMemoryDataFinder.Structured
                         if (result == null || result.Length != IntPtrSize || AllZeros(result))
                             return _groupReadAddressesCache[(tokens, baseAddress)] = IntPtr.Zero;
 
-                        baseAddress = new IntPtr(BitConverter.ToInt32(result, 0));
-
+                        //TODO: This doesn't handle x64 targets, use IObjectReader instead
+                        baseAddress = new IntPtr(BitConverter.ToUInt32(result, 0));
                         break;
                     case TokenType.HexValue when baseAddress == IntPtr.Zero:
                     case TokenType.NumberValue when baseAddress == IntPtr.Zero:
