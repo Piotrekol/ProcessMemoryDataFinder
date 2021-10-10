@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ProcessMemoryDataFinder.API;
@@ -38,7 +38,7 @@ namespace ProcessMemoryDataFinder
             if (readResult.Bytes == null) return null;
 
             var list = new List<uint>(readResult.NumberOfElements);
-            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += IntPtrSize)
+            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += 4)
             {
                 list.Add(BitConverter.ToUInt32(readResult.Bytes, offset));
             }
@@ -52,7 +52,7 @@ namespace ProcessMemoryDataFinder
             if (readResult.Bytes == null) return null;
 
             var list = new List<int>(readResult.NumberOfElements);
-            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += IntPtrSize)
+            for (var offset = 0; offset < readResult.NumberOfElements * 4; offset += 4)
             {
                 list.Add(BitConverter.ToInt32(readResult.Bytes, offset));
             }
