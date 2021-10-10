@@ -94,19 +94,17 @@ namespace OsuMemoryDataProvider
             public MultiplayerPlayerStructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null) : base(processName, baseAdresses, mainWindowTitleHint)
             {
                 ObjectReader.IntPtrSize = _addressFinder.IntPtrSize = _memoryReader.IntPtrSize = 4;
-            }
-
-            protected override object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)
-            {
-                if (finalAddress == IntPtr.Zero) return null;
-                if (propInfo.PropType == typeof(List<MultiplayerPlayer>) || propInfo.PropType == typeof(List<PlayerScore>))
-                    return ReadList(finalAddress, propInfo);
-
-                return base.ReadObjectAt(finalAddress, propInfo);
+                AddReadHandlers(new Dictionary<Type, ReadObject>
+                {
+                    { typeof(List<MultiplayerPlayer>), ReadList },
+                    { typeof(List<PlayerScore>), ReadList }
+                });
             }
 
             private IList ReadList(IntPtr finalAddress, PropInfo propInfo)
             {
+                if (finalAddress == IntPtr.Zero) return null;
+
                 var classPointers = ObjectReader.ReadUIntList(finalAddress);
                 var propListValue = (IList)propInfo.Getter();
                 if (classPointers == null || classPointers.Count == 0 || classPointers.Count > propListValue.Count)

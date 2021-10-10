@@ -28,6 +28,7 @@ namespace ProcessMemoryDataFinder.Structured
         public bool CanRead => _memoryReader.CurrentProcess != null;
 
         public event EventHandler<(object readObject, string propPath)> InvalidRead;
+        public event EventHandler<(object readObject, string propPath)> IgnoredInvalidRead;
 
         public bool AbortReadOnInvalidValue { get; set; } = true;
 
@@ -79,12 +80,36 @@ namespace ProcessMemoryDataFinder.Structured
             { typeof(int[]) , 0 },
             { typeof(List<int>) , 0 },
         };
+        protected Dictionary<Type, ReadObject> ReadHandlers;
+
         public StructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null, MemoryReader memoryReader = null, IObjectReader objectReader = null)
         {
             _memoryReader = memoryReader ?? new MemoryReader(processName, mainWindowTitleHint);
             _addressFinder = new AddressFinder(_memoryReader, baseAdresses);
             ObjectReader = objectReader ?? new ObjectReader(_memoryReader);
 
+            ReadHandlers = new Dictionary<Type, ReadObject>()
+            {
+                {typeof(int), (address,prop)=>ReadValueObject(address,prop, v => BitConverter.ToInt32(v, 0)) },
+                {typeof(float), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToSingle(v, 0)) },
+                {typeof(double), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToDouble(v, 0)) },
+                {typeof(short), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToInt16(v, 0)) },
+                {typeof(ushort), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToUInt16(v, 0)) },
+                {typeof(bool), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToBoolean(v, 0)) },
+                {typeof(long), (address,prop)=>ReadValueObject(address,prop,v=> BitConverter.ToInt64(v, 0)) },
+                {typeof(string), (address,prop)=>ObjectReader.ReadUnicodeString(address) },
+                {typeof(int[]), (address,prop)=>ObjectReader.ReadIntArray(address) },
+                {typeof(List<int>), (address,prop)=>ObjectReader.ReadIntList(address) },
+            };
+        }
+
+        public void AddReadHandlers(Dictionary<Type, ReadObject> readHandlers)
+        {
+            if (readHandlers != null)
+            {
+                foreach (var handler in readHandlers)
+                    ReadHandlers.Add(handler.Key, handler.Value);
+            }
         }
 
         public bool TryReadProperty(object readObj, string propertyName, out object result)
@@ -132,11 +157,16 @@ namespace ProcessMemoryDataFinder.Structured
 
                 var result = ResolveProp(readObj, classAddress, prop, cacheEntry);
                 classAddress = result.ClassAdress;
-                if (result.InvalidRead && AbortReadOnInvalidValue && !prop.IgnoreNullPtr)
+                if (result.InvalidRead)
                 {
-                    readStopwatch?.Stop();
-                    InvalidRead?.Invoke(this, (readObj, prop.Path));
-                    return false;
+                    if (prop.IgnoreNullPtr)
+                        IgnoredInvalidRead?.Invoke(this, (readObj, prop.Path));
+                    else if (AbortReadOnInvalidValue)
+                    {
+                        readStopwatch?.Stop();
+                        InvalidRead?.Invoke(this, (readObj, prop.Path));
+                        return false;
+                    }
                 }
 
                 SetPropValue(prop, result.PropValue);
@@ -177,7 +207,9 @@ namespace ProcessMemoryDataFinder.Structured
         private (object Result, IntPtr ClassAddress, bool InvalidRead) ReadValueForPropInMemory(IntPtr? classAddress, PropInfo prop, TypeCacheEntry cacheEntry)
         {
             var (propAddress, newClassAddress) = ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress);
-            var result = ReadObjectAt(propAddress, prop);
+            var result = propAddress == IntPtr.Zero
+                ? null
+                : prop.Reader(propAddress, prop);
 
             return (result, newClassAddress, (prop.IsClass || prop.IsNullable) ? false : result == null);
         }
@@ -227,50 +259,20 @@ namespace ProcessMemoryDataFinder.Structured
             string finalPath = $"{parentTypeName}.{propertyInfo.Name}";
             if (!string.IsNullOrEmpty(classPath))
                 finalPath = $"{classPath}.{finalPath}";
+
+            var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+
+            var isString = propertyInfo.PropertyType == typeof(string);
+
             if (classAddressGetter)
-                return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
-                    propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                    Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, "", false, (v) => { }, () => null);
+                return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, underlyingType, propertyInfo.PropertyType.IsClass,
+                    isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
+                    Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, "", false, (v) => { }, () => null, ReadHandlers[underlyingType]);
 
-            return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType, propertyInfo.PropertyType.IsClass,
-                propertyInfo.PropertyType == typeof(string) || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, (v) => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject));
-        }
-
-        protected virtual object ReadObjectAt(IntPtr finalAddress, PropInfo propInfo)
-        {
-            if (finalAddress == IntPtr.Zero) return null;
-
-            var type = propInfo.UnderlyingPropType;
-            if (type == typeof(string))
-                return ObjectReader.ReadUnicodeString(finalAddress);
-            if (type == typeof(int[]))
-                return ObjectReader.ReadIntArray(finalAddress);
-            if (type == typeof(List<int>))
-                return ObjectReader.ReadIntList(finalAddress);
-
-            if (!SizeDictionary.ContainsKey(type))
-                throw new NotImplementedException($"Prop {propInfo.Path} with type {type?.FullName} doesn't have its size set in SizeDictionary/DefaultValues. Override ReadObjectAt to read custom object lists/arrays.");
-
-            var propValue = _memoryReader.ReadData(finalAddress, SizeDictionary[type]);
-            if (propValue == null)
-                return null;
-
-            if (type == typeof(int))
-                return BitConverter.ToInt32(propValue, 0);
-            if (type == typeof(float))
-                return BitConverter.ToSingle(propValue, 0);
-            if (type == typeof(double))
-                return BitConverter.ToDouble(propValue, 0);
-            if (type == typeof(short))
-                return BitConverter.ToInt16(propValue, 0);
-            if (type == typeof(ushort))
-                return BitConverter.ToUInt16(propValue, 0);
-            if (type == typeof(bool))
-                return BitConverter.ToBoolean(propValue, 0);
-            if (type == typeof(long))
-                return BitConverter.ToInt64(propValue, 0);
-            throw new NotImplementedException($"Reading of {type?.FullName} is not implemented. Override ReadObjectAt.");
+            return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, underlyingType, propertyInfo.PropertyType.IsClass,
+                isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
+                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, (v) => propertyInfo.SetValue(readObject, v),
+                () => propertyInfo.GetValue(readObject), ReadHandlers.ContainsKey(underlyingType) ? ReadHandlers[underlyingType] : null);
         }
 
         private (IntPtr FinalAddress, IntPtr ClassAddress) ResolvePath(string classMemoryPath, string propMemoryPath,
@@ -309,5 +311,16 @@ namespace ProcessMemoryDataFinder.Structured
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        private object ReadValueObject<T>(IntPtr finalAddress, PropInfo propInfo, Func<byte[], T> converter)
+        {
+            var propValue = _memoryReader.ReadData(finalAddress, SizeDictionary[propInfo.UnderlyingPropType]);
+            if (propValue == null)
+                return null;
+
+            return converter(propValue);
+        }
+
+        public delegate object ReadObject(IntPtr finalAddress, PropInfo propInfo);
     }
 }
