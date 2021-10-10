@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using ProcessMemoryDataFinder.API;
@@ -211,7 +211,7 @@ namespace ProcessMemoryDataFinder
             if (data != null)
                 return new IntPtr(IsX64
                     ? BitConverter.ToInt64(data, 0)
-                    : BitConverter.ToInt32(data, 0));
+                    : BitConverter.ToUInt32(data, 0));
 
             return IntPtr.Zero;
         }
