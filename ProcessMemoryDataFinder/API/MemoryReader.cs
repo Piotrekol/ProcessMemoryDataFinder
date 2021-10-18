@@ -15,7 +15,7 @@ namespace ProcessMemoryDataFinder.API
         public delegate IntPtr FindPatternF(byte[] btPattern, string strMask, int nOffset, bool useMask);
         public delegate byte[] ReadDataF(IntPtr adress, uint size);
 
-        private MemoryProcessAddressFinder _internals = new MemoryProcessAddressFinder();
+        private MemoryProcessAddressFinder _internals;
 
         private readonly string _processName;
         private readonly string _mainWindowTitleHint;
@@ -24,7 +24,7 @@ namespace ProcessMemoryDataFinder.API
         private Process _currentProcess;
         private Task ProcessWatcher;
         private CancellationTokenSource cts = new CancellationTokenSource();
-        public int IntPtrSize = IntPtr.Size;
+        private int _intPtrSize = IntPtr.Size;
         public event EventHandler ProcessChanged;
         protected virtual IntPtr CurrentProcessHandle { get; set; } = IntPtr.Zero;
         public virtual Process CurrentProcess
@@ -48,9 +48,24 @@ namespace ProcessMemoryDataFinder.API
             }
         }
 
+        public int IntPtrSize
+        {
+            get => _intPtrSize;
+            set
+            {
+                _intPtrSize = value;
+                if (value == 4)
+                    _internals = new X86MemoryProcessAddressFinder();
+                else
+                    _internals = new X64MemoryProcessAddressFinder();
+            }
+        }
 
         public MemoryReader(string processName, string mainWindowTitleHint)
         {
+            //Initialize process address finder
+            IntPtrSize = IntPtrSize;
+
             _processName = processName;
             _mainWindowTitleHint = mainWindowTitleHint;
             ProcessWatcher = Task.Run(MonitorProcess, cts.Token);

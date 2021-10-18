@@ -1,10 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace ProcessMemoryDataFinder.API
 {
-    internal class MemoryProcessAddressFinder
+    internal class X64MemoryProcessAddressFinder : MemoryProcessAddressFinder
+    {
+        protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second) =>
+            new IntPtr(first.ToInt64() + second.ToInt64());
+    }
+    internal class X86MemoryProcessAddressFinder : MemoryProcessAddressFinder
+    {
+        protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second) =>
+            new IntPtr(first.ToInt32() + second.ToInt32());
+    }
+
+    internal abstract class MemoryProcessAddressFinder
     {
         public int IntPtrSize { get; set; } = IntPtr.Size;
 
@@ -47,7 +58,6 @@ namespace ProcessMemoryDataFinder.API
             return result;
         }
 
-        protected IntPtr SumIntPtrs(IntPtr first, IntPtr second)
-            => new IntPtr(first.ToInt64() + second.ToInt64());
+        protected abstract IntPtr SumIntPtrs(IntPtr first, IntPtr second);
     }
 }
