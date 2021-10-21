@@ -272,7 +272,7 @@ namespace ProcessMemoryDataFinder.Structured
             return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, underlyingType, propertyInfo.PropertyType.IsClass,
                 isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
                 Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, (v) => propertyInfo.SetValue(readObject, v),
-                () => propertyInfo.GetValue(readObject), ReadHandlers.ContainsKey(underlyingType) ? ReadHandlers[underlyingType] : null);
+                () => propertyInfo.GetValue(readObject), ReadHandlers.ContainsKey(underlyingType) ? ReadHandlers[underlyingType] : (propertyInfo.PropertyType.IsClass ? null : throw new NotImplementedException($"Reading of {underlyingType.FullName} is not implemented. Add read handler for this type.")));
         }
 
         private (IntPtr FinalAddress, IntPtr ClassAddress) ResolvePath(string classMemoryPath, string propMemoryPath,
