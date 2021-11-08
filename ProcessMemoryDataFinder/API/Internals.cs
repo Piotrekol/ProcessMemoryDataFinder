@@ -9,10 +9,16 @@ namespace ProcessMemoryDataFinder.API
         protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second) =>
             new IntPtr(first.ToInt64() + second.ToInt64());
     }
-    internal class X86MemoryProcessAddressFinder : MemoryProcessAddressFinder
+    internal class X86ProcessX86RuntimeAddressFinder : MemoryProcessAddressFinder
     {
-        protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second) =>
-            new IntPtr(first.ToInt32() + second.ToInt32());
+        protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second)
+            => IntPtr.Add(first, second.ToInt32());
+    }
+
+    internal class X86ProcessX64RuntimeAddressFinder : MemoryProcessAddressFinder
+    {
+        protected override IntPtr SumIntPtrs(IntPtr first, IntPtr second)
+            => new IntPtr(first.ToInt64() + second.ToInt64());
     }
 
     internal abstract class MemoryProcessAddressFinder

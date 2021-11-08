@@ -55,7 +55,12 @@ namespace ProcessMemoryDataFinder.API
             {
                 _intPtrSize = value;
                 if (value == 4)
-                    _internals = new X86MemoryProcessAddressFinder();
+                {
+                    if(Environment.Is64BitProcess)
+                        _internals = new X86ProcessX64RuntimeAddressFinder();
+                    else
+                        _internals = new X86ProcessX86RuntimeAddressFinder();
+                }
                 else
                     _internals = new X64MemoryProcessAddressFinder();
             }
