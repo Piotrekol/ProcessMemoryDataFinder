@@ -207,13 +207,18 @@ namespace ProcessMemoryDataFinder
 
         public IntPtr ReadPointer(IntPtr baseAddr)
         {
-            var data = _memoryReader.ReadData(baseAddr, 8);
-            if (data != null)
-                return new IntPtr(IsX64
-                    ? BitConverter.ToInt64(data, 0)
-                    : BitConverter.ToUInt32(data, 0));
+            var data = _memoryReader.ReadData(baseAddr, (uint)IntPtrSize);
+            if (data == null)
+                return IntPtr.Zero;
 
-            return IntPtr.Zero;
+            if (IsX64)
+                return new IntPtr(BitConverter.ToInt64(data, 0));
+
+            var rawPtr = BitConverter.ToUInt32(data, 0);
+            if (rawPtr > IntPtrExtensions.MaxValue)
+                return IntPtr.Zero;
+
+            return new IntPtr(rawPtr);
         }
     }
 }

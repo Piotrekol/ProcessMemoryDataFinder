@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using OsuMemoryDataProvider.OsuMemoryModels;
 using OsuMemoryDataProvider.OsuMemoryModels.Abstract;
 using ProcessMemoryDataFinder.Structured;
+using ProcessMemoryDataFinder;
 
 namespace OsuMemoryDataProvider
 {
@@ -113,6 +114,9 @@ namespace OsuMemoryDataProvider
                 var rootPath = $"{propInfo.Path}*{classPointers.Count}";
                 for (int i = 0; i < classPointers.Count; i++)
                 {
+                    if (classPointers[i] > IntPtrExtensions.MaxValue)
+                        return propListValue;
+
                     TryInternalRead(propListValue[i], new IntPtr(classPointers[i]), $"{rootPath}[{i}]");
                 }
 
