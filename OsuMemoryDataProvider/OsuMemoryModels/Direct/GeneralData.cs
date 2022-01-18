@@ -9,6 +9,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         [MemoryAddress("GameMode")] public int GameMode { get; set; }
         [MemoryAddress("Retries")] public int Retries { get; set; }
         [MemoryAddress("AudioTime")] public int AudioTime { get; set; }
+        [MemoryAddress("[TotalAudioTimeBase]+0x4")] public double TotalAudioTime { get; set; }
         [MemoryAddress("ChatIsExpanded", true)] public bool ChatIsExpanded { get; set; }
         [MemoryAddress("Mods")] public int Mods { get; set; }
         [MemoryAddress("[Settings + 0x4] + 0xC")] public bool ShowPlayingInterface { get; set; }
