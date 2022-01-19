@@ -19,14 +19,18 @@ namespace OsuMemoryDataProviderTester
         private double _memoryReadTimeMin = double.PositiveInfinity;
         private double _memoryReadTimeMax = double.NegativeInfinity;
         private readonly ISet<string> _patternsToSkip = new HashSet<string>();
+#pragma warning disable CS0618 // Type or member is obsolete
         private readonly IOsuMemoryReader _reader;
+#pragma warning restore CS0618 // Type or member is obsolete
         private readonly StructuredOsuMemoryReader _sreader;
         private CancellationTokenSource cts = new CancellationTokenSource();
         public Form1(string osuWindowTitleHint)
         {
             _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
+#pragma warning disable CS0618 // Type or member is obsolete
             _reader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+#pragma warning restore CS0618 // Type or member is obsolete
             _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
             Shown += OnShown;
             Closing += OnClosing;

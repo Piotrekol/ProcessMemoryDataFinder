@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OsuMemoryDataProvider
 {
+    [Obsolete("This version of reader is not updated anymore with new values. Use StructuredOsuMemoryReader in new implementations.", false)]
     public interface IOsuMemoryReader
     {
         IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint);

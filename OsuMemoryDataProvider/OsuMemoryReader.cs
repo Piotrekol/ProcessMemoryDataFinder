@@ -8,6 +8,7 @@ using ProcessMemoryDataFinder.API;
 
 namespace OsuMemoryDataProvider
 {
+    [Obsolete("This version of reader is not updated anymore with new values. Use StructuredOsuMemoryReader in new implementations.", false)]
     public class OsuMemoryReader : SigMemoryReader, IOsuMemoryReader
     {
         protected readonly object _lockingObject = new object();
