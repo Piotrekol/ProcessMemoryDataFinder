@@ -233,9 +233,9 @@ namespace OsuMemoryDataProvider
                 //avaliable only when playing;
                 //need to reset on each play
                 Name = "PlayContainer",
-                Pattern = PatternHelpers.UnpackStr("894608EB2A8B35"),
-                Offset = 7,
-                PointerOffsets = { 0x4, 0xC4, 0x4 },
+                Pattern = PatternHelpers.UnpackStr("C7864801000001000000A1"),
+                Offset = 0xB,
+                PointerOffsets = { 0x4, 0x60 },
                 UseMask = false
             });
 
