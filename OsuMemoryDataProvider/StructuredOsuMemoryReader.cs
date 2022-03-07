@@ -63,7 +63,7 @@ namespace OsuMemoryDataProvider
             {"Retries", "[Base-0x33]+0x8"},
             {"AudioTime","[Base+0x64]-0x10"},
             {"Mods","[C8FF??????????810D????????00080000+0x9]"},
-            {"IsReplay","[741A80????????????741180+0xD]"},
+            {"IsReplay","[8BFAB801000000+0x2A]"},
             {"ChatIsExpanded","0AD7233C0000??01-0x20"}
         };
 
