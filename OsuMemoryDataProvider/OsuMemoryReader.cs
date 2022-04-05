@@ -130,37 +130,37 @@ namespace OsuMemoryDataProvider
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 200 }
+                PointerOffsets = { 0xCC }
             });
             Signatures.Add((int)SignatureNames.MapSetId, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 204 }
+                PointerOffsets = { 0xD0 }
             });
             Signatures.Add((int)SignatureNames.MapString, new SigEx
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 124 }
+                PointerOffsets = { 0x80 }
             });
             Signatures.Add((int)SignatureNames.MapFolderName, new SigEx
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 116 }
+                PointerOffsets = { 0x78 }
             });
             Signatures.Add((int)SignatureNames.MapOsuFileName, new SigEx
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 144 }
+                PointerOffsets = { 0x94 }
             });
             Signatures.Add((int)SignatureNames.MapMd5, new SigEx
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 108 }
+                PointerOffsets = { 0x6C }
             });
             Signatures.Add((int)SignatureNames.MapAr, new SigEx
             {

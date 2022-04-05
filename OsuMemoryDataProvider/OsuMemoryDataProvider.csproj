@@ -6,7 +6,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>OsuMemoryDataProvider</AssemblyTitle>
     <Product>OsuMemoryDataProvider</Product>
-    <Copyright>2019-2020 Piotr Partyka</Copyright>
+    <Copyright>2019-2022 Piotr Partyka</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Piotrekol</Authors>
     <PackageId>OsuMemoryDataProvider</PackageId>
@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/OsuMemoryDataProvider</RepositoryUrl>
     <title>OsuMemoryDataProvider</title>
     <Summary>Read osu! game memory values based on pre-made memory signatures(patterns)</Summary>
-    <Version>0.8.7</Version>
+    <Version>0.8.8</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>9.0</LangVersion>

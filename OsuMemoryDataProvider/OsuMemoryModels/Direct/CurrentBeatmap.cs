@@ -5,15 +5,15 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
     [MemoryAddress("[CurrentBeatmap]")]
     public class CurrentBeatmap
     {
-        [MemoryAddress("+0xC8")]
-        public int Id { get; set; }
         [MemoryAddress("+0xCC")]
+        public int Id { get; set; }
+        [MemoryAddress("+0xD0")]
         public int SetId { get; set; }
-        [MemoryAddress("+0x7C")]
+        [MemoryAddress("+0x80")]
         public string MapString { get; set; }
-        [MemoryAddress("+0x74")]
+        [MemoryAddress("+0x78")]
         public string FolderName { get; set; }
-        [MemoryAddress("+0x90")]
+        [MemoryAddress("+0x94")]
         public string OsuFileName { get; set; }
         [MemoryAddress("+0x6C")]
         public string Md5 { get; set; }
@@ -25,7 +25,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         public float Hp { get; set; }
         [MemoryAddress("+0x38")]
         public float Od { get; set; }
-        [MemoryAddress("+0x128")]
+        [MemoryAddress("+0x130")]
         public short Status { get; set; }
     }
 }
