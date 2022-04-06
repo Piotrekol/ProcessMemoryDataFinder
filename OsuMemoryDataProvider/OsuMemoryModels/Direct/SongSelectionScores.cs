@@ -16,19 +16,19 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
             RawScores = Enumerable.Range(0, AmountOfPlayerSlots).Select(x => new PlayerScore()).ToList();
         }
 
-        [MemoryAddress("+0x100")]
+        [MemoryAddress("+0x108")]
         private int RawRankingType { get; set; }
         public RankingType RankingType =>
             Enum.IsDefined(typeof(RankingType), RawRankingType)
                 ? (RankingType)RawRankingType
                 : RankingType.Unknown;
-        [MemoryAddress("+0xD0")]
+        [MemoryAddress("+0xD4")]
         public int TotalScores { get; set; }
 
-        [MemoryAddress("+0x98")]
+        [MemoryAddress("+0x9C")]
         private int? RawHasMainPlayerScore { get; set; }
         private MainPlayerScore _mainPlayerScore = new MainPlayerScore();
-        [MemoryAddress("[+0x98]")]
+        [MemoryAddress("[+0x9C]")]
         public MainPlayerScore MainPlayerScore
         {
             get => RawHasMainPlayerScore.HasValue && RawHasMainPlayerScore != 0 ? _mainPlayerScore : null;
@@ -36,7 +36,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         }
 
         private int? _amountOfScores;
-        [MemoryAddress("[+0x9C]+0xC")]
+        [MemoryAddress("[+0xA0]+0xC")]
         public int? AmountOfScores
         {
             get => _amountOfScores;
@@ -50,10 +50,10 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
             }
         }
 
-        [MemoryAddress("+0x9C")]
+        [MemoryAddress("+0xA0")]
         private int? RawHasScores { get; set; }
         private List<PlayerScore> _scores;
-        [MemoryAddress("+0x9C")]
+        [MemoryAddress("+0xA0")]
         private List<PlayerScore> RawScores
         {
             //toggle reading of players
