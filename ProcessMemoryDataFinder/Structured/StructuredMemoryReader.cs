@@ -34,7 +34,7 @@ namespace ProcessMemoryDataFinder.Structured
 
         private class DummyAddressChecker
         {
-            public int? AddressProp { get; set; }
+            [MemoryAddress("")] public int? AddressProp { get; set; }
         }
 
         protected class TypeCacheEntry
