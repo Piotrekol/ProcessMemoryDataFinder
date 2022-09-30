@@ -2,7 +2,7 @@
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
-    [MemoryAddress("[CurrentBeatmap]")]
+    [MemoryAddress("[CurrentBeatmap]", false, true)]
     public class CurrentBeatmap
     {
         [MemoryAddress("+0xCC")]

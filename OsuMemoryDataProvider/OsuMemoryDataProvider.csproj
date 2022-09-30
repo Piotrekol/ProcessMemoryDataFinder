@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/Piotrekol/ProcessMemoryDataFinder/tree/master/OsuMemoryDataProvider</RepositoryUrl>
     <title>OsuMemoryDataProvider</title>
     <Summary>Read osu! game memory values based on pre-made memory signatures(patterns)</Summary>
-    <Version>0.8.9</Version>
+    <Version>0.8.10</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>9.0</LangVersion>
