@@ -16,7 +16,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         [MemoryAddress("+0x8E")] public ushort HitGeki { get; set; }
         [MemoryAddress("+0x90")] public ushort HitKatu { get; set; }
         [MemoryAddress("+0x92")] public ushort HitMiss { get; set; }
-        [MemoryAddress("+0xA0")] private long RawDate { get; set; }
+        [MemoryAddress("+0xA0")] protected long RawDate { get; set; }
         public DateTime Date
         {
             get

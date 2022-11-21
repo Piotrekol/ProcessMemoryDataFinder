@@ -13,7 +13,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         //that means in singleplayer this will not resolve until user has hit anything,
         //and in multiplayer ^ and if any of the players in the room decides to quit before reporting any hitresult
         [MemoryAddress("[+0x20]", true)]
-        private MultiplayerPlayerPlayData _multiplayerPlayerPlayData { get; set; } = new MultiplayerPlayerPlayData();
+        protected MultiplayerPlayerPlayData _multiplayerPlayerPlayData { get; set; } = new MultiplayerPlayerPlayData();
 
         public ushort Combo => _multiplayerPlayerPlayData?.Combo ?? 0;
         public ushort MaxCombo => _multiplayerPlayerPlayData?.MaxCombo ?? 0;
