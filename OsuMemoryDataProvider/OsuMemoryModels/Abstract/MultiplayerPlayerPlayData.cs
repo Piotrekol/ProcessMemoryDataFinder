@@ -2,7 +2,7 @@
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
 {
-    internal class MultiplayerPlayerPlayData
+    public class MultiplayerPlayerPlayData
     {
         [MemoryAddress("+0x94")]
         public ushort Combo { get; set; }
