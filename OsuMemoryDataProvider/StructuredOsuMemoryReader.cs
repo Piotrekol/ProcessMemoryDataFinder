@@ -41,6 +41,12 @@ namespace OsuMemoryDataProvider
             remove => _memoryReader.InvalidRead -= value;
         }
 
+        public int ProcessWatcherDelayMs
+        {
+            get => _memoryReader.ProcessWatcherDelayMs;
+            set => _memoryReader.ProcessWatcherDelayMs = value;
+        }
+
         public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
         {
             if (string.IsNullOrEmpty(windowTitleHint)) return Instance;

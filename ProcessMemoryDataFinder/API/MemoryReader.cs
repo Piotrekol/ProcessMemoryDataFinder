@@ -23,6 +23,7 @@ namespace ProcessMemoryDataFinder.API
         private readonly SigScan _sigScan = new SigScan();
         private Process _currentProcess;
         private Task ProcessWatcher;
+        public int ProcessWatcherDelayMs { get; set; } = 1000;
         private CancellationTokenSource cts = new CancellationTokenSource();
         private int _intPtrSize = IntPtr.Size;
         public event EventHandler ProcessChanged;
@@ -98,7 +99,7 @@ namespace ProcessMemoryDataFinder.API
                     CurrentProcess = null;
                 }
                 else
-                    await Task.Delay(100);
+                    await Task.Delay(ProcessWatcherDelayMs);
             }
         }
 

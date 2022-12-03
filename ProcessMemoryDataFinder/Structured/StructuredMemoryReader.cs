@@ -32,6 +32,12 @@ namespace ProcessMemoryDataFinder.Structured
 
         public bool AbortReadOnInvalidValue { get; set; } = true;
 
+        public int ProcessWatcherDelayMs
+        {
+            get => _memoryReader.ProcessWatcherDelayMs;
+            set => _memoryReader.ProcessWatcherDelayMs = value;
+        }
+
         private class DummyAddressChecker
         {
             [MemoryAddress("")] public int? AddressProp { get; set; }

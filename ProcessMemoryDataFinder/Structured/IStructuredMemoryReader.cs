@@ -22,6 +22,11 @@ namespace ProcessMemoryDataFinder.Structured
         bool CanRead { get; }
 
         /// <summary>
+        /// How often should reader check if valid process is available on the system.
+        /// </summary>
+        int ProcessWatcherDelayMs { get; set; }
+
+        /// <summary>
         /// Should an attempt at reading invalid address in <see cref="TryRead{T}"/> abort read call(and return false)?
         /// </summary>
         bool AbortReadOnInvalidValue { get; set; }
