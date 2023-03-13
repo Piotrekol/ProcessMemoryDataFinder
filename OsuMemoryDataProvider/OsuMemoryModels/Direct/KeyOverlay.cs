@@ -6,7 +6,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
     [MemoryAddress(KeyOverlay.ClassAddress, false, true, nameof(RawHasKeyOverlay))]
     public class KeyOverlay
     {
-        internal const string ClassAddress = "[[[[CurrentRuleset]+0xA8]+0x10]+0x4]";
+        internal const string ClassAddress = "[[[[CurrentRuleset]+0xB0]+0x10]+0x4]";
 
         [MemoryAddress("")]
         private int? RawHasKeyOverlay { get; set; }

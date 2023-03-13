@@ -6,7 +6,7 @@ using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
-    [MemoryAddress("[[CurrentRuleset]+0x74]+0x24", false, true, nameof(RawHasLeaderboard))]
+    [MemoryAddress("[[CurrentRuleset]+0x7C]+0x24", false, true, nameof(RawHasLeaderboard))]
     public class LeaderBoard
     {
         //single player: top50 + player top score + current score. possibly more with local scores leaderboard?

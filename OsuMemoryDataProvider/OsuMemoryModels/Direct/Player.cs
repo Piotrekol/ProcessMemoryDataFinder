@@ -4,7 +4,7 @@ using ProcessMemoryDataFinder.Structured;
 
 namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
 {
-    [MemoryAddress("[[CurrentRuleset] + 0x60]")]
+    [MemoryAddress("[[CurrentRuleset] + 0x68]")]
     public class Player : RulesetPlayData
     {
         //[MemoryAddress("")]
