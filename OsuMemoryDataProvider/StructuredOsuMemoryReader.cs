@@ -62,6 +62,7 @@ namespace OsuMemoryDataProvider
             {"CurrentRuleset","[C7864801000001000000A1+0xB]+0x4"},// or backup: 7D15A1????????85C0-B]+4 //TourneyBase
             {"Settings", "[83E02085C07E2F+0x8]"},
             {"TotalAudioTimeBase", "[83E4F8575683EC38+0xA]" },
+            {"UserPanel", "[FFFF895070+0x6]" },
 
             //static values
             {"OsuStatus", "[4883F804731E-0x4]"},//[Base-0x3C]

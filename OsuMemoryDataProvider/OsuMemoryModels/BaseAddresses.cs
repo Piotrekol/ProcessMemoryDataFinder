@@ -11,6 +11,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels
         public Skin Skin { get; set; } = new Skin();
         public ResultsScreen ResultsScreen { get; set; } = new ResultsScreen();
         public GeneralData GeneralData { get; set; } = new GeneralData();
+        public BanchoUser BanchoUser { get; set; } = new BanchoUser();
         public KeyOverlay KeyOverlay { get; set; } = new KeyOverlay();
     }
 }

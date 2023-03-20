@@ -13,7 +13,8 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Direct
         [MemoryAddress("ChatIsExpanded", true)] public bool ChatIsExpanded { get; set; }
         [MemoryAddress("Mods")] public int Mods { get; set; }
         [MemoryAddress("[Settings + 0x4] + 0xC")] public bool ShowPlayingInterface { get; set; }
-
+        [MemoryAddress("[Settings + 0x44] + 0x4")] public string OsuVersion { get; set; }
+        
         public OsuMemoryStatus OsuStatus
         {
             get

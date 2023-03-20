@@ -131,6 +131,7 @@ namespace StructuredOsuMemoryProviderTester
                         _sreader.TryRead(baseAddresses.Beatmap);
                         _sreader.TryRead(baseAddresses.Skin);
                         _sreader.TryRead(baseAddresses.GeneralData);
+                        _sreader.TryRead(baseAddresses.BanchoUser);
                     }
 
                     if (baseAddresses.GeneralData.OsuStatus == OsuMemoryStatus.SongSelect)
