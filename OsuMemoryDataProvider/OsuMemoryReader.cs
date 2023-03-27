@@ -235,7 +235,7 @@ namespace OsuMemoryDataProvider
                 Name = "PlayContainer",
                 Pattern = PatternHelpers.UnpackStr("C7864801000001000000A1"),
                 Offset = 0xB,
-                PointerOffsets = { 0x4, 0x60 },
+                PointerOffsets = { 0x4, 0x68 },
                 UseMask = false
             });
 
@@ -309,7 +309,7 @@ namespace OsuMemoryDataProvider
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 56, 120 }
+                PointerOffsets = { 0x100 }
             });
             Signatures.Add((int)SignatureNames.PlayingGameMode, new SigEx
             {
@@ -340,7 +340,7 @@ namespace OsuMemoryDataProvider
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.PlayContainer],
-                PointerOffsets = { 0x4C, 0xC, 0x68, 0x4, 0xF8 }
+                PointerOffsets = { 0x100 }
             });
         }
 
