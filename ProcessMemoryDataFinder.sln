@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33402.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessMemoryDataFinder", "ProcessMemoryDataFinder\ProcessMemoryDataFinder.csproj", "{9960D641-300A-432C-AA04-C351A99B9ADB}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "osu!", "osu!", "{FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StructuredOsuMemoryProviderTester", "StructuredOsuMemoryProviderTester\StructuredOsuMemoryProviderTester.csproj", "{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxStructuredOsuMemoryProviderTester", "LinuxStructuredOsuMemoryProviderTester\LinuxStructuredOsuMemoryProviderTester.csproj", "{55FA063E-A4AF-4CB1-9F04-E6D553113289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,18 @@ Global
 		{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A}.Release|x64.Build.0 = Release|x64
 		{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A}.Release|x86.ActiveCfg = Release|x86
 		{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A}.Release|x86.Build.0 = Release|x86
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|x64.Build.0 = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Debug|x86.Build.0 = Debug|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|x64.ActiveCfg = Release|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|x64.Build.0 = Release|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|x86.ActiveCfg = Release|Any CPU
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +90,7 @@ Global
 		{D117800F-072D-4AE4-9679-3E2A129A1A3C} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 		{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
+		{55FA063E-A4AF-4CB1-9F04-E6D553113289} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FBAFFCF-2E42-43DD-B5D2-EFB906701CBF}

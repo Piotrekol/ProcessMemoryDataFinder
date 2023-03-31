@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProcessMemoryDataFinder.API
 {
-    public abstract class SigMemoryReader : MemoryReader
+    public abstract class SigMemoryReader : MemoryReaderManager
     {
         protected Dictionary<int, SigEx> Signatures = new Dictionary<int, SigEx>();
         protected IObjectReader ObjectReader;
