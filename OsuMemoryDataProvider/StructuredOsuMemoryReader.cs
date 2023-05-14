@@ -71,7 +71,8 @@ namespace OsuMemoryDataProvider
             {"AudioTime","[Base+0x64]-0x10"},
             {"Mods","[C8FF??????????810D????????00080000+0x9]"},
             {"IsReplay","[8BFAB801000000+0x2A]"},
-            {"ChatIsExpanded","0AD7233C0000??01-0x20"}
+            {"ChatIsExpanded","0AD7233C0000??01-0x20"},
+            {"IsLoggedIn", "[B80B00008B35-0xB]" }
         };
 
         public StructuredOsuMemoryReader(string mainWindowTitleHint = null)
