@@ -14,7 +14,7 @@ namespace OsuMemoryDataProvider.OsuMemoryModels.Abstract
         public int Mode { get; set; }
         [MemoryAddress("[+0x38]+0x68")]
         public ushort MaxCombo { get; set; }
-        [MemoryAddress("[CurrentRuleset]+0x100")]
+        [MemoryAddress("[+0x38]+0x78")]
         public virtual int Score { get; set; }
         public virtual int ScoreV2 { get => Score; set => Score = value; }
         [MemoryAddress("[+0x38]+0x88")]
