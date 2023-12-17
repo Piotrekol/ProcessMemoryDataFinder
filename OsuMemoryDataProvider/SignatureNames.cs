@@ -21,6 +21,7 @@ namespace OsuMemoryDataProvider
         CurrentSkinFolder,
         OsuStatus,
         PlayContainer,
+        CurrentRuleset,
         Mods,
         PlayingMods,
         Combo,

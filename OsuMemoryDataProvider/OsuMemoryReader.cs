@@ -86,9 +86,9 @@ namespace OsuMemoryDataProvider
             Signatures[(int)SignatureNames.IsReplay] = new SigEx
             {
                 Name = "IsReplay",
-                Pattern = PatternHelpers.UnpackStr("741A80000000000000741180"),
-                Mask = "xxx??????xxx",
-                Offset = 13,
+                Pattern = PatternHelpers.UnpackStr("8BFAB801000000"),
+                Mask = "xxxxxxx",
+                Offset = 0x2A,
                 PointerOffsets = { 0 },
                 UseMask = true,
             };
@@ -130,13 +130,13 @@ namespace OsuMemoryDataProvider
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 0xCC }
+                PointerOffsets = { 0xC8 }
             });
             Signatures.Add((int)SignatureNames.MapSetId, new SigEx
             {
                 //int
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 0xD0 }
+                PointerOffsets = { 0xCC }
             });
             Signatures.Add((int)SignatureNames.MapString, new SigEx
             {
@@ -154,7 +154,7 @@ namespace OsuMemoryDataProvider
             {
                 //string
                 ParentSig = Signatures[(int)SignatureNames.CurrentBeatmapData],
-                PointerOffsets = { 0x94 }
+                PointerOffsets = { 0x90 }
             });
             Signatures.Add((int)SignatureNames.MapMd5, new SigEx
             {
@@ -228,14 +228,23 @@ namespace OsuMemoryDataProvider
 
         private void CreatePlaySignatures()
         {
+            Signatures.Add((int)SignatureNames.CurrentRuleset, new SigEx
+            {
+                Name = "CurrentRuleset",
+                Pattern = PatternHelpers.UnpackStr("C7864801000001000000A1"),
+                Offset = 0xB,
+                PointerOffsets = { 0x4 },
+                UseMask = false
+            });
+
             Signatures.Add((int)SignatureNames.PlayContainer, new SigEx
             {
                 //avaliable only when playing;
                 //need to reset on each play
                 Name = "PlayContainer",
-                Pattern = PatternHelpers.UnpackStr("C7864801000001000000A1"),
-                Offset = 0xB,
-                PointerOffsets = { 0x4, 0x68 },
+                ParentSig = Signatures[(int)SignatureNames.CurrentRuleset],
+                Offset = 0,
+                PointerOffsets = { 0x68 },
                 UseMask = false
             });
 
@@ -308,7 +317,7 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.Score, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                ParentSig = Signatures[(int)SignatureNames.CurrentRuleset],
                 PointerOffsets = { 0x100 }
             });
             Signatures.Add((int)SignatureNames.PlayingGameMode, new SigEx
@@ -339,7 +348,7 @@ namespace OsuMemoryDataProvider
             Signatures.Add((int)SignatureNames.ScoreV2, new SigEx
             {
                 //int
-                ParentSig = Signatures[(int)SignatureNames.PlayContainer],
+                ParentSig = Signatures[(int)SignatureNames.CurrentRuleset],
                 PointerOffsets = { 0x100 }
             });
         }
