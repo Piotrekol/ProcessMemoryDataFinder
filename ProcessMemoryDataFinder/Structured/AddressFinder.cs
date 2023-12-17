@@ -7,7 +7,7 @@ namespace ProcessMemoryDataFinder.Structured
 {
     public class AddressFinder
     {
-        private readonly MemoryReader _memoryReader;
+        private readonly MemoryReaderManager _memoryReader;
         private readonly IObjectReader _objectReader;
         private readonly Dictionary<string, string> _constantAddresses;
         private readonly Dictionary<string, IntPtr> _constantAddressesCache;
@@ -19,7 +19,7 @@ namespace ProcessMemoryDataFinder.Structured
         /// </summary>
         public int IntPtrSize { get; set; } = IntPtr.Size;
 
-        public AddressFinder(MemoryReader memoryReader, IObjectReader objectReader, Dictionary<string, string> constantAddresses)
+        public AddressFinder(MemoryReaderManager memoryReader, IObjectReader objectReader, Dictionary<string, string> constantAddresses)
         {
             _memoryReader = memoryReader;
             _memoryReader.ProcessChanged += MemoryReaderOnProcessChanged;

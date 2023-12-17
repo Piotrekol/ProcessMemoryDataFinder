@@ -19,8 +19,8 @@ namespace ProcessMemoryDataFinder.API
 
     public class SigEx : Sig
     {
-        private MemoryReader.FindPatternF _findPatternFunc;
-        private MemoryReader.ReadDataF _readDataFunc;
+        private MemoryReaderManager.FindPatternF _findPatternFunc;
+        private MemoryReaderManager.ReadDataF _readDataFunc;
         private IObjectReader _objectReader;
 
         public string Name { get; set; }
@@ -46,13 +46,13 @@ namespace ProcessMemoryDataFinder.API
         /// </summary>
         public List<int> PointerOffsets { get; set; } = new List<int>();
 
-        public void SetFindPatternF(MemoryReader.FindPatternF f)
+        public void SetFindPatternF(MemoryReaderManager.FindPatternF f)
         {
             _findPatternFunc = f;
             ParentSig?.SetFindPatternF(f);
         }
 
-        public void SetReadDataF(MemoryReader.ReadDataF f)
+        public void SetReadDataF(MemoryReaderManager.ReadDataF f)
         {
             _readDataFunc = f;
             ParentSig?.SetReadDataF(f);

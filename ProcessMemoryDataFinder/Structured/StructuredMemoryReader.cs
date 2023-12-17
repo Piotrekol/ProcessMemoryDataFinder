@@ -11,7 +11,7 @@ namespace ProcessMemoryDataFinder.Structured
 {
     public class StructuredMemoryReader : IDisposable, IStructuredMemoryReader
     {
-        protected MemoryReader _memoryReader;
+        protected MemoryReaderManager _memoryReader;
         protected AddressFinder _addressFinder;
         private AddressTokenizer _addressTokenizer = new AddressTokenizer();
         protected IObjectReader ObjectReader;
@@ -88,9 +88,9 @@ namespace ProcessMemoryDataFinder.Structured
         };
         protected Dictionary<Type, ReadObject> ReadHandlers;
 
-        public StructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null, MemoryReader memoryReader = null, IObjectReader objectReader = null)
+        public StructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null, MemoryReaderManager memoryReader = null, IObjectReader objectReader = null)
         {
-            _memoryReader = memoryReader ?? new MemoryReader(processName, mainWindowTitleHint);
+            _memoryReader = memoryReader ?? new MemoryReaderManager(processName, mainWindowTitleHint);
             ObjectReader = objectReader ?? new ObjectReader(_memoryReader);
             _addressFinder = new AddressFinder(_memoryReader, ObjectReader, baseAdresses);
 
