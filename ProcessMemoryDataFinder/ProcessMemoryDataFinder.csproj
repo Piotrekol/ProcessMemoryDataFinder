@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net472;net471;net5.0</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
     <Platforms>x64;x86;AnyCPU</Platforms>
     <AssemblyTitle>ProcessMemoryDataFinder</AssemblyTitle>
     <Product>ProcessMemoryDataFinder</Product>

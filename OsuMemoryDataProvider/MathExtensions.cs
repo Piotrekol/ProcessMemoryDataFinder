@@ -1,4 +1,4 @@
-﻿#if NET472 || NET471
+﻿#if NET48
 using System;
 
 namespace OsuMemoryDataProvider
