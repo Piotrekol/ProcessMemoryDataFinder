@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-	<TargetFrameworks>net48;net6.0-windows;net8.0-windows</TargetFrameworks>
-	  <Platforms>x86;x64;AnyCPU</Platforms>
-	  <OutputType>WinExe</OutputType>
+	<TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
+	<Platforms>x86;x64;AnyCPU</Platforms>
+	<OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
 		<OutputPath>bin\x86\Debug\</OutputPath>

@@ -12,15 +12,13 @@ namespace OsuMemoryDataProvider
     public class StructuredOsuMemoryReader : IStructuredMemoryReader, IDisposable
     {
         private StructuredMemoryReader _memoryReader;
+        private static readonly ConcurrentDictionary<ProcessTargetOptions, StructuredOsuMemoryReader> Instances = [];
         public OsuBaseAddresses OsuMemoryAddresses { get; } = new OsuBaseAddresses();
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="StructuredOsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-pattern-location work
         /// </summary>
-        public static StructuredOsuMemoryReader Instance { get; } = new StructuredOsuMemoryReader();
-        private static readonly ConcurrentDictionary<string, StructuredOsuMemoryReader> Instances =
-            new ConcurrentDictionary<string, StructuredOsuMemoryReader>();
-
+        public static StructuredOsuMemoryReader Instance { get; } = new StructuredOsuMemoryReader(new("osu!"));
         public bool WithTimes
         {
             get => _memoryReader.WithTimes;
@@ -28,29 +26,30 @@ namespace OsuMemoryDataProvider
         }
         public Dictionary<string, double> ReadTimes => _memoryReader.ReadTimes;
         public bool CanRead => _memoryReader.CanRead;
-
         public bool AbortReadOnInvalidValue
         {
             get => _memoryReader.AbortReadOnInvalidValue;
             set => _memoryReader.AbortReadOnInvalidValue = value;
         }
-
         public event EventHandler<(object readObject, string propPath)> InvalidRead
         {
             add => _memoryReader.InvalidRead += value;
             remove => _memoryReader.InvalidRead -= value;
         }
-
         public int ProcessWatcherDelayMs
         {
             get => _memoryReader.ProcessWatcherDelayMs;
             set => _memoryReader.ProcessWatcherDelayMs = value;
         }
 
-        public StructuredOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
+        public static StructuredOsuMemoryReader GetInstance(ProcessTargetOptions processTargetOptions)
         {
-            if (string.IsNullOrEmpty(windowTitleHint)) return Instance;
-            return Instances.GetOrAdd(windowTitleHint, s => new StructuredOsuMemoryReader(s));
+            if (processTargetOptions is null)
+            {
+                return Instance;
+            }
+
+            return Instances.GetOrAdd(processTargetOptions, s => new StructuredOsuMemoryReader(processTargetOptions));
         }
 
         public Dictionary<string, string> BaseAddresses { get; } = new Dictionary<string, string>
@@ -75,11 +74,10 @@ namespace OsuMemoryDataProvider
             {"IsLoggedIn", "[B80B00008B35-0xB]" }
         };
 
-        public StructuredOsuMemoryReader(string mainWindowTitleHint = null)
+        public StructuredOsuMemoryReader(ProcessTargetOptions processTargetOptions)
         {
-            _memoryReader = new MultiplayerPlayerStructuredMemoryReader("osu!", BaseAddresses, mainWindowTitleHint);
+            _memoryReader = new MultiplayerPlayerStructuredMemoryReader("osu!", BaseAddresses, processTargetOptions);
         }
-
         public bool TryRead<T>(T readObj) where T : class
             => _memoryReader.TryRead(readObj);
 
@@ -101,7 +99,7 @@ namespace OsuMemoryDataProvider
 
         protected class MultiplayerPlayerStructuredMemoryReader : StructuredMemoryReader
         {
-            public MultiplayerPlayerStructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, string mainWindowTitleHint = null) : base(processName, baseAdresses, mainWindowTitleHint)
+            public MultiplayerPlayerStructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions) : base(processName, baseAdresses, processTargetOptions)
             {
                 ObjectReader.IntPtrSize = _addressFinder.IntPtrSize = _memoryReader.IntPtrSize = 4;
                 AddReadHandlers(new Dictionary<Type, ReadObject>
@@ -113,7 +111,8 @@ namespace OsuMemoryDataProvider
 
             private IList ReadList(IntPtr finalAddress, PropInfo propInfo)
             {
-                if (finalAddress == IntPtr.Zero) return null;
+                if (finalAddress == IntPtr.Zero)
+                    return null;
 
                 var classPointers = ObjectReader.ReadUIntList(finalAddress);
                 var propListValue = (IList)propInfo.Getter();

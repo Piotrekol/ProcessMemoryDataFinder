@@ -29,9 +29,9 @@ namespace OsuMemoryDataProviderTester
             _osuWindowTitleHint = osuWindowTitleHint;
             InitializeComponent();
 #pragma warning disable CS0618 // Type or member is obsolete
-            _reader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+            _reader = OsuMemoryReader.GetInstance(new("osu!", osuWindowTitleHint));
 #pragma warning restore CS0618 // Type or member is obsolete
-            _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+            _sreader = StructuredOsuMemoryReader.GetInstance(new("osu!", osuWindowTitleHint));
             Shown += OnShown;
             Closing += OnClosing;
             numericUpDown_readDelay.ValueChanged += NumericUpDownReadDelayOnValueChanged;
@@ -56,7 +56,8 @@ namespace OsuMemoryDataProviderTester
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
-            if (!string.IsNullOrEmpty(_osuWindowTitleHint)) Text += $": {_osuWindowTitleHint}";
+            if (!string.IsNullOrEmpty(_osuWindowTitleHint))
+                Text += $": {_osuWindowTitleHint}";
             _ = Task.Run(async () =>
             {
                 try
@@ -191,8 +192,10 @@ namespace OsuMemoryDataProviderTester
                         readTimeMs = stopwatch.ElapsedTicks / (double)TimeSpan.TicksPerMillisecond;
                         lock (_minMaxLock)
                         {
-                            if (readTimeMs < _memoryReadTimeMin) _memoryReadTimeMin = readTimeMs;
-                            if (readTimeMs > _memoryReadTimeMax) _memoryReadTimeMax = readTimeMs;
+                            if (readTimeMs < _memoryReadTimeMin)
+                                _memoryReadTimeMin = readTimeMs;
+                            if (readTimeMs > _memoryReadTimeMax)
+                                _memoryReadTimeMax = readTimeMs;
                             // copy value since we're inside lock
                             readTimeMsMin = _memoryReadTimeMin;
                             readTimeMsMax = _memoryReadTimeMax;

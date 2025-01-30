@@ -29,7 +29,7 @@ namespace StructuredOsuMemoryProviderTester
         public Form1(string osuWindowTitleHint)
         {
             InitializeComponent();
-            _sreader = StructuredOsuMemoryReader.Instance.GetInstanceForWindowTitleHint(osuWindowTitleHint);
+            _sreader = StructuredOsuMemoryReader.GetInstance(new("osu!", osuWindowTitleHint));
             Shown += OnShown;
             Closing += OnClosing;
         }

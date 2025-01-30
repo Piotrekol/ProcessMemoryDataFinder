@@ -7,7 +7,7 @@ namespace ProcessMemoryDataFinder.API
     {
         protected Dictionary<int, SigEx> Signatures = new Dictionary<int, SigEx>();
         protected IObjectReader ObjectReader;
-        protected SigMemoryReader(string processName, string mainWindowTitleHint = null) : base(processName, mainWindowTitleHint)
+        protected SigMemoryReader(ProcessTargetOptions processTargetOptions) : base(processTargetOptions)
         {
             ObjectReader = new ObjectReader(this);
             ProcessChanged += (_, __) => ResetAllSignatures();

@@ -17,18 +17,22 @@ namespace OsuMemoryDataProvider
         ///     It is strongly encouraged to use single <see cref="OsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-signature-location work
         /// </summary>
-        public static IOsuMemoryReader Instance { get; } = new OsuMemoryReader();
+        public static IOsuMemoryReader Instance { get; } = new OsuMemoryReader(new("osu!"));
 
-        private static readonly ConcurrentDictionary<string, IOsuMemoryReader> Instances =
-            new ConcurrentDictionary<string, IOsuMemoryReader>();
+        private static readonly ConcurrentDictionary<ProcessTargetOptions, IOsuMemoryReader> Instances =
+            new ConcurrentDictionary<ProcessTargetOptions, IOsuMemoryReader>();
 
-        public IOsuMemoryReader GetInstanceForWindowTitleHint(string windowTitleHint)
+        public static IOsuMemoryReader GetInstance(ProcessTargetOptions processTargetOptions)
         {
-            if (string.IsNullOrEmpty(windowTitleHint)) return Instance;
-            return Instances.GetOrAdd(windowTitleHint, s => new OsuMemoryReader(s));
+            if (processTargetOptions is null)
+            {
+                return Instance;
+            }
+
+            return Instances.GetOrAdd(processTargetOptions, s => new OsuMemoryReader(processTargetOptions));
         }
 
-        public OsuMemoryReader(string mainWindowTitleHint = null) : base("osu!", mainWindowTitleHint)
+        public OsuMemoryReader(ProcessTargetOptions processTargetOptions) : base(processTargetOptions)
         {
             ObjectReader.IntPtrSize = 4;
             CreateSignatures();
@@ -415,8 +419,8 @@ namespace OsuMemoryDataProvider
         {
             lock (_lockingObject)
             {
-                ResetPointer((int) SignatureNames.HitErrors);
-                return GetIntList((int) SignatureNames.HitErrors);
+                ResetPointer((int)SignatureNames.HitErrors);
+                return GetIntList((int)SignatureNames.HitErrors);
             }
         }
 

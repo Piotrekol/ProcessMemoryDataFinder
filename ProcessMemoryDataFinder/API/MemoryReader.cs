@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ProcessMemoryDataFinder.Misc;
@@ -16,9 +17,7 @@ namespace ProcessMemoryDataFinder.API
         public delegate byte[] ReadDataF(IntPtr adress, uint size);
 
         private MemoryProcessAddressFinder _internals;
-
-        private readonly string _processName;
-        private readonly string _mainWindowTitleHint;
+        private readonly ProcessTargetOptions _processTargetOptions;
         private readonly ProcessMemoryReader _reader = new ProcessMemoryReader();
         private readonly SigScan _sigScan = new SigScan();
         private Process _currentProcess;
@@ -57,7 +56,7 @@ namespace ProcessMemoryDataFinder.API
                 _intPtrSize = value;
                 if (value == 4)
                 {
-                    if(Environment.Is64BitProcess)
+                    if (Environment.Is64BitProcess)
                         _internals = new X86ProcessX64RuntimeAddressFinder();
                     else
                         _internals = new X86ProcessX86RuntimeAddressFinder();
@@ -67,13 +66,12 @@ namespace ProcessMemoryDataFinder.API
             }
         }
 
-        public MemoryReader(string processName, string mainWindowTitleHint)
+        public MemoryReader(ProcessTargetOptions processTargetOptions)
         {
             //Initialize process address finder
             IntPtrSize = IntPtrSize;
 
-            _processName = processName;
-            _mainWindowTitleHint = mainWindowTitleHint;
+            _processTargetOptions = processTargetOptions;
             ProcessWatcher = Task.Run(MonitorProcess, cts.Token);
         }
 
@@ -161,13 +159,28 @@ namespace ProcessMemoryDataFinder.API
         {
             try
             {
-                IEnumerable<Process> p = Process.GetProcessesByName(_processName);
-                if (!string.IsNullOrEmpty(_mainWindowTitleHint))
+                IEnumerable<Process> processes = Process.GetProcessesByName(_processTargetOptions.ProcessName);
+
+                if (!string.IsNullOrEmpty(_processTargetOptions.MainWindowTitleHint))
                 {
-                    p = p.Where(x => x.MainWindowTitle.IndexOf(_mainWindowTitleHint, StringComparison.Ordinal) >= 0);
+                    processes = processes.Where(process => process.MainWindowTitle.IndexOf(_processTargetOptions.MainWindowTitleHint, StringComparison.Ordinal) >= 0);
                 }
-                var resolvedProcess = p.FirstOrDefault();
-                if (resolvedProcess != null || CurrentProcess != null)
+
+                if (_processTargetOptions.Target64Bit.HasValue)
+                {
+                    if (_processTargetOptions.Target64Bit.Value)
+                    {
+                        processes = processes.Where(process => IsWow64Process(process.SafeHandle, out var isWow64Process) && !isWow64Process);
+                    }
+                    else
+                    {
+                        processes = processes.Where(process => IsWow64Process(process.SafeHandle, out var isWow64Process) && isWow64Process);
+                    }
+                }
+
+                var resolvedProcess = processes.FirstOrDefault();
+
+                if (resolvedProcess is not null || CurrentProcess is not null)
                 {
                     CurrentProcess = resolvedProcess;
                 }
@@ -221,5 +234,11 @@ namespace ProcessMemoryDataFinder.API
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool IsWow64Process(
+            [In] Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid hProcess,
+            [Out, MarshalAs(UnmanagedType.Bool)] out bool wow64Process
+        );
     }
 }
