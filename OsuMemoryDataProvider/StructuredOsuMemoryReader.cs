@@ -13,12 +13,15 @@ namespace OsuMemoryDataProvider
     {
         private StructuredMemoryReader _memoryReader;
         private static readonly ConcurrentDictionary<ProcessTargetOptions, StructuredOsuMemoryReader> Instances = [];
+        private static StructuredOsuMemoryReader instance;
+
         public OsuBaseAddresses OsuMemoryAddresses { get; } = new OsuBaseAddresses();
         /// <summary>
         ///     It is strongly encouraged to use single <see cref="StructuredOsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-pattern-location work
         /// </summary>
-        public static StructuredOsuMemoryReader Instance { get; } = new StructuredOsuMemoryReader(new("osu!"));
+        public static StructuredOsuMemoryReader Instance => instance ??= new StructuredOsuMemoryReader(new("osu!"));
+
         public bool WithTimes
         {
             get => _memoryReader.WithTimes;

@@ -17,8 +17,9 @@ namespace OsuMemoryDataProvider
         ///     It is strongly encouraged to use single <see cref="OsuMemoryReader" /> instance in order to not have to duplicate
         ///     find-signature-location work
         /// </summary>
-        public static IOsuMemoryReader Instance { get; } = new OsuMemoryReader(new("osu!"));
+        public static IOsuMemoryReader Instance => instance ??= new OsuMemoryReader(new("osu!"));
 
+        private static IOsuMemoryReader instance;
         private static readonly ConcurrentDictionary<ProcessTargetOptions, IOsuMemoryReader> Instances =
             new ConcurrentDictionary<ProcessTargetOptions, IOsuMemoryReader>();
 
