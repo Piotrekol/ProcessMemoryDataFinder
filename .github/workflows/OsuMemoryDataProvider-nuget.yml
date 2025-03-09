@@ -12,19 +12,19 @@ jobs:
     - name: build
       run: dotnet build -c Release /p:Platform="Any CPU"
     - name: Setup Nuget.exe
-      uses: nuget/setup-nuget@v1
+      uses: nuget/setup-nuget@v2
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         nuget-version: 'latest'
     - name: upload sig tester
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: sigMemoryTester-Net471
-        path: OsuMemoryDataProviderTester\bin\AnyCPU\Release\net471\*
+        name: sigMemoryTester-Net48
+        path: OsuMemoryDataProviderTester\bin\AnyCPU\Release\net48\*
     - name: upload structured tester
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: structuredMemoryTester-Net5
-        path: StructuredOsuMemoryProviderTester\bin\AnyCPU\Release\net5.0-windows\*
+        name: structuredMemoryTester-Net8
+        path: StructuredOsuMemoryProviderTester\bin\AnyCPU\Release\net8.0-windows\*
     - name: Nuget Push
       run: nuget push OsuMemoryDataProvider\bin\AnyCPU\Release\*.nupkg -Source https://api.nuget.org/v3/index.json
