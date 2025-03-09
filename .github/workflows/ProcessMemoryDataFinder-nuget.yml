@@ -12,7 +12,7 @@ jobs:
     - name: build
       run: dotnet build -c Release /p:Platform="Any CPU"
     - name: Setup Nuget.exe
-      uses: nuget/setup-nuget@v1
+      uses: nuget/setup-nuget@v2
       with:
         nuget-api-key: ${{ secrets.NUGET_API_KEY }}
         nuget-version: 'latest'
