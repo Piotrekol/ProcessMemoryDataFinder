@@ -1,0 +1,170 @@
+{
+  "Metadata": {
+    "Timestamp": "2026-01-22T18:13:35.9497835Z",
+    "ProcessName": "osu!",
+    "WindowTitleHint": null,
+    "Bitness": 64,
+    "GameState": "SongSelect"
+  },
+  "beatmap": {
+    "Id": 5248423,
+    "SetId": 2415235,
+    "MapString": "kanone - Blue Dragoon [Extra]",
+    "FolderName": "2415235 kanone - Blue Dragoon",
+    "OsuFileName": "kanone - Blue Dragoon (-kevincela-) [Extra].osu",
+    "Md5": "8d78674abe794b7836e891af5518600e",
+    "Ar": 9.5,
+    "Cs": 5.0,
+    "Hp": 5.0,
+    "Od": 9.3,
+    "Status": 4
+  },
+  "player": {
+    "HPSmooth": 0.0,
+    "HP": 0.0,
+    "Accuracy": 0.0,
+    "HitErrors": null,
+    "IsReplay": false,
+    "Username": null,
+    "Mods": {
+      "ModsXor1": 0,
+      "ModsXor2": 0,
+      "Value": 0
+    },
+    "Mode": 0,
+    "MaxCombo": 0,
+    "Score": 0,
+    "ScoreV2": 0,
+    "Hit100": 0,
+    "Hit300": 0,
+    "Hit50": 0,
+    "HitGeki": 0,
+    "HitKatu": 0,
+    "HitMiss": 0,
+    "Combo": 0
+  },
+  "leaderBoard": {
+    "HasLeaderBoard": false,
+    "MainPlayer": null,
+    "AmountOfPlayers": null,
+    "Players": []
+  },
+  "songSelectionScores": {
+    "RankingType": 0,
+    "TotalScores": 0,
+    "MainPlayerScore": null,
+    "AmountOfScores": 3,
+    "Scores": [
+      {
+        "Username": "Piotrekol",
+        "Mods": {
+          "ModsXor1": 1800079962,
+          "ModsXor2": 1800079962,
+          "Value": 0
+        },
+        "Mode": 0,
+        "MaxCombo": 287,
+        "Score": 3123710,
+        "Hit100": 95,
+        "Hit300": 629,
+        "Hit50": 2,
+        "HitGeki": 171,
+        "HitKatu": 67,
+        "HitMiss": 14,
+        "Date": "2026-01-18T18:48:46.3110252",
+        "UserId": null
+      },
+      {
+        "Username": "Piotrekol",
+        "Mods": {
+          "ModsXor1": 945822067,
+          "ModsXor2": 945822067,
+          "Value": 0
+        },
+        "Mode": 0,
+        "MaxCombo": 270,
+        "Score": 2646930,
+        "Hit100": 103,
+        "Hit300": 611,
+        "Hit50": 6,
+        "HitGeki": 168,
+        "HitKatu": 60,
+        "HitMiss": 20,
+        "Date": "2026-01-17T21:35:41.8110598",
+        "UserId": null
+      },
+      {
+        "Username": "Piotrekol",
+        "Mods": {
+          "ModsXor1": -319162390,
+          "ModsXor2": -319162390,
+          "Value": 0
+        },
+        "Mode": 0,
+        "MaxCombo": 207,
+        "Score": 2374120,
+        "Hit100": 95,
+        "Hit300": 626,
+        "Hit50": 3,
+        "HitGeki": 173,
+        "HitKatu": 63,
+        "HitMiss": 16,
+        "Date": "2026-01-16T21:15:27.053818",
+        "UserId": null
+      }
+    ]
+  },
+  "skin": {
+    "Folder": "- ook1"
+  },
+  "resultsScreen": {
+    "Score": 1234936876,
+    "Username": null,
+    "Mods": {
+      "ModsXor1": 0,
+      "ModsXor2": 1234934900,
+      "Value": 1234934900
+    },
+    "Mode": 0,
+    "MaxCombo": 18,
+    "ScoreV2": 1234936876,
+    "Hit100": 0,
+    "Hit300": 0,
+    "Hit50": 37012,
+    "HitGeki": 2692,
+    "HitKatu": 34856,
+    "HitMiss": 18843,
+    "Combo": 0
+  },
+  "generalData": {
+    "RawStatus": 5,
+    "GameMode": 0,
+    "Retries": 0,
+    "AudioTime": 124170,
+    "TotalAudioTime": 146939.84126984127,
+    "ChatIsExpanded": false,
+    "Mods": 0,
+    "ShowPlayingInterface": false,
+    "OsuVersion": "b20260116cuttingedge",
+    "OsuStatus": 5
+  },
+  "banchoUser": {
+    "IsLoggedIn": false,
+    "Username": null,
+    "UserId": null,
+    "UserCountry": null,
+    "UserPpAccLevel": null,
+    "BanchoStatus": null
+  },
+  "keyOverlay": {
+    "Enabled": true,
+    "K1Pressed": false,
+    "K1Count": 0,
+    "K2Pressed": false,
+    "K2Count": 0,
+    "M1Pressed": false,
+    "M1Count": 0,
+    "M2Pressed": false,
+    "M2Count": 0
+  }
+}
