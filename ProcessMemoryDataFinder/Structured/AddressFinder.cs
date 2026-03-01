@@ -53,8 +53,9 @@ namespace ProcessMemoryDataFinder.Structured
                 return address;
 
             var lastToken = TokenType.SequenceTerminator;
-            foreach (var token in tokens)
+            for (int i = 0; i < tokens.Count; i++)
             {
+                var token = tokens[i];
                 switch (token.TokenType)
                 {
                     case TokenType.StringValue:

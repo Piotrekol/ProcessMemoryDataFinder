@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using ProcessMemoryDataFinder.API;
 
@@ -14,6 +16,7 @@ namespace ProcessMemoryDataFinder
         byte[] ReadStringBytes(IntPtr baseAddress, int bytesPerCharacter = 2);
         IntPtr ReadPointer(IntPtr baseAddr);
         int IntPtrSize { get; set; }
+        bool TryReadIntList(IntPtr baseAddress, List<int> target);
     }
 
     public class ObjectReader : IObjectReader
@@ -62,6 +65,36 @@ namespace ProcessMemoryDataFinder
             return list;
         }
 
+        public bool TryReadIntList(IntPtr baseAddress, List<int> target)
+        {
+            var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(true, false, baseAddress);
+            if (numberOfElements < 0) return false;
+
+            target.Clear();
+            if (numberOfElements == 0) return true;
+
+            int totalByteCount = 4 * numberOfElements;
+            byte[] rented = ArrayPool<byte>.Shared.Rent(totalByteCount);
+            try
+            {
+                if (!_memoryReader.ReadData(firstElementPtr, rented.AsSpan(0, totalByteCount)))
+                    return false;
+
+                if (target.Capacity < numberOfElements)
+                    target.Capacity = numberOfElements;
+
+                var ints = MemoryMarshal.Cast<byte, int>(rented.AsSpan(0, totalByteCount));
+                for (int i = 0; i < ints.Length; i++)
+                    target.Add(ints[i]);
+
+                return true;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(rented);
+            }
+        }
+
         protected (int NumberOfElements, byte[] Bytes) ReadListBytes(IntPtr baseAddress, int entrySize)
         {
             var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(true, false, baseAddress);
@@ -96,11 +129,25 @@ namespace ProcessMemoryDataFinder
 
         public string ReadUnicodeString(IntPtr baseAddress)
         {
-            var bytes = ReadStringBytes(baseAddress);
-            if (bytes == null) return null;
-            if (bytes.Length == 0) return string.Empty;
+            var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(false, true, baseAddress);
+            if (numberOfElements <= 0 || numberOfElements > 262144) return null;
 
-            return Encoding.Unicode.GetString(bytes);
+            int totalByteCount = 2 * numberOfElements;
+            byte[] rented = ArrayPool<byte>.Shared.Rent(totalByteCount);
+
+            try
+            {
+                if (!_memoryReader.ReadData(firstElementPtr, rented.AsSpan(0, totalByteCount)))
+                {
+                    return null;
+                }
+
+                return Encoding.Unicode.GetString(rented.AsSpan(0, totalByteCount));
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(rented);
+            }
         }
 
         public byte[] ReadStringBytes(IntPtr baseAddress, int bytesPerCharacter = 2)
@@ -146,9 +193,10 @@ namespace ProcessMemoryDataFinder
                 numberOfElementsAddr = address + 3 * IntPtrSize; //(IsX64 ? 0x18 : 0x0C);
 
                 // in a list, regardless of platform, the size element is always 4 bytes
-                var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
-                if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
-                numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
+                Span<byte> countBuf = stackalloc byte[4];
+                if (!_memoryReader.ReadData(numberOfElementsAddr, countBuf)) return (-1, IntPtr.Zero);
+
+                numberOfElements = MemoryMarshal.Read<int>(countBuf);
 
                 // lets point to the first element in the internal array:
                 // 1. skip VTable of list structure (4 or 8 bytes depending on platform)
@@ -170,17 +218,18 @@ namespace ProcessMemoryDataFinder
                     // 64bit platform, unless string size bytes is 8
                     if (isString)
                     {
-                        var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
-                        if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
-                        numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
+                        Span<byte> countBuf = stackalloc byte[4];
+                        if (!_memoryReader.ReadData(numberOfElementsAddr, countBuf)) return (-1, IntPtr.Zero);
+
+                        numberOfElements = MemoryMarshal.Read<int>(countBuf);
                         firstElementPtr = numberOfElementsAddr + 4;
                     }
                     else
                     {
-                        var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 8);
-                        if (numberOfElementBytes == null || numberOfElementBytes.Length != 8) return (-1, IntPtr.Zero);
+                        Span<byte> countBuf = stackalloc byte[8];
+                        if (!_memoryReader.ReadData(numberOfElementsAddr, countBuf)) return (-1, IntPtr.Zero);
 
-                        var numberOfElementsLong = BitConverter.ToInt64(numberOfElementBytes, 0);
+                        var numberOfElementsLong = MemoryMarshal.Read<long>(countBuf);
                         // ok, realistically we're probably never gonna get an array of more then 2^32-1 elements, so lets cast this down to an int
                         if (numberOfElementsLong > int.MaxValue)
                         {
@@ -194,9 +243,10 @@ namespace ProcessMemoryDataFinder
                 else
                 {
                     // 32bit platform, its always 4 bytes, regardless of the value of isString
-                    var numberOfElementBytes = _memoryReader.ReadData(numberOfElementsAddr, 4);
-                    if (numberOfElementBytes == null || numberOfElementBytes.Length != 4) return (-1, IntPtr.Zero);
-                    numberOfElements = BitConverter.ToInt32(numberOfElementBytes, 0);
+                    Span<byte> countBuf = stackalloc byte[4];
+                    if (!_memoryReader.ReadData(numberOfElementsAddr, countBuf)) return (-1, IntPtr.Zero);
+
+                    numberOfElements = MemoryMarshal.Read<int>(countBuf);
                     firstElementPtr = numberOfElementsAddr + 4;
                 }
             }
@@ -206,14 +256,15 @@ namespace ProcessMemoryDataFinder
 
         public IntPtr ReadPointer(IntPtr baseAddr)
         {
-            var data = _memoryReader.ReadData(baseAddr, (uint)IntPtrSize);
-            if (data == null)
+            Span<byte> data = stackalloc byte[8];
+            if (!_memoryReader.ReadData(baseAddr, data[..IntPtrSize]))
                 return IntPtr.Zero;
 
             if (IsX64)
-                return new IntPtr(BitConverter.ToInt64(data, 0));
+                return new IntPtr(MemoryMarshal.Read<long>(data));
 
-            var rawPtr = BitConverter.ToUInt32(data, 0);
+            var rawPtr = MemoryMarshal.Read<uint>(data);
+
             if (rawPtr > IntPtrExtensions.MaxValue)
                 return IntPtr.Zero;
 

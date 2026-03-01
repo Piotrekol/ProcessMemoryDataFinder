@@ -6,7 +6,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>OsuMemoryDataProvider</AssemblyTitle>
     <Product>OsuMemoryDataProvider</Product>
-    <Copyright>2019-2022 Piotr Partyka</Copyright>
+    <Copyright>2019-2026 Piotrekol</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Piotrekol</Authors>
     <PackageId>OsuMemoryDataProvider</PackageId>

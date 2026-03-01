@@ -4,7 +4,7 @@
     <Platforms>x64;x86;AnyCPU</Platforms>
     <AssemblyTitle>ProcessMemoryDataFinder</AssemblyTitle>
     <Product>ProcessMemoryDataFinder</Product>
-    <Copyright>2019-2020 Piotr Partyka</Copyright>
+    <Copyright>2019-2026 Piotrekol</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Piotrekol</Authors>
     <PackageId>ProcessMemoryDataFinder</PackageId>

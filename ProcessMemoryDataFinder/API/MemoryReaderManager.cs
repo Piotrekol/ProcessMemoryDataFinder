@@ -145,6 +145,14 @@ public class MemoryReaderManager : IDisposable
         return null;
     }
 
+    public bool ReadData(IntPtr address, Span<byte> buffer)
+    {
+        if (address == IntPtr.Zero || CurrentProcess == null)
+            return false;
+
+        return _memoryReader.ReadProcessMemory(CurrentProcess.Handle, CurrentProcess.PID, address, (uint)buffer.Length, buffer, out _);
+    }
+
     private void OpenProcess()
     {
         try

@@ -42,6 +42,17 @@ namespace ProcessMemoryDataFinder.API.Memory
         /// <param name="bytesRead"></param>
         /// <returns>true if read call was successful</returns>
         public abstract bool ReadProcessMemory(IntPtr processHandle, int processPID, IntPtr address, uint size, byte[] targetArray, out int bytesRead);
+
+        /// <returns>true if read call was successful</returns>
+        public virtual bool ReadProcessMemory(IntPtr processHandle, int processPID, IntPtr address, uint size, Span<byte> targetSpan, out int bytesRead)
+        {
+            byte[] arr = new byte[size];
+            bool result = ReadProcessMemory(processHandle, processPID, address, size, arr, out bytesRead);
+            if (result)
+                arr.AsSpan(0, bytesRead).CopyTo(targetSpan);
+            return result;
+        }
+
         public abstract List<MEMORY_BASIC_INFORMATION> ReadProcessMaps(IntPtr processHandle, int processPID);
     }
 }

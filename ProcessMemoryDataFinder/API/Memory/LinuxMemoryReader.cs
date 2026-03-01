@@ -38,6 +38,19 @@ namespace ProcessMemoryDataFinder.API.Memory
         public override bool ReadProcessMemory(IntPtr processHandle, int processPID, IntPtr address, uint size, byte[] targetArray, out int bytesRead)
             => ReadProcessMemoryUnsafe(address, processPID, size, targetArray, out bytesRead);
 
+        public override unsafe bool ReadProcessMemory(IntPtr processHandle, int processPID, IntPtr address, uint size, Span<byte> targetSpan, out int bytesRead)
+        {
+            fixed (byte* ptr = targetSpan)
+            {
+                var localIo = new iovec { iov_base = ptr, iov_len = (int)size };
+                var remoteIo = new iovec { iov_base = address.ToPointer(), iov_len = (int)size };
+                int result = process_vm_readv(processPID, &localIo, 1, &remoteIo, 1, 0);
+                bytesRead = result < 0 ? 0 : result;
+
+                return result >= 0 && (uint)result == size;
+            }
+        }
+
         protected static unsafe bool ReadProcessMemoryUnsafe(IntPtr address, int processId, uint size, byte[] dumpArray, out int bytesRead)
         {
             //TODO: create block of memory upfront and recreate if size is less than requested.

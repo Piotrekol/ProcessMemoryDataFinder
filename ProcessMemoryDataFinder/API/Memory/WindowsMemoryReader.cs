@@ -24,6 +24,21 @@ namespace ProcessMemoryDataFinder.API.Memory
             }
         }
 
+        public override unsafe bool ReadProcessMemory(IntPtr processHandle, int processPID, IntPtr address, uint size, Span<byte> targetSpan, out int bytesRead)
+        {
+            try
+            {
+                fixed (byte* ptr = targetSpan)
+                    ReadProcessMemorySpan(processHandle, address, ptr, (int)size, out bytesRead);
+                return (int)size == bytesRead;
+            }
+            catch
+            {
+                bytesRead = 0;
+                return false;
+            }
+        }
+
         public override List<MEMORY_BASIC_INFORMATION> ReadProcessMaps(IntPtr processHandle, int processPID)
         {
             var result = new List<MEMORY_BASIC_INFORMATION>();
@@ -58,6 +73,15 @@ namespace ProcessMemoryDataFinder.API.Memory
             IntPtr hProcess,
             IntPtr lpBaseAddress,
             [Out] byte[] lpBuffer,
+            int dwSize,
+            out int lpNumberOfBytesRead
+            );
+
+        [DllImport("kernel32.dll", EntryPoint = "ReadProcessMemory", SetLastError = false)]
+        private static extern unsafe bool ReadProcessMemorySpan(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            void* lpBuffer,
             int dwSize,
             out int lpNumberOfBytesRead
             );

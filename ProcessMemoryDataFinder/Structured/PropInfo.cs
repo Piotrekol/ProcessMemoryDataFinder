@@ -17,9 +17,11 @@ namespace ProcessMemoryDataFinder.Structured
         public Action<object> Setter { get; }
         public Func<object> Getter { get; }
         public StructuredMemoryReader.ReadObject Reader { get; }
+        public Func<IntPtr, bool>? TypedReadAndSet { get; }
 
         public PropInfo(string path, PropertyInfo propertyInfo, Type propType, Type underlyingPropType, bool isClass, bool isStringOrArrayOrList,
-            bool isNullable, string memoryPath, bool ignoreNullPtr, Action<object> setter, Func<object> getter, StructuredMemoryReader.ReadObject reader)
+            bool isNullable, string memoryPath, bool ignoreNullPtr, Action<object> setter, Func<object> getter, StructuredMemoryReader.ReadObject reader,
+            Func<IntPtr, bool>? typedReadAndSet = null)
         {
             Path = path;
             PropertyInfo = propertyInfo;
@@ -33,6 +35,7 @@ namespace ProcessMemoryDataFinder.Structured
             Setter = setter;
             Getter = getter;
             Reader = reader;
+            TypedReadAndSet = typedReadAndSet;
         }
     }
 }
