@@ -104,7 +104,7 @@ namespace OsuMemoryDataProvider
         {
             public MultiplayerPlayerStructuredMemoryReader(Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions) : base(processTargetOptions.ProcessName, baseAdresses, processTargetOptions)
             {
-                ObjectReader.IntPtrSize = _addressFinder.IntPtrSize = _memoryReader.IntPtrSize = 4;
+                ObjectReader.IntPtrSize = _memoryReader.IntPtrSize = 4;
                 AddReadHandlers(new Dictionary<Type, ReadObject>
                 {
                     { typeof(List<MultiplayerPlayer>), ReadList },

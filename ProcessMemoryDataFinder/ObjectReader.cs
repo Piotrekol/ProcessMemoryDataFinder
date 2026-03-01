@@ -18,7 +18,7 @@ namespace ProcessMemoryDataFinder
 
     public class ObjectReader : IObjectReader
     {
-        private readonly MemoryReader _memoryReader;
+        private readonly MemoryReaderManager _memoryReader;
 
         /// <summary>
         /// Size of pointers in searched process
@@ -26,10 +26,12 @@ namespace ProcessMemoryDataFinder
         public int IntPtrSize { get; set; } = IntPtr.Size;
 
         private bool IsX64 => IntPtrSize == 8;
+        private int ListArrayFirstElementOffset = 0;
 
-        public ObjectReader(MemoryReader memoryReader)
+        public ObjectReader(MemoryReaderManager memoryReader)
         {
             _memoryReader = memoryReader;
+            ListArrayFirstElementOffset = OperatingSystem.IsLinux() ? 4 : 0;
         }
 
         public List<uint> ReadUIntList(IntPtr baseAddress)
@@ -132,9 +134,6 @@ namespace ProcessMemoryDataFinder
         protected (int numberOfElements, IntPtr firstElementPtr) GetArrayLikeHeader(bool isList, bool isString,
             IntPtr baseAddress)
         {
-            //var pointer = ReadPointer(baseAddress);
-            //if (pointer == IntPtr.Zero) return (-1, IntPtr.Zero);
-
             var address = ReadPointer(baseAddress);
             if (address == IntPtr.Zero) return (-1, IntPtr.Zero);
 
@@ -156,7 +155,7 @@ namespace ProcessMemoryDataFinder
                 // 2. resolve pinter to internal array
                 // 3. skip VTable and internal number of elements (both 4 or 8 bytes depending on platform)
                 var internalArray = ReadPointer(address + IntPtrSize);
-                firstElementPtr = internalArray + 2 * IntPtrSize;// IsX64 ? internalArray +16 : internalArray + 8
+                firstElementPtr = internalArray + 2 * IntPtrSize + ListArrayFirstElementOffset;// IsX64 ? internalArray +16 : internalArray + 8
             }
             else
             {
@@ -189,7 +188,7 @@ namespace ProcessMemoryDataFinder
                             return (-1, IntPtr.Zero);
                         }
                         numberOfElements = (int)numberOfElementsLong;
-                        firstElementPtr = numberOfElementsAddr + 8;
+                        firstElementPtr = numberOfElementsAddr + 8 + ListArrayFirstElementOffset;
                     }
                 }
                 else

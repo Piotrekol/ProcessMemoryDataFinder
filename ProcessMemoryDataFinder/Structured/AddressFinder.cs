@@ -7,19 +7,15 @@ namespace ProcessMemoryDataFinder.Structured
 {
     public class AddressFinder
     {
-        private readonly MemoryReader _memoryReader;
+        private readonly MemoryReaderManager _memoryReader;
         private readonly IObjectReader _objectReader;
         private readonly Dictionary<string, string> _constantAddresses;
         private readonly Dictionary<string, IntPtr> _constantAddressesCache;
         private readonly Dictionary<(IReadOnlyList<DslToken> tokens, IntPtr baseAddress), IntPtr> _groupReadAddressesCache;
 
         private readonly AddressTokenizer _addressTokenizer = new AddressTokenizer();
-        /// <summary>
-        /// Size of pointers in searched process
-        /// </summary>
-        public int IntPtrSize { get; set; } = IntPtr.Size;
 
-        public AddressFinder(MemoryReader memoryReader, IObjectReader objectReader, Dictionary<string, string> constantAddresses)
+        public AddressFinder(MemoryReaderManager memoryReader, IObjectReader objectReader, Dictionary<string, string> constantAddresses)
         {
             _memoryReader = memoryReader;
             _memoryReader.ProcessChanged += MemoryReaderOnProcessChanged;
