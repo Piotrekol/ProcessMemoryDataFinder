@@ -1,7 +1,6 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11519.219 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessMemoryDataFinder", "ProcessMemoryDataFinder\ProcessMemoryDataFinder.csproj", "{9960D641-300A-432C-AA04-C351A99B9ADB}"
 EndProject
@@ -14,6 +13,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StructuredOsuMemoryProviderTester", "StructuredOsuMemoryProviderTester\StructuredOsuMemoryProviderTester.csproj", "{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuMemoryDataProvider.IntegrationTests", "OsuMemoryDataProvider.IntegrationTests\OsuMemoryDataProvider.IntegrationTests.csproj", "{A8B9D3E2-7C4F-45E2-8A8A-5B3D9F7E6C1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessMemoryDataFinder.Benchmarks", "ProcessMemoryDataFinder.Benchmarks\ProcessMemoryDataFinder.Benchmarks.csproj", "{17AF120C-F826-469F-92C9-4BF3BDD93968}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,7 +81,19 @@ Global
 		{A8B9D3E2-7C4F-45E2-8A8A-5B3D9F7E6C1A}.Release|x64.ActiveCfg = Release|x64
 		{A8B9D3E2-7C4F-45E2-8A8A-5B3D9F7E6C1A}.Release|x86.ActiveCfg = Release|x86
 		{A8B9D3E2-7C4F-45E2-8A8A-5B3D9F7E6C1A}.Release|x86.Build.0 = Release|x86
- 	EndGlobalSection
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|x64.Build.0 = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Debug|x86.Build.0 = Debug|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|x64.ActiveCfg = Release|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|x64.Build.0 = Release|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|x86.ActiveCfg = Release|Any CPU
+		{17AF120C-F826-469F-92C9-4BF3BDD93968}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
@@ -89,7 +102,8 @@ Global
 		{2450525D-627D-4ABA-ACF0-FA1AA76CE4A0} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 		{2965C7BF-B5DD-4345-9DFD-4E6B7D93DC0A} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
 		{A8B9D3E2-7C4F-45E2-8A8A-5B3D9F7E6C1A} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
- 	EndGlobalSection
+		{17AF120C-F826-469F-92C9-4BF3BDD93968} = {FD3B44E6-66B3-4C58-B590-FB11B9CF6FF7}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FBAFFCF-2E42-43DD-B5D2-EFB906701CBF}
 	EndGlobalSection
