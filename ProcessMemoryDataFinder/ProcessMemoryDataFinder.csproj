@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <Platforms>x64;x86;AnyCPU</Platforms>
     <AssemblyTitle>ProcessMemoryDataFinder</AssemblyTitle>
     <Product>ProcessMemoryDataFinder</Product>
-    <Copyright>2019-2020 Piotr Partyka</Copyright>
+    <Copyright>2019-2026 Piotrekol</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Piotrekol</Authors>
     <PackageId>ProcessMemoryDataFinder</PackageId>
@@ -23,6 +23,7 @@
     <StartupObject />
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>bin\x64\Debug\</OutputPath>

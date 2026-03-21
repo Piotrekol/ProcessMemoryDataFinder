@@ -11,7 +11,7 @@ namespace ProcessMemoryDataFinder.Structured
 {
     public class StructuredMemoryReader : IDisposable, IStructuredMemoryReader
     {
-        protected MemoryReader _memoryReader;
+        protected MemoryReaderManager _memoryReader;
         protected AddressFinder _addressFinder;
         private AddressTokenizer _addressTokenizer = new AddressTokenizer();
         protected IObjectReader ObjectReader;
@@ -88,9 +88,9 @@ namespace ProcessMemoryDataFinder.Structured
         };
         protected Dictionary<Type, ReadObject> ReadHandlers;
 
-        public StructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions, MemoryReader memoryReader = null, IObjectReader objectReader = null)
+        public StructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions, MemoryReaderManager memoryReader = null, IObjectReader objectReader = null)
         {
-            _memoryReader = memoryReader ?? new MemoryReader(processTargetOptions);
+            _memoryReader = memoryReader ?? new MemoryReaderManager(processTargetOptions);
             ObjectReader = objectReader ?? new ObjectReader(_memoryReader);
             _addressFinder = new AddressFinder(_memoryReader, ObjectReader, baseAdresses);
 
@@ -161,9 +161,22 @@ namespace ProcessMemoryDataFinder.Structured
                 if (WithTimes)
                     readStopwatch = Stopwatch.StartNew();
 
-                var result = ResolveProp(readObj, classAddress, prop, cacheEntry);
-                classAddress = result.ClassAdress;
-                if (result.InvalidRead)
+                bool invalidRead;
+                if (prop.TypedReadAndSet != null)
+                {
+                    var (propAddress, newClassAddress) = ResolvePath(cacheEntry.ClassPath, prop.MemoryPath, classAddress);
+                    classAddress = newClassAddress;
+                    invalidRead = !prop.TypedReadAndSet(propAddress);
+                }
+                else
+                {
+                    var result = ResolveProp(readObj, classAddress, prop, cacheEntry);
+                    classAddress = result.ClassAdress;
+                    invalidRead = result.InvalidRead;
+                    SetPropValue(prop, result.PropValue);
+                }
+
+                if (invalidRead)
                 {
                     if (prop.IgnoreNullPtr)
                         IgnoredInvalidRead?.Invoke(this, (readObj, prop.Path));
@@ -175,7 +188,6 @@ namespace ProcessMemoryDataFinder.Structured
                     }
                 }
 
-                SetPropValue(prop, result.PropValue);
                 if (WithTimes && readStopwatch != null)
                 {
                     readStopwatch.Stop();
@@ -267,18 +279,39 @@ namespace ProcessMemoryDataFinder.Structured
                 finalPath = $"{classPath}.{finalPath}";
 
             var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-
             var isString = propertyInfo.PropertyType == typeof(string);
+            var isStringOrArrayOrList = isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>));
+            var isNullable = Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null;
 
             if (classAddressGetter)
                 return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, underlyingType, propertyInfo.PropertyType.IsClass,
-                    isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                    Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, "", false, (v) => { }, () => null, ReadHandlers[underlyingType]);
+                    isStringOrArrayOrList, isNullable, "", false, (v) => { }, () => null, ReadHandlers[underlyingType]);
+
+            Func<IntPtr, bool>? typedReadAndSet = null;
+            if (!isNullable && !isStringOrArrayOrList)
+            {
+                if (underlyingType == typeof(int)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<int>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(float)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<float>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(double)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<double>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(short)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<short>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(ushort)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<ushort>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(bool)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<bool>(propertyInfo, readObject, _memoryReader, DefaultValues);
+                else if (underlyingType == typeof(long)) typedReadAndSet = TypedReaderFactory.CreateTypedReadAndSet<long>(propertyInfo, readObject, _memoryReader, DefaultValues);
+            }
+            else if (isString && !isNullable)
+            {
+                typedReadAndSet = TypedReaderFactory.CreateTypedStringReadAndSet(propertyInfo, readObject, ObjectReader);
+            }
+            else if (propertyInfo.PropertyType == typeof(List<int>) && !isNullable)
+            {
+                typedReadAndSet = TypedReaderFactory.CreateTypedListReadAndSet(propertyInfo, readObject, ObjectReader);
+            }
 
             return new PropInfo(finalPath, propertyInfo, propertyInfo.PropertyType, underlyingType, propertyInfo.PropertyType.IsClass,
-                isString || (propertyInfo.PropertyType.IsGenericType && propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>)),
-                Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr, (v) => propertyInfo.SetValue(readObject, v),
-                () => propertyInfo.GetValue(readObject), ReadHandlers.ContainsKey(underlyingType) ? ReadHandlers[underlyingType] : (propertyInfo.PropertyType.IsClass ? null : throw new NotImplementedException($"Reading of {underlyingType.FullName} is not implemented. Add read handler for this type.")));
+                isStringOrArrayOrList, isNullable, memoryAddressAttribute.RelativePath, memoryAddressAttribute.IgnoreNullPtr,
+                (v) => propertyInfo.SetValue(readObject, v), () => propertyInfo.GetValue(readObject),
+                ReadHandlers.ContainsKey(underlyingType) ? ReadHandlers[underlyingType] : (propertyInfo.PropertyType.IsClass ? null : throw new NotImplementedException($"Reading of {underlyingType.FullName} is not implemented. Add read handler for this type.")),
+                typedReadAndSet);
         }
 
         private (IntPtr FinalAddress, IntPtr ClassAddress) ResolvePath(string classMemoryPath, string propMemoryPath,

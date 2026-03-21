@@ -1,56 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using ProcessMemoryDataFinder.Misc;
+using ProcessMemoryDataFinder.API.Memory;
 
 namespace ProcessMemoryDataFinder.API
 {
-    //Slightly modified (by Piotrekol) signature scanner (added ability of scanning memory without need of mask usage)
-    //
-    //Original changelog and credits follow:
-    //
-    // sigScan C# Implementation - Written by atom0s [aka Wiccaan]
-    // Class Version: 2.0.0
-    //
-    // [ CHANGE LOG ] -------------------------------------------------------------------------
-    //
-    //      2.0.0
-    //          - Updated to no longer require unsafe or fixed code.
-    //          - Removed unneeded methods and code.
-    //
-    //      1.0.0
-    //          - First version written and release.
-    //
-    // [ CREDITS ] ----------------------------------------------------------------------------
-    //
-    // sigScan is based on the FindPattern code written by
-    // dom1n1k and Patrick at GameDeception.net
-    //
-    // Full credit to them for the purpose of this code. I, atom0s, simply
-    // take credit for converting it to C#.
     internal class SigScan
     {
-        /// <summary>
-        /// ReadProcessMemory
-        /// 
-        ///     API import definition for ReadProcessMemory.
-        /// </summary>
-        /// <param name="hProcess">Handle to the process we want to read from.</param>
-        /// <param name="lpBaseAddress">The base address to start reading from.</param>
-        /// <param name="lpBuffer">The return buffer to write the read data to.</param>
-        /// <param name="dwSize">The size of data we wish to read.</param>
-        /// <param name="lpNumberOfBytesRead">The number of bytes successfully read.</param>
-        /// <returns></returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool ReadProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            [Out] byte[] lpBuffer,
-            int dwSize,
-            out int lpNumberOfBytesRead
-            );
-
         /// <summary>
         /// m_vDumpedRegion
         /// 
@@ -63,7 +18,7 @@ namespace ProcessMemoryDataFinder.API
         /// 
         ///     The process we want to read the memory of.
         /// </summary>
-        private Process m_vProcess;
+        private SafeProcess m_vProcess;
 
         /// <summary>
         /// m_vAddress
@@ -81,6 +36,7 @@ namespace ProcessMemoryDataFinder.API
 
         private List<Sig> m_SigQueue;
 
+        private readonly MemoryReader m_OSMemoryReader;
 
         #region "sigScan Class Construction"
         /// <summary>
@@ -90,13 +46,14 @@ namespace ProcessMemoryDataFinder.API
         ///     Simply initializes the class properties and 
         ///     expects the user to set them later.
         /// </summary>
-        public SigScan()
+        public SigScan(MemoryReader osMemoryReader)
         {
             m_vProcess = null;
             m_vAddress = IntPtr.Zero;
             m_vSize = 0;
             m_vDumpedRegion = null;
             m_SigQueue = new List<Sig>();
+            m_OSMemoryReader = osMemoryReader;
         }
         /// <summary>
         /// SigScan
@@ -107,7 +64,7 @@ namespace ProcessMemoryDataFinder.API
         /// <param name="proc">The process to dump the memory from.</param>
         /// <param name="addr">The started address to begin the dump.</param>
         /// <param name="size">The size of the dump.</param>
-        public SigScan(Process proc, IntPtr addr, int size)
+        public SigScan(SafeProcess proc, IntPtr addr, int size)
         {
             m_vProcess = proc;
             m_vAddress = addr;
@@ -117,7 +74,7 @@ namespace ProcessMemoryDataFinder.API
         #endregion
 
         #region "sigScan Class Private Methods"
-        
+
         /// <summary>
         /// DumpMemory
         /// 
@@ -129,10 +86,9 @@ namespace ProcessMemoryDataFinder.API
         {
             try
             {
+
                 // Checks to ensure we have valid data.
                 if (m_vProcess == null)
-                    return false;
-                if (m_vProcess.SafeHasExited())
                     return false;
                 if (m_vAddress == IntPtr.Zero)
                     return false;
@@ -146,9 +102,7 @@ namespace ProcessMemoryDataFinder.API
                 int nBytesRead = 0;
 
                 // Dump the memory.
-                bReturn = ReadProcessMemory(
-                    m_vProcess.Handle, m_vAddress, m_vDumpedRegion, m_vSize, out nBytesRead
-                    );
+                bReturn = m_OSMemoryReader.ReadProcessMemory(m_vProcess.Handle, m_vProcess.PID, m_vAddress, (uint)m_vSize, m_vDumpedRegion, out nBytesRead);
 
                 // Validation checks.
                 if (bReturn == false || nBytesRead != m_vSize)
@@ -259,10 +213,10 @@ namespace ProcessMemoryDataFinder.API
                 // Ensure the mask and pattern lengths match.
                 foreach (var sig in SigQueue)
                 {
-                    if(sig.Mask.Length != sig.Pattern.Length)
+                    if (sig.Mask.Length != sig.Pattern.Length)
                         return;
                 }
-                
+
 
                 // Loop the region and look for the patterns.
                 for (int x = 0; x < m_vDumpedRegion.Length; x++)
@@ -296,11 +250,12 @@ namespace ProcessMemoryDataFinder.API
         #endregion
 
         #region "sigScan Class Properties"
-        public Process Process
+        public SafeProcess Process
         {
             get { return m_vProcess; }
             set { m_vProcess = value; }
         }
+
         public IntPtr Address
         {
             get { return m_vAddress; }
@@ -371,6 +326,4 @@ namespace ProcessMemoryDataFinder.API
             return -1;
         }
     }
-
-    
 }

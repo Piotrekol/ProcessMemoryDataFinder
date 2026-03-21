@@ -79,7 +79,7 @@ namespace OsuMemoryDataProvider
 
         public StructuredOsuMemoryReader(ProcessTargetOptions processTargetOptions)
         {
-            _memoryReader = new MultiplayerPlayerStructuredMemoryReader("osu!", BaseAddresses, processTargetOptions);
+            _memoryReader = new MultiplayerPlayerStructuredMemoryReader(BaseAddresses, processTargetOptions);
         }
         public bool TryRead<T>(T readObj) where T : class
             => _memoryReader.TryRead(readObj);
@@ -102,9 +102,9 @@ namespace OsuMemoryDataProvider
 
         protected class MultiplayerPlayerStructuredMemoryReader : StructuredMemoryReader
         {
-            public MultiplayerPlayerStructuredMemoryReader(string processName, Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions) : base(processName, baseAdresses, processTargetOptions)
+            public MultiplayerPlayerStructuredMemoryReader(Dictionary<string, string> baseAdresses, ProcessTargetOptions processTargetOptions) : base(processTargetOptions.ProcessName, baseAdresses, processTargetOptions)
             {
-                ObjectReader.IntPtrSize = _addressFinder.IntPtrSize = _memoryReader.IntPtrSize = 4;
+                ObjectReader.IntPtrSize = _memoryReader.IntPtrSize = 4;
                 AddReadHandlers(new Dictionary<Type, ReadObject>
                 {
                     { typeof(List<MultiplayerPlayer>), ReadList },
