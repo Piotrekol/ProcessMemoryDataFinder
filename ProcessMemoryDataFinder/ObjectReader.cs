@@ -21,6 +21,8 @@ namespace ProcessMemoryDataFinder
 
     public class ObjectReader : IObjectReader
     {
+        private const int MaxInt32ElementCount = int.MaxValue / 4;
+
         private readonly MemoryReaderManager _memoryReader;
 
         /// <summary>
@@ -72,7 +74,8 @@ namespace ProcessMemoryDataFinder
 
             target.Clear();
             if (numberOfElements == 0) return true;
-
+            if (numberOfElements > MaxInt32ElementCount) return false;
+            
             int totalByteCount = 4 * numberOfElements;
             byte[] rented = ArrayPool<byte>.Shared.Rent(totalByteCount);
             try
@@ -100,6 +103,9 @@ namespace ProcessMemoryDataFinder
             var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(true, false, baseAddress);
             if (numberOfElements < 0) return (-1, null);
             if (numberOfElements == 0) return (0, Array.Empty<byte>());
+            
+            var maxElements = int.MaxValue / entrySize;
+            if (numberOfElements > maxElements) return (-1, null);
 
             var totalByteCount = entrySize * numberOfElements;
             var bytes = _memoryReader.ReadData(firstElementPtr, (uint)totalByteCount);
@@ -113,6 +119,7 @@ namespace ProcessMemoryDataFinder
             var (numberOfElements, firstElementPtr) = GetArrayLikeHeader(false, false, baseAddress);
             if (numberOfElements < 0) return null;
             if (numberOfElements == 0) return Array.Empty<int>();
+            if (numberOfElements > MaxInt32ElementCount) return null;
 
             var totalByteCount = 4 * numberOfElements;
             var bytes = _memoryReader.ReadData(firstElementPtr, (uint)totalByteCount);
