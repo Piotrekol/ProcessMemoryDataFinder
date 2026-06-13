@@ -77,7 +77,7 @@ namespace ProcessMemoryDataFinder.Structured
             { typeof(int) , 4 },
             { typeof(short) , 2 },
             { typeof(ushort) , 2 },
-            { typeof(float) , 8 },
+            { typeof(float) , 4 },
             { typeof(double) , 8 },
             { typeof(long) , 8 },
             { typeof(bool) , 1 },

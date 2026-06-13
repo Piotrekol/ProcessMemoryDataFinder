@@ -17,7 +17,8 @@ namespace ProcessMemoryDataFinder.Structured
             where T : unmanaged
         {
             var setter = TryCreateSetter<T>(propertyInfo, readObject);
-            if (setter == null) return null;
+            if (setter == null)
+                return null;
 
             T defaultValue = defaultValues.TryGetValue(typeof(T), out var defObj) && defObj is T def ? def : default;
             var buffer = new byte[Unsafe.SizeOf<T>()];
@@ -46,29 +47,74 @@ namespace ProcessMemoryDataFinder.Structured
             object readObject,
             IObjectReader objectReader)
         {
-            var setter = TryCreateSetter<string?>(propertyInfo, readObject);
-            if (setter == null) return null;
+            /// <summary>
+            /// How often to re-verify string content when the pointer has changed recently or a read has failed.
+            /// </summary>
+            const int UnstableVerifyEvery = 3;
+            /// <summary>
+            /// After this many consecutive reads returning the same content, the string is considered stable and verification switches to the longer interval.
+            /// </summary>
+            const int StableThreshold = 5;
+            /// <summary>
+            /// How often to re-verify string content once stable, assuming no pointer changes.
+            /// </summary>
+            const int StableVerifyEvery = 120;
 
-            IntPtr lastStringObjectPtr = IntPtr.Zero;
+            var setter = TryCreateSetter<string?>(propertyInfo, readObject);
+            if (setter == null)
+                return null;
+
+            IntPtr lastPtr = IntPtr.Zero;
+            string? lastValue = null;
+            int framesSinceVerify = int.MaxValue;
+            int consecutiveSame = 0;
 
             return (fieldAddress) =>
             {
                 if (fieldAddress == IntPtr.Zero)
                 {
-                    if (lastStringObjectPtr != IntPtr.Zero)
+                    if (lastPtr != IntPtr.Zero)
                     {
                         setter(null);
-                        lastStringObjectPtr = IntPtr.Zero;
+                        lastPtr = IntPtr.Zero;
+                        lastValue = null;
+                        framesSinceVerify = int.MaxValue;
+                        consecutiveSame = 0;
                     }
                     return true;
                 }
 
-                var currentStringObjectPtr = objectReader.ReadPointer(fieldAddress);
-                if (currentStringObjectPtr == lastStringObjectPtr)
-                    return true;
+                var currentPtr = objectReader.ReadPointer(fieldAddress);
 
-                setter(objectReader.ReadUnicodeString(fieldAddress));
-                lastStringObjectPtr = currentStringObjectPtr;
+                if (currentPtr != lastPtr)
+                {
+                    framesSinceVerify = int.MaxValue;
+                    consecutiveSame = 0;
+                }
+
+                var verifyInterval = consecutiveSame < StableThreshold ? UnstableVerifyEvery : StableVerifyEvery;
+                if (framesSinceVerify >= verifyInterval)
+                {
+                    var value = objectReader.ReadUnicodeString(fieldAddress);
+                    framesSinceVerify = 0;
+
+                    if (value != null)
+                    {
+                        consecutiveSame = (lastValue == value) ? consecutiveSame + 1 : 1;
+                        lastPtr = currentPtr;
+                        lastValue = value;
+                        setter(value);
+                    }
+                    else
+                    {
+                        consecutiveSame = 0;
+                    }
+                }
+                else
+                {
+                    framesSinceVerify++;
+                }
+
                 return true;
             };
         }
@@ -80,7 +126,8 @@ namespace ProcessMemoryDataFinder.Structured
         {
             var getter = TryCreateGetter<List<int>>(propertyInfo, readObject);
             var setter = TryCreateSetter<List<int>>(propertyInfo, readObject);
-            if (getter == null || setter == null) return null;
+            if (getter == null || setter == null)
+                return null;
 
             return (fieldAddress) =>
             {
